@@ -1,0 +1,11 @@
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\bin\Release\net8.0\Uniceps.Core.deps.json
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\bin\Release\net8.0\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\bin\Release\net8.0\Uniceps.Core.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.AssemblyInfoInputs.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.AssemblyInfo.cs
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.csproj.CoreCompileInputs.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\refint\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\Uniceps.Core.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Release\net8.0\ref\Uniceps.Core.dll

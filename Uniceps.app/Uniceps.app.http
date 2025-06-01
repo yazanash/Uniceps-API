@@ -1,0 +1,6 @@
+@Uniceps.app_HostAddress = http://localhost:5155
+
+GET {{Uniceps.app_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

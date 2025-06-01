@@ -1,0 +1,17 @@
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Entityframework.deps.json
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Entityframework.runtimeconfig.json
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Entityframework.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Entityframework.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Release\net8.0\Uniceps.Core.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.csproj.AssemblyReference.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.AssemblyInfoInputs.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.AssemblyInfo.cs
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.csproj.CoreCompileInputs.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps..9ED158D2.Up2Date
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\refint\Uniceps.Entityframework.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.genruntimeconfig.cache
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\ref\Uniceps.Entityframework.dll

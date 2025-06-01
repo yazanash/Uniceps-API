@@ -1,0 +1,27 @@
+﻿using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Uniceps.Core.Services;
+using Uniceps.Entityframework.Commands.DayCommands;
+using Uniceps.Entityframework.Models.RoutineModels;
+
+namespace Uniceps.Entityframework.Handlers.CommandHandlers.DayHandlers
+{
+    public class UpdateRoutineDayHandler:IRequestHandler<UpdateRoutineDayCommand,Day>
+    {
+        private readonly ICommandDataService<Day> _service;
+
+        public UpdateRoutineDayHandler(ICommandDataService<Day> service)
+        {
+            _service = service;
+        }
+
+        public async Task<Day> Handle(UpdateRoutineDayCommand request, CancellationToken cancellationToken)
+        {
+            return await _service.Update(request.day);
+        }
+    }
+}
