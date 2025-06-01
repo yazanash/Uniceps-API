@@ -9,6 +9,11 @@ namespace Uniceps.Entityframework.Models.AuthenticationModels
 {
     public class AppUser : IdentityUser
     {
-       
+       public UserType UserType { get; set; }
+    }
+    public enum UserType
+    {
+        Normal=0,
+        Business=1
     }
 }
