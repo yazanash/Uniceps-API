@@ -93,7 +93,8 @@ namespace Uniceps.app.Controllers
                     AppUser newUser = new()
                     {
                         Email = oTPDto.Email,
-                        UserName = oTPDto.Email!.Split('@')[0]
+                        UserName = oTPDto.Email!.Split('@')[0],
+                        UserType = UserType.Normal
                     };
                     IdentityResult result = await _userManager.CreateAsync(newUser);
                     IList<string> roles = await _userManager.GetRolesAsync(newUser!);

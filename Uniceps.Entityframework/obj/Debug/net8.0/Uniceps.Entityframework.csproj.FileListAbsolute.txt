@@ -15,3 +15,4 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Debug\net
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Debug\net8.0\Uniceps.Core.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\bin\Debug\net8.0\Uniceps.Core.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Debug\net8.0\Uniceps..9ED158D2.Up2Date
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Debug\net8.0\Uniceps.Entityframework.sourcelink.json
