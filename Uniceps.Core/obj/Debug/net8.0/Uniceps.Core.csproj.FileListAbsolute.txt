@@ -9,3 +9,4 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Debug\net8.0\Uniceps
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Debug\net8.0\refint\Uniceps.Core.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Debug\net8.0\Uniceps.Core.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Debug\net8.0\ref\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Core\obj\Debug\net8.0\Uniceps.Core.sourcelink.json
