@@ -3,8 +3,8 @@
   <PropertyGroup>
     <ActiveDebugProfile>http</ActiveDebugProfile>
     <NameOfLastUsedPublishProfile>C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\Properties\PublishProfiles\site27284-WebDeploy.pubxml</NameOfLastUsedPublishProfile>
-    <Controller_SelectedScaffolderID>ApiControllerEmptyScaffolder</Controller_SelectedScaffolderID>
-    <Controller_SelectedScaffolderCategoryPath>root/Common/Api</Controller_SelectedScaffolderCategoryPath>
+    <Controller_SelectedScaffolderID>MvcControllerEmptyScaffolder</Controller_SelectedScaffolderID>
+    <Controller_SelectedScaffolderCategoryPath>root/Common/MVC/Controller</Controller_SelectedScaffolderCategoryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

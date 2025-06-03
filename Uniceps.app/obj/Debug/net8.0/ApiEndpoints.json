@@ -32,6 +32,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Uniceps.app.Controllers.BusinessController",
+    "Method": "UpgradeToBusinessAccount",
+    "RelativePath": "api/Business",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Uniceps.app.Controllers.RoutineControllers.ExerciseController",
     "Method": "GetAll",
     "RelativePath": "api/Exercise",
