@@ -25,14 +25,15 @@ builder.Services.AddSingleton<EmailService>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
-
+builder.Services.AddCustomJwtAuth(builder.Configuration); 
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+builder.Services.AddCustomSwaggerGenAuth();
 
 
 var app = builder.Build();
@@ -46,7 +47,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 
