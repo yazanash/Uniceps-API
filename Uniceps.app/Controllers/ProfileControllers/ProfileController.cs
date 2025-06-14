@@ -113,6 +113,23 @@ namespace Uniceps.app.Controllers.ProfileControllers
             await _profileDataService.Update(newProfile);
             return Ok("Updated successfully");
         }
+        [HttpPut("business")]
+        public async Task<IActionResult> UpdateBusiness([FromBody] BusinessProfileCreationDto businessProfileCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (businessProfileCreationDto == null)
+                return BadRequest("Exercise data is missing.");
 
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            BusinessProfile businessProfile = await _getBusinessByUserId.GetByUserId(userId);
+            BusinessProfile newProfile = _businessProfileMapperExtension.FromCreationDto(businessProfileCreationDto);
+            newProfile.Id = businessProfile.Id;
+            newProfile.UserId = userId;
+            await _businseeDataService.Update(newProfile);
+            return Ok("Updated successfully");
+        }
     }
 }
