@@ -95,6 +95,24 @@ namespace Uniceps.app.Controllers.ProfileControllers
             _logger.LogInformation("Created Successfully");
             return Ok(_businessProfileMapperExtension.ToDto(profile));
         }
-       
+        [HttpPut()]
+        public async Task<IActionResult> Update([FromBody] NormalProfileCreationDto profileCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (profileCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            NormalProfile normalProfile = await _getProfileByUserId.GetByUserId(userId);
+            NormalProfile newProfile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
+            newProfile.Id = normalProfile.Id;
+            newProfile.UserId = userId;
+            await _profileDataService.Update(newProfile);
+            return Ok("Updated successfully");
+        }
+
     }
 }
