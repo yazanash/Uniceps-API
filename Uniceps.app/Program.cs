@@ -6,6 +6,7 @@ using Uniceps.app.Extensions;
 using Uniceps.app.HostBuilder;
 using Uniceps.app.Services;
 using Uniceps.Core.Services;
+using Uniceps.CQRS;
 using Uniceps.Entityframework;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
@@ -27,8 +28,8 @@ builder.Services.AddDataServices();
 builder.Services.AddMappers();
 builder.Services.AddCustomJwtAuth(builder.Configuration); 
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssemblyContaining<Lib>());
+//builder.Services.AddMediatR(cfg =>
+//    cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -99,3 +99,7 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Unicep
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Uniceps.Entityframework.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Uniceps.Entityframework.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Uniceps.Core.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Uniceps.CQRS.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Release\net8.0\Uniceps.CQRS.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\Uniceps.app.sourcelink.json

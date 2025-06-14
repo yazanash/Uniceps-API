@@ -33,7 +33,6 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\refint\U
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\Uniceps.app.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\Uniceps.app.genruntimeconfig.cache
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\ref\Uniceps.app.dll
-C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -101,3 +100,12 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Microsof
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\Uniceps.app.sourcelink.json
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Uniceps.CQRS.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Uniceps.CQRS.pdb
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\DnsClient.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\MongoDB.Bson.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\MongoDB.Driver.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\SharpCompress.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\Snappier.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\bin\Debug\net8.0\ZstdSharp.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

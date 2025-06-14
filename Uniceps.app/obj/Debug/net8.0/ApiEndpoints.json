@@ -206,6 +206,101 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "GetProfile",
+    "RelativePath": "api/Profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "CreateNormalProfile",
+    "RelativePath": "api/Profile",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "profileCreationDto",
+        "Type": "Uniceps.app.DTOs.ProfileDtos.NormalProfileCreationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "CreateBusinessProfile",
+    "RelativePath": "api/Profile/business",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "routineCreationDto",
+        "Type": "Uniceps.app.DTOs.ProfileDtos.BusinessProfileCreationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "GetById",
+    "RelativePath": "api/Profile/id",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "Update",
+    "RelativePath": "api/Profile/id",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "routineCreationDto",
+        "Type": "Uniceps.app.DTOs.RoutineDtos.RoutineCreationDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Uniceps.app.Controllers.ProfileControllers.ProfileController",
+    "Method": "Delete",
+    "RelativePath": "api/Profile/id",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Uniceps.app.Controllers.RoutineControllers.RoutineController",
     "Method": "GetAll",
     "RelativePath": "api/Routine",

@@ -11,7 +11,7 @@ namespace Uniceps.Entityframework.Models.RoutineModels
         public int Id { get; set; }
         public string? Name { get; set; }
         public int RoutineId { get; set; }
-        public Routine Routine{ get; set; }
+        public Routine? Routine{ get; set; }
         public List<RoutineItem> RoutineItems { get; set; } = new List<RoutineItem>();
     }
 }

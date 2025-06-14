@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.DBContext
@@ -23,6 +24,8 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<RoutineItem> RoutineItems { get; set; }
         public DbSet<ItemSet> Sets { get; set; }
         public DbSet<OTPModel> OTPModels { get; set; }
+        public DbSet<BusinessProfile> BusinessProfiles  { get; set; }
+        public DbSet<NormalProfile> NormalProfiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

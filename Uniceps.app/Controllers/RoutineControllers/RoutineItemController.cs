@@ -14,27 +14,29 @@ namespace Uniceps.app.Controllers.RoutineControllers
     [ApiController]
     public class RoutineItemController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDataService<RoutineItem> _dataService;
+        private readonly IEntityQueryDataService<RoutineItem> _entityQueryDataService;
         private readonly ILogger<RoutineItemController> _logger;
         IMapperExtension<RoutineItem, RoutineItemDto, RoutineItemCreationDto> _mapper;
 
-        public RoutineItemController(IMediator mediator, ILogger<RoutineItemController> logger, IMapperExtension<RoutineItem, RoutineItemDto, RoutineItemCreationDto> mapper)
+        public RoutineItemController(ILogger<RoutineItemController> logger, IMapperExtension<RoutineItem, RoutineItemDto, RoutineItemCreationDto> mapper, IDataService<RoutineItem> dataService, IEntityQueryDataService<RoutineItem> entityQueryDataService)
         {
-            _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
+            _dataService = dataService;
+            _entityQueryDataService = entityQueryDataService;
         }
         [HttpGet("dayId")]
         public async Task<IActionResult> GetAll(int dayId)
         {
-            IEnumerable<RoutineItem> routineItems = await _mediator.Send(new GetRoutineItemsQuery(dayId));
+            IEnumerable<RoutineItem> routineItems = await _entityQueryDataService.GetAllById(dayId);
             return Ok(routineItems.Select(x => _mapper.ToDto(x)));
         }
         [HttpPost]
         public async Task<IActionResult> Create(RoutineItemCreationDto routineItemDto)
         {
             RoutineItem routineItem = _mapper.FromCreationDto(routineItemDto);
-            RoutineItem createdItem = await _mediator.Send(new CreateRoutineItemCommand(routineItem));
+            RoutineItem createdItem = await _dataService.Create(routineItem);
             return Ok(_mapper.ToDto(createdItem));
 
         }
@@ -43,13 +45,13 @@ namespace Uniceps.app.Controllers.RoutineControllers
         {
             RoutineItem item = _mapper.FromCreationDto(creationDto);
             item.Id = id;
-            var result = await _mediator.Send(new UpdateRoutineItemCommand(item));
+            var result = await _dataService.Update(item);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _mediator.Send(new DeleteRoutineItemCommand(id));
+            var result = await _dataService.Delete(id);
             return Ok("Deleted successfully");
         }
     }
