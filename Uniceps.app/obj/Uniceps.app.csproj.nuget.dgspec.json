@@ -32,6 +32,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\Uniceps.CQRS.csproj": {
+                "projectPath": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\Uniceps.CQRS.csproj"
+              },
               "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.Entityframework\\Uniceps.Entityframework.csproj": {
                 "projectPath": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.Entityframework\\Uniceps.Entityframework.csproj"
               }
@@ -56,7 +59,7 @@
           "dependencies": {
             "MediatR": {
               "target": "Package",
-              "version": "[12.4.1, )"
+              "version": "[12.5.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -65,6 +68,10 @@
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.21.0, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.4.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -139,6 +146,81 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\Uniceps.CQRS.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\Uniceps.CQRS.csproj",
+        "projectName": "Uniceps.CQRS",
+        "projectPath": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\Uniceps.CQRS.csproj",
+        "packagesPath": "C:\\Users\\anaconda\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.CQRS\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\anaconda\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.Entityframework\\Uniceps.Entityframework.csproj": {
+                "projectPath": "C:\\Users\\anaconda\\source\\repos\\Uniceps.app\\Uniceps.Entityframework\\Uniceps.Entityframework.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.5.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

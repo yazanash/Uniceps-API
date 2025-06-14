@@ -9,6 +9,7 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\MediatR.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\MediatR.Contracts.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
@@ -71,6 +72,8 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.Core.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.CQRS.dll
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.Entityframework.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.CQRS.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.Entityframework.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.app\obj\Release\net8.0\PubTmp\Out\Uniceps.Core.pdb

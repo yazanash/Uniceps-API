@@ -15,3 +15,4 @@ C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\n
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.pdb
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.genruntimeconfig.cache
 C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\ref\Uniceps.Entityframework.dll
+C:\Users\anaconda\source\repos\Uniceps.app\Uniceps.Entityframework\obj\Release\net8.0\Uniceps.Entityframework.sourcelink.json

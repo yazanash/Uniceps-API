@@ -7,6 +7,6 @@ namespace Uniceps.app.DTOs.RoutineDtos
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        public List<DayDto> RoutineDays { get; set; }
+        public List<DayDto>? RoutineDays { get; set; }
     }
 }

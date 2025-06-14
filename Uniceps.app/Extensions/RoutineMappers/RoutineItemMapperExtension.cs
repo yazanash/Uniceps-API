@@ -36,7 +36,7 @@ namespace Uniceps.app.Extensions.RoutineMappers
             routineItem.Id = data.Id;
             routineItem.Order = data.Order;
             routineItem.ExerciseId = data.ExerciseId;
-            routineItem.Exercise = _exerciseMapper.ToDto(data.Exercise);
+            routineItem.Exercise = _exerciseMapper.ToDto(data.Exercise!);
 
             foreach (ItemSet itemSet in data.Sets)
             {

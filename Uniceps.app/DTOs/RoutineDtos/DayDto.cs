@@ -7,6 +7,6 @@ namespace Uniceps.app.DTOs.RoutineDtos
         public int Id { get; set; }
         public string? Name { get; set; }
         public int RoutineId { get; set; }
-        public List<RoutineItemDto> RoutineItems {get;set;}
+        public List<RoutineItemDto>? RoutineItems {get;set;}
     }
 }
