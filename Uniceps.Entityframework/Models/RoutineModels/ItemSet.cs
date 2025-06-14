@@ -12,6 +12,6 @@ namespace Uniceps.Entityframework.Models.RoutineModels
         public int RoundIndex { get; set; }
         public int Repetition { get; set; }
         public int RoutineItemId { get; set; } 
-        public RoutineItem RoutineItem { get; set; } 
+        public RoutineItem? RoutineItem { get; set; } 
     }
 }

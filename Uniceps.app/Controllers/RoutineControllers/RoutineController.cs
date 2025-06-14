@@ -14,25 +14,27 @@ namespace Uniceps.app.Controllers.RoutineControllers
     [ApiController]
     public class RoutineController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        private readonly IDataService<Routine> _dataService;
+        private readonly IEntityQueryDataService<Routine> _entityQueryDataService;
         private ILogger<RoutineController> _logger;
         IMapperExtension<Routine, RoutineDto, RoutineCreationDto> _mapper;
-        public RoutineController(IMediator mediator, ILogger<RoutineController> logger, IMapperExtension<Routine, RoutineDto, RoutineCreationDto> mapper)
+        public RoutineController(ILogger<RoutineController> logger, IMapperExtension<Routine, RoutineDto, RoutineCreationDto> mapper, IDataService<Routine> dataService, IEntityQueryDataService<Routine> entityQueryDataService)
         {
-            _mediator = mediator;
             _logger = logger;
             _mapper = mapper;
+            _dataService = dataService;
+            _entityQueryDataService = entityQueryDataService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<Routine> routines = await _mediator.Send(new GetAllRoutineQuery());
+            IEnumerable<Routine> routines = await _dataService.GetAll();
             return Ok(routines.Select(x => _mapper.ToDto(x)).ToList());
         }
         [HttpGet("id")]
         public async Task<IActionResult> GetById(int id)
         {
-            Routine routine = await _mediator.Send(new GetRoutineByIdQuery(id));
+            Routine routine = await _dataService.Get(id);
             return Ok(_mapper.ToDto(routine));
         }
         [HttpPost]
@@ -42,7 +44,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
                 return BadRequest("Exercise data is missing.");
 
             Routine routine = _mapper.FromCreationDto(routineCreationDto);
-            var result = await _mediator.Send(new CreateRoutineCommand(routine));
+            var result = await _dataService.Create(routine);
             _logger.LogInformation("Created Successfully");
             return Ok(_mapper.ToDto(routine));
         }
@@ -51,13 +53,13 @@ namespace Uniceps.app.Controllers.RoutineControllers
         {
             Routine routine = _mapper.FromCreationDto(routineCreationDto);
             routine.Id = id;
-            var result = await _mediator.Send(new UpdateRoutineCommand(routine));
+            var result = await _dataService.Update(routine);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _mediator.Send(new DeleteRoutineCommand(id));
+            var result = await _dataService.Delete(id);
             return Ok("Deleted successfully");
         }
     }

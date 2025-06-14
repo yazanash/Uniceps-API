@@ -84,7 +84,9 @@ namespace Uniceps.app.Controllers
                     var _token = new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
+                        expiration = token.ValidTo,
+                        user_type=user.UserType
+
                     };
                     return Ok(_token);
                 }
@@ -121,7 +123,8 @@ namespace Uniceps.app.Controllers
                     var _token = new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
+                        expiration = token.ValidTo,
+                        user_type = newUser.UserType
                     };
                     
                     return Created("created",_token);
