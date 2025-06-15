@@ -23,6 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddScoped<MongoDbService>();
+builder.Services.AddScoped<DataMigrationService>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
