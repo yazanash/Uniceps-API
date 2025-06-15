@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Uniceps.app.Controllers.RoutineControllers;
 using Uniceps.app.DTOs.ProfileDtos;
 using Uniceps.app.DTOs.RoutineDtos;
+using Uniceps.app.Services;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
@@ -21,7 +22,8 @@ namespace Uniceps.app.Controllers.ProfileControllers
         IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> _normalProfileMapperExtension;
         IMapperExtension<BusinessProfile, BusinessProfileDto, BusinessProfileCreationDto> _businessProfileMapperExtension;
         private ILogger<ProfileController> _logger;
-        public ProfileController(IDataService<NormalProfile> profileDataService, IDataService<BusinessProfile> businseeDataService, ILogger<ProfileController> logger, IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> normalProfileMapperExtension, IMapperExtension<BusinessProfile, BusinessProfileDto, BusinessProfileCreationDto> businessProfileMapperExtension, IGetByUserId<NormalProfile> getProfileByUserId, IGetByUserId<BusinessProfile> getBusinessByUserId)
+        private readonly DataMigrationService _dataMigrationService;
+        public ProfileController(IDataService<NormalProfile> profileDataService, IDataService<BusinessProfile> businseeDataService, ILogger<ProfileController> logger, IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> normalProfileMapperExtension, IMapperExtension<BusinessProfile, BusinessProfileDto, BusinessProfileCreationDto> businessProfileMapperExtension, IGetByUserId<NormalProfile> getProfileByUserId, IGetByUserId<BusinessProfile> getBusinessByUserId, DataMigrationService dataMigrationService)
         {
             _profileDataService = profileDataService;
             _businseeDataService = businseeDataService;
@@ -30,6 +32,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             _businessProfileMapperExtension = businessProfileMapperExtension;
             _getProfileByUserId = getProfileByUserId;
             _getBusinessByUserId = getBusinessByUserId;
+            _dataMigrationService = dataMigrationService;
         }
 
         [HttpGet]
@@ -131,5 +134,6 @@ namespace Uniceps.app.Controllers.ProfileControllers
             await _businseeDataService.Update(newProfile);
             return Ok("Updated successfully");
         }
+      
     }
 }

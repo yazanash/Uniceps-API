@@ -263,6 +263,18 @@
         }
       }
     },
+    "/api/Migration": {
+      "get": {
+        "tags": [
+          "Migration"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/MuscleGroup": {
       "get": {
         "tags": [
@@ -394,58 +406,26 @@
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Profile/id": {
-      "get": {
-        "tags": [
-          "Profile"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       },
       "put": {
         "tags": [
           "Profile"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RoutineCreationDto"
+                "$ref": "#/components/schemas/NormalProfileCreationDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/RoutineCreationDto"
+                "$ref": "#/components/schemas/NormalProfileCreationDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/RoutineCreationDto"
+                "$ref": "#/components/schemas/NormalProfileCreationDto"
               }
             }
           }
@@ -455,29 +435,19 @@
             "description": "OK"
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/Profile/business": {
+      "get": {
         "tags": [
           "Profile"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
         }
-      }
-    },
-    "/api/Profile/business": {
+      },
       "post": {
         "tags": [
           "Profile"
@@ -501,6 +471,57 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusinessProfileCreationDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusinessProfileCreationDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/BusinessProfileCreationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Profile/id": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
