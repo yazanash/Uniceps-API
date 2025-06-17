@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Uniceps.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9e312bac270f884629ebeda492c31cbe0f3ad612")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12942fcb5abc26a3a0d214d1325d7c90a1eef8c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("Uniceps.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Uniceps.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

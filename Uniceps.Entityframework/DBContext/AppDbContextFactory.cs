@@ -13,7 +13,7 @@ namespace Uniceps.Entityframework.DBContext
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("");
+            optionsBuilder.UseSqlServer("myasp");
 
             return new AppDbContext(optionsBuilder.Options);
         }

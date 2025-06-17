@@ -5,8 +5,8 @@ using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
 using Uniceps.app.HostBuilder;
 using Uniceps.app.Services;
+using Uniceps.app.Services.PaymentServices;
 using Uniceps.Core.Services;
-using Uniceps.CQRS;
 using Uniceps.Entityframework;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
@@ -19,12 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(
     options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("myasp")));
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddScoped<MongoDbService>();
 builder.Services.AddScoped<DataMigrationService>();
+builder.Services.AddScoped<IPaymentGateway,StripeGateway>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();

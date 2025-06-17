@@ -5,6 +5,8 @@ using Uniceps.Entityframework.Services.ExerciseServices;
 using Uniceps.Entityframework.Services.MuscleGroupServices;
 using Uniceps.Entityframework.Services.RoutineServices;
 using Uniceps.Entityframework.Services.ProfileServices;
+using Uniceps.Entityframework.Models.SystemSubscriptionModels;
+using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 namespace Uniceps.app.HostBuilder
 {
     public static class DataServiceExtension
@@ -24,6 +26,10 @@ namespace Uniceps.app.HostBuilder
 
             services.AddScoped<IGetByUserId<NormalProfile>, NormalProfileDataService>();
             services.AddScoped<IGetByUserId<BusinessProfile>, BusinessProfileDataService>();
+
+            services.AddScoped<IDataService<PlanModel>, PlanDataService>();
+            services.AddScoped<IDataService<SystemSubscription>, SystemSubscriptionDataService>();
+            services.AddScoped<IGetByTargetType<PlanModel>, PlanDataService>();
             return services;
         }
     }
