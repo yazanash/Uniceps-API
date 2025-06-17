@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -13,6 +14,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class SystemSubscriptionController : ControllerBase
     {
         private readonly IDataService<PlanModel> _planDataService;
@@ -27,6 +29,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             _userManager = userManager;
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> RequestSubscription(SystemSubscriptionCreationDto request)
         {
             if (!User.Identity!.IsAuthenticated)
@@ -52,15 +55,15 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 IsActive = false
             };
 
-            
 
-           
+            await _subscriptionDataService.Create(sub);
+
             var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
 
             if (!string.IsNullOrEmpty(sessionUrl))
             {
                 sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
-                await _subscriptionDataService.Create(sub);
+                await _subscriptionDataService.Update(sub);
                 return Ok(new { sessionUrl });
             }
             else
