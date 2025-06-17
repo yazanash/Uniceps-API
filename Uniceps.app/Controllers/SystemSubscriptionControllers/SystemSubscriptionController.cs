@@ -66,5 +66,15 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             else
                 return BadRequest();
         }
+        [HttpPost("stripe")]
+        public async Task<IActionResult> StripeWebhook()
+        {
+            Console.WriteLine("handled");
+            var json = await new StreamReader(Request.Body).ReadToEndAsync();
+            var signature = Request.Headers["Stripe-Signature"];
+            var handled = await _paymentGateway.HandleWebhookAsync(json, signature!);
+
+            return handled ? Ok() : BadRequest("Event not handled");
+        }
     }
 }

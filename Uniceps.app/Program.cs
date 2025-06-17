@@ -25,7 +25,7 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddScoped<MongoDbService>();
 builder.Services.AddScoped<DataMigrationService>();
-builder.Services.AddSingleton<IPaymentGateway,StripeGateway>();
+builder.Services.AddScoped<IPaymentGateway,StripeGateway>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();

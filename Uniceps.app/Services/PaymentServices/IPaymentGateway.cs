@@ -6,5 +6,6 @@ namespace Uniceps.app.Services.PaymentServices
     public interface IPaymentGateway
     {
         Task<string?> CreateSessionAsync(SystemSubscription sub, AppUser user, PlanModel plan);
+        Task<bool> HandleWebhookAsync(string payload, string signatureHeader);
     }
 }

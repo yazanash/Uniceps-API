@@ -1,4 +1,7 @@
-﻿using Stripe.Checkout;
+﻿using Stripe;
+using Stripe.Checkout;
+using System.Transactions;
+using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
@@ -7,11 +10,13 @@ namespace Uniceps.app.Services.PaymentServices
     public class StripeGateway : IPaymentGateway
     {
         private readonly IConfiguration _config;
+        private readonly IDataService<SystemSubscription> _dataService;
 
-        public StripeGateway(IConfiguration config)
+        public StripeGateway(IConfiguration config, IDataService<SystemSubscription> dataService)
         {
             _config = config;
             Stripe.StripeConfiguration.ApiKey = _config["Stripe:SecretKey"];
+            _dataService = dataService;
         }
 
         public async Task<string?> CreateSessionAsync(SystemSubscription sub, AppUser user, PlanModel plan)
@@ -48,6 +53,42 @@ namespace Uniceps.app.Services.PaymentServices
 
             var session = await new SessionService().CreateAsync(options);
             return session.Url;
+        }
+
+        public async Task<bool> HandleWebhookAsync(string payload, string signatureHeader)
+        {
+            try
+            {
+                Console.WriteLine("handled");
+                var stripeSecret = _config["Stripe:WebhookSecret"];
+                var stripeEvent = EventUtility.ConstructEvent(payload, signatureHeader, stripeSecret);
+
+                if (stripeEvent.Type == EventTypes.CheckoutSessionCompleted)
+                {
+                    var session = stripeEvent.Data.Object as Session;
+
+                    var subId = int.Parse(session!.Metadata["subscriptionId"]);
+
+                    using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+                    var sub = await _dataService.Get(subId);
+                    if (sub is null) return false;
+
+                    sub.ISPaid = true;
+                    sub.IsActive = true;
+                    await _dataService.Update(sub);
+                    scope.Complete();
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch
+            {
+                // Log error if needed
+                return false;
+            }
         }
     }
 }
