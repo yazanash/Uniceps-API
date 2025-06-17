@@ -14,7 +14,6 @@ using Uniceps.app.DTOs.AuthenticationDtos;
 using Uniceps.app.Services;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
-using Uniceps.Entityframework.Queries.ExerciseQueries;
 using static System.Net.WebRequestMethods;
 
 namespace Uniceps.app.Controllers

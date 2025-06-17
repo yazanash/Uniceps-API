@@ -1,1 +1,52 @@
-.vs
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files
+.vscode/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+out/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Visual Studio Code workspace settings
+*.code-workspace
+
+## Configuration files
+appsettings.Development.json
+appsettings.json
+## Rider IDE
+.idea/
+
+## Logs
+*.log
+logs/
+
+## User secrets (if used)
+secrets.json
+
+## Node modules (if you're using Node.js for frontend assets)
+node_modules/
+
+## Publish
+wwwroot/
+
+## NuGet packages
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Others
+*.dbmdl
+*.bak
+*.sql
+*.pdb

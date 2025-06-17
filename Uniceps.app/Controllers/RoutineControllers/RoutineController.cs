@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uniceps.app.DTOs.RoutineDtos;
 using Uniceps.Core.Services;
-using Uniceps.Entityframework.Commands.RoutineCommands;
 using Uniceps.Entityframework.Models.RoutineModels;
-using Uniceps.Entityframework.Queries.RoutineQueries;
 
 namespace Uniceps.app.Controllers.RoutineControllers
 {

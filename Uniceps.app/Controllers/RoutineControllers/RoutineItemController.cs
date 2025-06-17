@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uniceps.app.DTOs.RoutineDtos;
 using Uniceps.Core.Services;
-using Uniceps.Entityframework.Commands.DayCommands;
-using Uniceps.Entityframework.Commands.RoutineItemCommands;
 using Uniceps.Entityframework.Models.RoutineModels;
-using Uniceps.Entityframework.Queries.RoutineQueries;
 
 namespace Uniceps.app.Controllers.RoutineControllers
 {

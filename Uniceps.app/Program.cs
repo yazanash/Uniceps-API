@@ -5,8 +5,8 @@ using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
 using Uniceps.app.HostBuilder;
 using Uniceps.app.Services;
+using Uniceps.app.Services.PaymentServices;
 using Uniceps.Core.Services;
-using Uniceps.CQRS;
 using Uniceps.Entityframework;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
@@ -25,6 +25,7 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 builder.Services.AddSingleton<EmailService>();
 builder.Services.AddScoped<MongoDbService>();
 builder.Services.AddScoped<DataMigrationService>();
+builder.Services.AddSingleton<IPaymentGateway,StripeGateway>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
