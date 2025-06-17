@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
+using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.DBContext
 {
@@ -26,6 +27,8 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<OTPModel> OTPModels { get; set; }
         public DbSet<BusinessProfile> BusinessProfiles  { get; set; }
         public DbSet<NormalProfile> NormalProfiles { get; set; }
+        public DbSet<PlanModel> Plans { get; set; }
+        public DbSet<SystemSubscription> SystemSubscriptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
