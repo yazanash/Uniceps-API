@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class SystemSubscriptionDataService : IDataService<SystemSubscription>
+    public class SystemSubscriptionDataService : IDataService<SystemSubscription>,IGetByUserId<SystemSubscription>
     {
         private readonly AppDbContext _contextFactory;
 
@@ -48,6 +48,16 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         {
             IEnumerable<SystemSubscription>? entities = await _contextFactory.Set<SystemSubscription>().ToListAsync();
             return entities;
+        }
+
+        public async Task<SystemSubscription> GetByUserId(string userid)
+        {
+            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().Where(x=>x.UserId == userid
+            && x.StartDate<=DateTime.Now 
+            && x.EndDate>=DateTime.Now).AsNoTracking().FirstOrDefaultAsync();
+            if (entity == null)
+                throw new Exception();
+            return entity!;
         }
 
         public async Task<SystemSubscription> Update(SystemSubscription entity)

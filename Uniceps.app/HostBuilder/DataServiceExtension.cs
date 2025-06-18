@@ -29,6 +29,7 @@ namespace Uniceps.app.HostBuilder
 
             services.AddScoped<IDataService<PlanModel>, PlanDataService>();
             services.AddScoped<IDataService<SystemSubscription>, SystemSubscriptionDataService>();
+            services.AddScoped<IGetByUserId<SystemSubscription>, SystemSubscriptionDataService>();
             services.AddScoped<IGetByTargetType<PlanModel>, PlanDataService>();
             return services;
         }

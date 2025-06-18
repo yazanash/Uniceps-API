@@ -14,19 +14,21 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class SystemSubscriptionController : ControllerBase
     {
         private readonly IDataService<PlanModel> _planDataService;
         private readonly IDataService<SystemSubscription> _subscriptionDataService;
         private readonly IPaymentGateway _paymentGateway;
+        private readonly IGetByUserId<SystemSubscription> _getByUserId;
         private readonly UserManager<AppUser> _userManager;
-        public SystemSubscriptionController(IDataService<PlanModel> planDataService, IDataService<SystemSubscription> subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager)
+        public SystemSubscriptionController(IDataService<PlanModel> planDataService, IDataService<SystemSubscription> subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IGetByUserId<SystemSubscription> getByUserId)
         {
             _planDataService = planDataService;
             _subscriptionDataService = subscriptionDataService;
             _paymentGateway = paymentGateway;
             _userManager = userManager;
+            _getByUserId = getByUserId;
         }
         [HttpPost]
         [Authorize]
@@ -72,12 +74,34 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
         [HttpPost("stripe")]
         public async Task<IActionResult> StripeWebhook()
         {
-            Console.WriteLine("handled");
             var json = await new StreamReader(Request.Body).ReadToEndAsync();
             var signature = Request.Headers["Stripe-Signature"];
             var handled = await _paymentGateway.HandleWebhookAsync(json, signature!);
 
             return handled ? Ok() : BadRequest("Event not handled");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetValidSubscription()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            SystemSubscription systemSubscription = await _getByUserId.GetByUserId(userId);
+            PlanModel plan = await _planDataService.Get(systemSubscription.PlanId);
+            SystemSubscriptionDto systemSubscriptionDto = new SystemSubscriptionDto()
+            {
+                Id = systemSubscription.Id,
+                Price = systemSubscription.Price,
+                Plan = plan.Name,
+                StartDate = systemSubscription.StartDate,
+                EndDate = systemSubscription.EndDate,
+                IsActive = systemSubscription.IsActive,
+                IsGift = systemSubscription.IsGift,
+            };
+            return Ok(systemSubscriptionDto);
         }
     }
 }
