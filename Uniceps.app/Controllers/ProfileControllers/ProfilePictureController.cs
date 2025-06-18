@@ -51,7 +51,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             {
                 await file.CopyToAsync(stream);
             }
-            var imageUrl = $"/profile-pictures/{fileName}";
+            var imageUrl = fileName;
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             AppUser? user = await _userManager.FindByIdAsync(userId);
@@ -71,7 +71,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             return Ok(new { imageUrl });
         }
-        [HttpGet("profile-picture/{fileName}")]
+        [HttpGet("{fileName}")]
         public IActionResult GetProfilePicture(string fileName)
         {
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/profile-pictures", fileName);

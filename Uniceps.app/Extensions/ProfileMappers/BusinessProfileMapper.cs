@@ -23,10 +23,10 @@ namespace Uniceps.app.Extensions.ProfileMappers
             BusinessProfileDto businessProfile = new BusinessProfileDto();
             businessProfile.Id = data.Id;
             businessProfile.BusinessName = data.BusinessName;
-            businessProfile.OwnerName = data.BusinessName;
-            businessProfile.Phone1 = data.BusinessName;
-            businessProfile.Phone2 = data.BusinessName;
-            businessProfile.PictureUrl = data.BusinessName;
+            businessProfile.OwnerName = data.OwnerName;
+            businessProfile.Phone1 = data.Phone1;
+            businessProfile.Phone2 = data.Phone2;
+            businessProfile.PictureUrl = data.PictureUrl;
             businessProfile.BusinessType =(int) data.BusinessType;
             return businessProfile;
         }

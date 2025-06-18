@@ -50,6 +50,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
         [HttpGet("business")]
         public async Task<IActionResult> GetBusinessProfile()
         {
+            
             if (!User.Identity!.IsAuthenticated)
             {
                 return Unauthorized();
