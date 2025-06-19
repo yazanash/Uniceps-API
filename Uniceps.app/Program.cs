@@ -1,5 +1,8 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
@@ -22,15 +25,12 @@ builder.Services.AddDbContext<AppDbContext>(
     options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddSingleton<EmailService>();
-builder.Services.AddScoped<MongoDbService>();
-builder.Services.AddScoped<DataMigrationService>();
-builder.Services.AddScoped<IPaymentGateway,StripeGateway>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
-builder.Services.AddCustomJwtAuth(builder.Configuration); 
-
+builder.Services.AddSystemServices();
+builder.Services.AddCustomJwtAuth(builder.Configuration);
+builder.Services.AddFirebaseAdmin(builder.Configuration);
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();
