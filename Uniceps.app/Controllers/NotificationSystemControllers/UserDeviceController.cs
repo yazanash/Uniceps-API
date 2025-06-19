@@ -28,7 +28,6 @@ namespace Uniceps.app.Controllers.NotificationSystemControllers
             }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-
             UserDevice device = _mapperExtension.FromCreationDto(dto);
             device.UserId = userId;
             await _dataService.Create(device);
