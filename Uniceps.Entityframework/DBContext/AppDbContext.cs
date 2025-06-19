@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
@@ -29,6 +30,8 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<NormalProfile> NormalProfiles { get; set; }
         public DbSet<PlanModel> Plans { get; set; }
         public DbSet<SystemSubscription> SystemSubscriptions { get; set; }
+
+        public DbSet<UserDevice> UserDevices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
