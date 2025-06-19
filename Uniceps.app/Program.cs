@@ -1,5 +1,8 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
@@ -26,8 +29,8 @@ builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<Ap
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
 builder.Services.AddSystemServices();
-builder.Services.AddCustomJwtAuth(builder.Configuration); 
-
+builder.Services.AddCustomJwtAuth(builder.Configuration);
+builder.Services.AddFirebaseAdmin(builder.Configuration);
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();
