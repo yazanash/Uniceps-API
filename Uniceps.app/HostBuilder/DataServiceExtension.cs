@@ -7,6 +7,8 @@ using Uniceps.Entityframework.Services.RoutineServices;
 using Uniceps.Entityframework.Services.ProfileServices;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 using Uniceps.Entityframework.Services.SystemSubscriptionServices;
+using Uniceps.Entityframework.Models.NotificationModels;
+using Uniceps.Entityframework.Services.NotificationSystemServices;
 namespace Uniceps.app.HostBuilder
 {
     public static class DataServiceExtension
@@ -31,6 +33,9 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IDataService<SystemSubscription>, SystemSubscriptionDataService>();
             services.AddScoped<IGetByUserId<SystemSubscription>, SystemSubscriptionDataService>();
             services.AddScoped<IGetByTargetType<PlanModel>, PlanDataService>();
+
+            services.AddScoped<IDataService<UserDevice>, UserDeviceDataService>();
+            services.AddScoped<IUserQueryDataService<UserDevice>, UserDeviceDataService>();
             return services;
         }
     }

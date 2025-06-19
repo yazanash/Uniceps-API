@@ -22,13 +22,10 @@ builder.Services.AddDbContext<AppDbContext>(
     options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddSingleton<EmailService>();
-builder.Services.AddScoped<MongoDbService>();
-builder.Services.AddScoped<DataMigrationService>();
-builder.Services.AddScoped<IPaymentGateway,StripeGateway>();
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
 builder.Services.AddMappers();
+builder.Services.AddSystemServices();
 builder.Services.AddCustomJwtAuth(builder.Configuration); 
 
 //builder.Services.AddMediatR(cfg =>

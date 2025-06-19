@@ -9,6 +9,6 @@ namespace Uniceps.Core.Services
 {
     public interface IUserQueryDataService<T>where T : class
     {
-        public Task<IEnumerable<T>> GetAllByUser(int userid );
+        public Task<IEnumerable<T>> GetAllByUser(string? userid );
     }
 }
