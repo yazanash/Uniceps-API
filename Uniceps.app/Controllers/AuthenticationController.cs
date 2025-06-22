@@ -75,6 +75,7 @@ namespace Uniceps.app.Controllers
                         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
                         claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
                         claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                        claims.Add(new Claim("userType", user.UserType.ToString()));
 
                         foreach (var role in roles)
                         {
