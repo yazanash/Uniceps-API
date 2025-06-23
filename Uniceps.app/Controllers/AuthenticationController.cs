@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
+using Uniceps.app.DTOs;
 using Uniceps.app.DTOs.AuthenticationDtos;
 using Uniceps.app.Services;
 using Uniceps.Entityframework.DBContext;
@@ -26,12 +27,14 @@ namespace Uniceps.app.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
-        public AuthenticationController(AppDbContext appDbContext, UserManager<AppUser> userManager, IConfiguration configuration, EmailService emailService)
+        private readonly IJwtTokenService _tokenService;
+        public AuthenticationController(AppDbContext appDbContext, UserManager<AppUser> userManager, IConfiguration configuration, EmailService emailService, IJwtTokenService tokenService)
         {
             _appDbContext = appDbContext;
             _userManager = userManager;
             _configuration = configuration;
             _emailService = emailService;
+            _tokenService = tokenService;
         }
         [HttpPost]
         public async Task<IActionResult> RequestOtp([FromBody] string email)
@@ -66,77 +69,20 @@ namespace Uniceps.app.Controllers
                     _appDbContext.OTPModels.Remove(oTPModel);
                     await _appDbContext.SaveChangesAsync();
                     AppUser? user = await _userManager.FindByEmailAsync(oTPDto.Email!);
-                    if (user != null)
+                    if (user == null)
                     {
-                        IList<string> roles = await _userManager.GetRolesAsync(user);
-                        List<Claim> claims = new();
-                        //claims.Add(new Claim("token_no", "75"));
-                        claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
-                        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-
-                        foreach (var role in roles)
-                        {
-                            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
-                        }
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]!));
-                        var sc = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                        var token = new JwtSecurityToken(
-                            claims: claims,
-                            issuer: _configuration["JWT:Issuer"],
-                            audience: _configuration["JWT:Audience"],
-                            expires: DateTime.Now.AddMonths(1),
-                            signingCredentials: sc
-                        );
-                        var _token = new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo,
-                            user_type = user.UserType
-
-                        };
-                        return Ok(_token);
-                    }
-                    else
-                    {
-                        AppUser newUser = new()
+                        user = new()
                         {
                             Email = oTPDto.Email,
                             UserName = oTPDto.Email!.Split('@')[0],
                             UserType = UserType.Normal
                         };
-                        IdentityResult result = await _userManager.CreateAsync(newUser);
-                        IList<string> roles = await _userManager.GetRolesAsync(newUser!);
-                        List<Claim> claims = new();
-                        //claims.Add(new Claim("token_no", "75"));
-                        claims.Add(new Claim(ClaimTypes.Name, newUser!.UserName!));
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier, newUser.Id!));
-                        claims.Add(new Claim(ClaimTypes.NameIdentifier, newUser.Id!));
-                        claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                        IdentityResult result = await _userManager.CreateAsync(user);
 
-                        foreach (var role in roles)
-                        {
-                            claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
-                        }
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecretKey"]!));
-                        var sc = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                        var token = new JwtSecurityToken(
-                            claims: claims,
-                            issuer: _configuration["Issuer"],
-                            audience: _configuration["Audience"],
-                            expires: DateTime.Now.AddMonths(1),
-                            signingCredentials: sc
-                        );
-                        var _token = new
-                        {
-                            token = new JwtSecurityTokenHandler().WriteToken(token),
-                            expiration = token.ValidTo,
-                            user_type = newUser.UserType
-                        };
-
-                        return Created("created", _token);
                     }
+                    IList<string> roles = await _userManager.GetRolesAsync(user!);
+                    JwtTokenResult token = _tokenService.GenerateToken(user, roles);
+                    return Created("created", token);
                 }
                 else
                 {

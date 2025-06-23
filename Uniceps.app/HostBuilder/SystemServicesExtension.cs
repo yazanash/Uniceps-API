@@ -16,6 +16,7 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<DataMigrationService>();
             services.AddScoped<IPaymentGateway, StripeGateway>();
             services.AddScoped<INotificationSender, FcmNotificationSender>();
+            services.AddScoped<IJwtTokenService, TokenGenerationService>();
             return services;
         }
     }
