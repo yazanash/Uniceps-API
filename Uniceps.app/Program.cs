@@ -7,6 +7,7 @@ using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
 using Uniceps.app.HostBuilder;
+using Uniceps.app.Middleware;
 using Uniceps.app.Services;
 using Uniceps.app.Services.PaymentServices;
 using Uniceps.Core.Services;
@@ -31,6 +32,7 @@ builder.Services.AddMappers();
 builder.Services.AddSystemServices();
 builder.Services.AddCustomJwtAuth(builder.Configuration);
 builder.Services.AddFirebaseAdmin(builder.Configuration);
+
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();
@@ -52,7 +54,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthorization();
-
+app.UseMiddleware<UserTypeMiddleware>();
 app.MapControllers();
 
 app.Run();
