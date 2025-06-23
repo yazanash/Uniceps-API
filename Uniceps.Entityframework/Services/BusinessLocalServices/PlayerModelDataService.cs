@@ -12,7 +12,7 @@ using Uniceps.Entityframework.Models.Profile;
 
 namespace Uniceps.Entityframework.Services.BusinessLocalServices
 {
-    public class PlayerModelDataService : IDataService<PlayerModel>
+    public class PlayerModelDataService : IDataService<PlayerModel>,IUserQueryDataService<PlayerModel>
     {
         private readonly AppDbContext _contextFactory;
 
@@ -50,6 +50,12 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
         public async Task<IEnumerable<PlayerModel>> GetAll()
         {
             IEnumerable<PlayerModel>? entities = await _contextFactory.Set<PlayerModel>().ToListAsync();
+            return entities;
+        }
+
+        public async Task<IEnumerable<PlayerModel>> GetAllByUser(string? userid)
+        {
+            IEnumerable<PlayerModel>? entities = await _contextFactory.Set<PlayerModel>().Where(x=>x.BusinessId == userid).ToListAsync();
             return entities;
         }
 

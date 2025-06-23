@@ -7,6 +7,7 @@ using Uniceps.app.Helpers;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.BusinessLocalModels;
 using Uniceps.Entityframework.Models.Profile;
+using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.app.Controllers.BusinessLocalControllers
 {
@@ -15,12 +16,29 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
     public class PlayerController : ControllerBase
     {
         private readonly IDataService<PlayerModel> _dataService;
+        private readonly IUserQueryDataService<PlayerModel> _userQueryDataService;
         private readonly IMapperExtension<PlayerModel, PlayerModelDto, PlayerModelCreationDto> _mapperExtension;
 
-        public PlayerController(IDataService<PlayerModel> dataService, IMapperExtension<PlayerModel, PlayerModelDto, PlayerModelCreationDto> mapperExtension)
+        public PlayerController(IDataService<PlayerModel> dataService, IMapperExtension<PlayerModel, PlayerModelDto, PlayerModelCreationDto> mapperExtension, IUserQueryDataService<PlayerModel> userQueryDataService)
         {
             _dataService = dataService;
             _mapperExtension = mapperExtension;
+            _userQueryDataService = userQueryDataService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            IEnumerable<PlayerModel> players = await _userQueryDataService.GetAllByUser(userId);
+            return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
         }
         [HttpPost]
         public async Task<IActionResult> Create(PlayerModelCreationDto playerModelCreationDto)
