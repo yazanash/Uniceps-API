@@ -88,5 +88,6 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             await _dataService.Delete(id);
             return Ok("Deleted successfully");
         }
+       
     }
 }
