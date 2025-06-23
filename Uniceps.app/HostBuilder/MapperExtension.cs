@@ -1,14 +1,17 @@
-﻿using Uniceps.app.DTOs.ExerciseDtos;
+﻿using Uniceps.app.DTOs.BusinessLocalDtos;
+using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.DTOs.ProfileDtos;
 using Uniceps.app.DTOs.RoutineDtos;
 using Uniceps.app.DTOs.SystemSubscriptionDtos;
 using Uniceps.app.DTOs.UserDeviceDto;
+using Uniceps.app.Extensions.BusinessLocalMappers;
 using Uniceps.app.Extensions.ProfileMappers;
 using Uniceps.app.Extensions.RoutineMappers;
 using Uniceps.app.Extensions.SystemSubscriptionMappers;
 using Uniceps.app.Extensions.UserDeviceMappers;
 using Uniceps.Core.Services;
+using Uniceps.Entityframework.Models.BusinessLocalModels;
 using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
@@ -35,6 +38,8 @@ namespace Uniceps.app.HostBuilder
 
             services.AddScoped<IMapperExtension<PlanModel, PlanDto, PlanCreationDto>, PlanMapperExension>();
             services.AddScoped<IMapperExtension<UserDevice, UserDeviceDto, UserDeviceCreationDto>, UserDeviceMapperExtension>();
+
+            services.AddScoped<IMapperExtension<PlayerModel, PlayerModelDto, PlayerModelCreationDto>, PlayerModelMapper>();
             return services;
         }
     }

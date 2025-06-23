@@ -2,6 +2,7 @@
 {
     public class PlayerModelCreationDto
     {
+        public int ApiId { get; set; }
         public string? Name { get; set; }
         public string? Phone { get; set; }
         public DateTime SubscribeDate { get; set; }

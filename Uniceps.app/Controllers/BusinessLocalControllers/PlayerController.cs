@@ -23,7 +23,7 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             _mapperExtension = mapperExtension;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateNormalProfile(PlayerModelCreationDto playerModelCreationDto)
+        public async Task<IActionResult> Create(PlayerModelCreationDto playerModelCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -41,6 +41,28 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             player.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var result = await _dataService.Create(player);
             return Ok(_mapperExtension.ToDto(player));
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] PlayerModelCreationDto playerModelCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            if (playerModelCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            PlayerModel playerModel = await _dataService.Get(playerModelCreationDto.ApiId);
+            PlayerModel newPlayerModel = _mapperExtension.FromCreationDto(playerModelCreationDto);
+            newPlayerModel.Id = playerModel.Id;
+            newPlayerModel.UserId = userId;
+            await _dataService.Update(newPlayerModel);
+            return Ok("Updated successfully");
         }
     }
 }
