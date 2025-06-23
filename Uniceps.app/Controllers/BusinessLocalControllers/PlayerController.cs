@@ -64,5 +64,11 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             await _dataService.Update(newPlayerModel);
             return Ok("Updated successfully");
         }
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _dataService.Delete(id);
+            return Ok("Deleted successfully");
+        }
     }
 }
