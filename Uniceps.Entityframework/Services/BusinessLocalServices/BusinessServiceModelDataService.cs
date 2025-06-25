@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.BusinessLocalModels;
 
 namespace Uniceps.Entityframework.Services.BusinessLocalServices
 {
-    public class BusinessServiceModelDataService : IDataService<BusinessServiceModel>
+    public class BusinessServiceModelDataService : IDataService<BusinessServiceModel>, IUserQueryDataService<BusinessServiceModel>
     {
         private readonly AppDbContext _contextFactory;
 
@@ -48,6 +48,13 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
         public async Task<IEnumerable<BusinessServiceModel>> GetAll()
         {
             IEnumerable<BusinessServiceModel>? entities = await _contextFactory.Set<BusinessServiceModel>().ToListAsync();
+            return entities;
+        }
+
+        public async Task<IEnumerable<BusinessServiceModel>> GetAllByUser(string? userid)
+        {
+            IEnumerable<BusinessServiceModel>? entities = await _contextFactory.Set<BusinessServiceModel>()
+                .Where(x=>x.BusinessId==userid||x.TrainerId==userid).ToListAsync();
             return entities;
         }
 
