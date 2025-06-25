@@ -1,4 +1,5 @@
 ﻿using Uniceps.app.DTOs.BusinessLocalDtos;
+using Uniceps.app.DTOs.BusinessLocalDtos.BusinessServicesDtos;
 using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.DTOs.ProfileDtos;
@@ -40,6 +41,8 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IMapperExtension<UserDevice, UserDeviceDto, UserDeviceCreationDto>, UserDeviceMapperExtension>();
 
             services.AddScoped<IMapperExtension<PlayerModel, PlayerModelDto, PlayerModelCreationDto>, PlayerModelMapper>();
+
+            services.AddScoped<IMapperExtension<BusinessServiceModel, BusinessServiceDto, BusinessServiceCreationDto>, BusinessServiceMapper>();
             return services;
         }
     }
