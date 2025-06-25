@@ -14,11 +14,28 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
     public class BusinessSubscriptionController : ControllerBase
     {
         private readonly IDataService<BusinessSubscriptionModel> _dataService;
+        private readonly IUserQueryDataService<BusinessSubscriptionModel> _userQueryDataService;
         private readonly IMapperExtension<BusinessSubscriptionModel, BusinessSubscriptionDto, BusinessSubscriptionCreationDto> _mapperExtension;
-        public BusinessSubscriptionController(IDataService<BusinessSubscriptionModel> dataService, IMapperExtension<BusinessSubscriptionModel, BusinessSubscriptionDto, BusinessSubscriptionCreationDto> mapperExtension)
+        public BusinessSubscriptionController(IDataService<BusinessSubscriptionModel> dataService, IMapperExtension<BusinessSubscriptionModel, BusinessSubscriptionDto, BusinessSubscriptionCreationDto> mapperExtension, IUserQueryDataService<BusinessSubscriptionModel> userQueryDataService)
         {
             _dataService = dataService;
             _mapperExtension = mapperExtension;
+            _userQueryDataService = userQueryDataService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            IEnumerable<BusinessSubscriptionModel> players = await _userQueryDataService.GetAllByUser(userId);
+            return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
         }
         [HttpPost]
         public async Task<IActionResult> Create(BusinessSubscriptionCreationDto businessSubscriptionCreationDto)
