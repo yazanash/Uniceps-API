@@ -60,8 +60,8 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             var result = await _dataService.Create(player);
             return Ok(_mapperExtension.ToDto(player));
         }
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] PlayerModelCreationDto playerModelCreationDto)
+        [HttpPut("playerId")]
+        public async Task<IActionResult> Update(int playerId, [FromBody] PlayerModelCreationDto playerModelCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -75,7 +75,7 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
                 return BadRequest("Exercise data is missing.");
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            PlayerModel playerModel = await _dataService.Get(playerModelCreationDto.ApiId);
+            PlayerModel playerModel = await _dataService.Get(playerId);
             PlayerModel newPlayerModel = _mapperExtension.FromCreationDto(playerModelCreationDto);
             newPlayerModel.Id = playerModel.Id;
             newPlayerModel.UserId = userId;
