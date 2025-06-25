@@ -39,7 +39,7 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
         }
         [HttpPost]
-        public async Task<IActionResult> Create(BusinessServiceCreationDto playerModelCreationDto)
+        public async Task<IActionResult> Create(BusinessServiceCreationDto businessServiceCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -49,17 +49,17 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             {
                 return Forbid();
             }
-            if (playerModelCreationDto == null)
+            if (businessServiceCreationDto == null)
                 return BadRequest("Exercise data is missing.");
 
-            BusinessServiceModel service = _mapperExtension.FromCreationDto(playerModelCreationDto);
+            BusinessServiceModel service = _mapperExtension.FromCreationDto(businessServiceCreationDto);
 
             service.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var result = await _dataService.Create(service);
             return Ok(_mapperExtension.ToDto(service));
         }
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] BusinessServiceCreationDto playerModelCreationDto)
+        [HttpPut("serviceId")]
+        public async Task<IActionResult> Update(int serviceId, [FromBody] BusinessServiceCreationDto businessServiceCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -69,12 +69,12 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             {
                 return Forbid();
             }
-            if (playerModelCreationDto == null)
+            if (businessServiceCreationDto == null)
                 return BadRequest("Exercise data is missing.");
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            BusinessServiceModel playerModel = await _dataService.Get(playerModelCreationDto.ApiId);
-            BusinessServiceModel newPlayerModel = _mapperExtension.FromCreationDto(playerModelCreationDto);
+            BusinessServiceModel playerModel = await _dataService.Get(serviceId);
+            BusinessServiceModel newPlayerModel = _mapperExtension.FromCreationDto(businessServiceCreationDto);
             newPlayerModel.Id = playerModel.Id;
             //newPlayerModel.UserId = userId;
             await _dataService.Update(newPlayerModel);

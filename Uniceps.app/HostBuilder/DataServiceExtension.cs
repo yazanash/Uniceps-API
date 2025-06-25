@@ -42,6 +42,8 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IDataService<PlayerModel>, PlayerModelDataService>();
             services.AddScoped<IUserQueryDataService<PlayerModel>, PlayerModelDataService>();
             services.AddScoped<IDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
+            services.AddScoped<IUserQueryDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
+
             services.AddScoped<IDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
             return services;
         }
