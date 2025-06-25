@@ -38,7 +38,29 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
 
             subscriptionModel.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var result = await _dataService.Create(subscriptionModel);
-            return Ok(_mapperExtension.ToDto(service));
+            return Ok(_mapperExtension.ToDto(result));
+        }
+        [HttpPut("subscriptionId")]
+        public async Task<IActionResult> Update(int subscriptionId, [FromBody] BusinessSubscriptionCreationDto businessSubscriptionCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            if (businessSubscriptionCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            BusinessSubscriptionModel subscriptionModel = await _dataService.Get(subscriptionId);
+            BusinessSubscriptionModel newSubscriptionModel = _mapperExtension.FromCreationDto(businessSubscriptionCreationDto);
+            newSubscriptionModel.Id = subscriptionModel.Id;
+            //newPlayerModel.UserId = userId;
+            await _dataService.Update(newSubscriptionModel);
+            return Ok("Updated successfully");
         }
     }
 }
