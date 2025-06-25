@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Uniceps.Entityframework.Models.BusinessLocalModels
+﻿namespace Uniceps.app.DTOs.BusinessLocalDtos.BusinessSubscriptionsDtos
 {
-    public class BusinessSubscriptionModel
+    public class BusinessSubscriptionCreationDto
     {
-        public int Id { get; set; } 
         public int ServiceId { get; set; }
-        public string? BusinessId { get; set; }
         public string? PlayerId { get; set; }
         public DateTime RollDate { get; set; }
         public double Price { get; set; }
