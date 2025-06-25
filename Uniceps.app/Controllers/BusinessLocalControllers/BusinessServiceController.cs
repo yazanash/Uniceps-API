@@ -52,11 +52,11 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             if (playerModelCreationDto == null)
                 return BadRequest("Exercise data is missing.");
 
-            BusinessServiceModel player = _mapperExtension.FromCreationDto(playerModelCreationDto);
+            BusinessServiceModel service = _mapperExtension.FromCreationDto(playerModelCreationDto);
 
-            player.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            var result = await _dataService.Create(player);
-            return Ok(_mapperExtension.ToDto(player));
+            service.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            var result = await _dataService.Create(service);
+            return Ok(_mapperExtension.ToDto(service));
         }
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] BusinessServiceCreationDto playerModelCreationDto)
