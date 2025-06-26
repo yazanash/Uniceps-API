@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniceps.Entityframework", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniceps.Core", "Uniceps.Core\Uniceps.Core.csproj", "{65C9E6EF-C95B-4290-BB81-EA2A1F7FF778}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniceps.AnalysisEngine", "Uniceps.AnalysisEngine\Uniceps.AnalysisEngine.csproj", "{7F948A31-9AEF-478F-B73E-B77AFD4ED5DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{65C9E6EF-C95B-4290-BB81-EA2A1F7FF778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65C9E6EF-C95B-4290-BB81-EA2A1F7FF778}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65C9E6EF-C95B-4290-BB81-EA2A1F7FF778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F948A31-9AEF-478F-B73E-B77AFD4ED5DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F948A31-9AEF-478F-B73E-B77AFD4ED5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F948A31-9AEF-478F-B73E-B77AFD4ED5DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F948A31-9AEF-478F-B73E-B77AFD4ED5DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
