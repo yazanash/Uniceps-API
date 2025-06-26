@@ -11,8 +11,7 @@
 bin/
 obj/
 out/
-obj/Debug/net8.0/Uniceps.app.AssemblyInfo.cs
-obj/Debug/net8.0/Uniceps.app.AssemblyInfoInputs.cache
+
 ## ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
