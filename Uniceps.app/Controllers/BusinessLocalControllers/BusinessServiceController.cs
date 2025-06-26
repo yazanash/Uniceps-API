@@ -53,7 +53,6 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
                 return BadRequest("Exercise data is missing.");
 
             BusinessServiceModel service = _mapperExtension.FromCreationDto(businessServiceCreationDto);
-
             service.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var result = await _dataService.Create(service);
             return Ok(_mapperExtension.ToDto(service));
