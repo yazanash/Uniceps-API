@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Uniceps.app.DTOs.BusinessLocalDtos;
+using Uniceps.app.DTOs.BusinessLocalDtos.BusinessServicesDtos;
 using Uniceps.app.DTOs.MeasurementDtos;
 using Uniceps.app.Helpers;
 using Uniceps.app.HostBuilder;
@@ -41,6 +42,28 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             bodyMeasurement.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var result = await _dataService.Create(bodyMeasurement);
             return Ok(_mapperExtension.ToDto(bodyMeasurement));
+        }
+        [HttpPut("Id")]
+        public async Task<IActionResult> Update(Guid Id, [FromBody] BodyMeasurementCreationDto bodyMeasurementCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            if (bodyMeasurementCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            BodyMeasurement bodyMeasurement = await _dataService.Get(Id);
+            BodyMeasurement newBodyMeasurement  = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
+            newBodyMeasurement.Id = bodyMeasurement.Id;
+            //newPlayerModel.UserId = userId;
+            await _dataService.Update(newBodyMeasurement);
+            return Ok("Updated successfully");
         }
     }
 }
