@@ -65,5 +65,11 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             await _dataService.Update(newBodyMeasurement);
             return Ok("Updated successfully");
         }
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _dataService.Delete(id);
+            return Ok("Deleted successfully");
+        }
     }
 }
