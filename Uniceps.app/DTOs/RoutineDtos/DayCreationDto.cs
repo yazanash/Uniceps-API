@@ -2,7 +2,7 @@
 {
     public class DayCreationDto
     {
-        public int RoutineId { get; set; }
+        public Guid RoutineId { get; set; }
         public string? Name { get; set; }
     }
 }

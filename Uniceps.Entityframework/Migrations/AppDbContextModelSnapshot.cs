@@ -225,11 +225,9 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.AuthenticationModels.OTPModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -240,18 +238,16 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<int>("Otp")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("OTPModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessServiceModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BusinessId")
                         .HasColumnType("nvarchar(max)");
@@ -277,18 +273,19 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("TrainerId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("BusinessServiceModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessSubscriptionModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("BusinessId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -323,24 +320,22 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<DateTime>("RollDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ServiceNID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("SessionCount")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("BusinessSubscriptionModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.PlayerModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Balance")
                         .HasColumnType("float");
@@ -369,18 +364,106 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("PlayerModels");
                 });
 
-            modelBuilder.Entity("Uniceps.Entityframework.Models.NotificationModels.UserDevice", b =>
+            modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.BodyMeasurement", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<string>("BusinessId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("ChestCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HeightCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("HipsCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LeftArmCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LeftLegCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LeftThighCm")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("MeasuredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("NeckCm")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("RightArmCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RightLegCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("RightThighCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ShouldersCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WaistCm")
+                        .HasColumnType("float");
+
+                    b.Property<double>("WeightKg")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BodyMeasurements");
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.WorkoutLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime>("PerformedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Reps")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Sets")
+                        .HasColumnType("int");
+
+                    b.Property<double>("WeightKg")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WorkoutLogs");
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.NotificationModels.UserDevice", b =>
+                {
+                    b.Property<Guid>("NID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AppVersion")
                         .IsRequired()
@@ -418,18 +501,16 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("UserDevices");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.BusinessProfile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BusinessName")
                         .HasColumnType("nvarchar(max)");
@@ -452,7 +533,7 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.HasIndex("UserId");
 
@@ -461,11 +542,9 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.NormalProfile", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -485,7 +564,7 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.HasIndex("UserId");
 
@@ -494,21 +573,19 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Day", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoutineId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoutineNID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
-                    b.HasIndex("RoutineId");
+                    b.HasIndex("RoutineNID");
 
                     b.ToTable("Days");
                 });
@@ -540,11 +617,9 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.ItemSet", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Repetition")
                         .HasColumnType("int");
@@ -552,12 +627,12 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<int>("RoundIndex")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoutineItemId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RoutineItemNID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
-                    b.HasIndex("RoutineItemId");
+                    b.HasIndex("RoutineItemNID");
 
                     b.ToTable("Sets");
                 });
@@ -645,11 +720,9 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Routine", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -663,21 +736,19 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("Routines");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.RoutineItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DayId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DayNID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
@@ -685,9 +756,9 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
-                    b.HasIndex("DayId");
+                    b.HasIndex("DayNID");
 
                     b.HasIndex("ExerciseId");
 
@@ -696,11 +767,9 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("DurationInDays")
                         .HasColumnType("int");
@@ -717,18 +786,16 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<int>("TargetUserType")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("Plans");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.SystemSubscription", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("NID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -742,8 +809,8 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<bool>("IsGift")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PlanId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("PlanNID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -757,7 +824,7 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("NID");
 
                     b.ToTable("SystemSubscriptions");
                 });
@@ -835,7 +902,7 @@ namespace Uniceps.Entityframework.Migrations
                 {
                     b.HasOne("Uniceps.Entityframework.Models.RoutineModels.Routine", "Routine")
                         .WithMany("Days")
-                        .HasForeignKey("RoutineId")
+                        .HasForeignKey("RoutineNID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -857,7 +924,7 @@ namespace Uniceps.Entityframework.Migrations
                 {
                     b.HasOne("Uniceps.Entityframework.Models.RoutineModels.RoutineItem", "RoutineItem")
                         .WithMany("Sets")
-                        .HasForeignKey("RoutineItemId")
+                        .HasForeignKey("RoutineItemNID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -868,7 +935,7 @@ namespace Uniceps.Entityframework.Migrations
                 {
                     b.HasOne("Uniceps.Entityframework.Models.RoutineModels.Day", "Day")
                         .WithMany("RoutineItems")
-                        .HasForeignKey("DayId")
+                        .HasForeignKey("DayNID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

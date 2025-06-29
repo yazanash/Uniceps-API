@@ -10,8 +10,8 @@ namespace Uniceps.Core.Services
     {
         public Task<T> Create(T entity);
         public Task<T> Update(T entity);
-        public Task<bool> Delete(int id);
+        public Task<bool> Delete(Guid id);
         public Task<IEnumerable<T>> GetAll();
-        public Task<T> Get(int id);
+        public Task<T> Get(Guid id);
     }
 }

@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.RoutineModels
 {
-    public class ItemSet
+    public class ItemSet: EntityBase
     {
-        public int Id { get; set; }
         public int RoundIndex { get; set; }
         public int Repetition { get; set; }
-        public int RoutineItemId { get; set; } 
+        public Guid RoutineItemNID { get; set; } 
         public RoutineItem? RoutineItem { get; set; } 
     }
 }

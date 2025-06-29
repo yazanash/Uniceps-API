@@ -28,9 +28,9 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            PlayerModel? entity = await _contextFactory.Set<PlayerModel>().FirstOrDefaultAsync((e) => e.Id == id);
+            PlayerModel? entity = await _contextFactory.Set<PlayerModel>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<PlayerModel>().Remove(entity!);
@@ -38,9 +38,9 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
             return true;
         }
 
-        public async Task<PlayerModel> Get(int id)
+        public async Task<PlayerModel> Get(Guid id)
         {
-            PlayerModel? entity = await _contextFactory.Set<PlayerModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            PlayerModel? entity = await _contextFactory.Set<PlayerModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

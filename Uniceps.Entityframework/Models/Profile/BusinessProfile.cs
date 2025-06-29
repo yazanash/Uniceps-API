@@ -8,9 +8,8 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Models.Profile
 {
-    public class BusinessProfile
+    public class BusinessProfile: EntityBase
     {
-        public int Id { get; set; }
         public string? BusinessName { get; set; }
         public string? OwnerName { get; set; }
         public string? Phone1 { get; set; }

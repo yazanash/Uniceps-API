@@ -12,7 +12,7 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.ExerciseServices
 {
-    public class ExerciseDataService : IDataService<Exercise>, IEntityQueryDataService<Exercise>
+    public class ExerciseDataService : IIntDataService<Exercise>, IIntEntityQueryDataService<Exercise>
     {
         private readonly AppDbContext _contextFactory;
 

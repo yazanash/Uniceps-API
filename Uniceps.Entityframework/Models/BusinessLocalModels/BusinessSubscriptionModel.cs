@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.BusinessLocalModels
 {
-    public class BusinessSubscriptionModel
+    public class BusinessSubscriptionModel: EntityBase
     {
-        public int Id { get; set; } 
-        public int ServiceId { get; set; }
+        public Guid ServiceNID { get; set; }
         public string? BusinessId { get; set; }
         public string? PlayerId { get; set; }
         public DateTime RollDate { get; set; }

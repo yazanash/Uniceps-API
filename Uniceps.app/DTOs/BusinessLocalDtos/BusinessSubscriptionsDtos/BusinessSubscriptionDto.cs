@@ -2,8 +2,8 @@
 {
     public class BusinessSubscriptionDto
     {
-        public int Id { get; set; }
-        public int ServiceId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ServiceId { get; set; }
         public string? PlayerId { get; set; }
         public DateTime RollDate { get; set; }
         public double Price { get; set; }

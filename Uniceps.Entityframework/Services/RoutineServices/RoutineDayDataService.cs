@@ -26,9 +26,9 @@ namespace Uniceps.Entityframework.Services.RoutineServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            Day? entity = await _contextFactory.Set<Day>().FirstOrDefaultAsync((e) => e.Id == id);
+            Day? entity = await _contextFactory.Set<Day>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<Day>().Remove(entity!);
@@ -42,9 +42,9 @@ namespace Uniceps.Entityframework.Services.RoutineServices
             await _contextFactory.SaveChangesAsync();
             return entity;
         }
-        public async Task<Day> Get(int id)
+        public async Task<Day> Get(Guid id)
         {
-            Day? entity = await _contextFactory.Set<Day>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            Day? entity = await _contextFactory.Set<Day>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -56,9 +56,9 @@ namespace Uniceps.Entityframework.Services.RoutineServices
             return entities;
         }
 
-        public async Task<IEnumerable<Day>> GetAllById(int entityId)
+        public async Task<IEnumerable<Day>> GetAllById(Guid entityId)
         {
-            IEnumerable<Day>? entities = await _contextFactory.Set<Day>().Where(x => x.RoutineId == entityId).ToListAsync();
+            IEnumerable<Day>? entities = await _contextFactory.Set<Day>().Where(x => x.RoutineNID == entityId).ToListAsync();
             return entities;
         }
     }

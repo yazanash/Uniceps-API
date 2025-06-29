@@ -27,9 +27,9 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            PlanModel? entity = await _contextFactory.Set<PlanModel>().FirstOrDefaultAsync((e) => e.Id == id);
+            PlanModel? entity = await _contextFactory.Set<PlanModel>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<PlanModel>().Remove(entity!);
@@ -37,9 +37,9 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return true;
         }
 
-        public async Task<PlanModel> Get(int id)
+        public async Task<PlanModel> Get(Guid id)
         {
-            PlanModel? entity = await _contextFactory.Set<PlanModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            PlanModel? entity = await _contextFactory.Set<PlanModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

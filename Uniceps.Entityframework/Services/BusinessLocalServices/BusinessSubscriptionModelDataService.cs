@@ -27,9 +27,9 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            BusinessSubscriptionModel? entity = await _contextFactory.Set<BusinessSubscriptionModel>().FirstOrDefaultAsync((e) => e.Id == id);
+            BusinessSubscriptionModel? entity = await _contextFactory.Set<BusinessSubscriptionModel>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<BusinessSubscriptionModel>().Remove(entity!);
@@ -37,9 +37,9 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
             return true;
         }
 
-        public async Task<BusinessSubscriptionModel> Get(int id)
+        public async Task<BusinessSubscriptionModel> Get(Guid id)
         {
-            BusinessSubscriptionModel? entity = await _contextFactory.Set<BusinessSubscriptionModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            BusinessSubscriptionModel? entity = await _contextFactory.Set<BusinessSubscriptionModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

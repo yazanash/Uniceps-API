@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.NotificationModels
 {
-    public class UserDevice
+    public class UserDevice: EntityBase
     {
-        public int Id { get; set; }
         public string? UserId { get; set; }
         public string DeviceToken { get; set; } = null!; 
         public string DeviceId { get; set; } = null!; 

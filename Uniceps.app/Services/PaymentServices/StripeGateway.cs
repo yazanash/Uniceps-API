@@ -45,9 +45,9 @@ namespace Uniceps.app.Services.PaymentServices
                 CancelUrl = "https://yourdomain.com/payment-cancelled",
                 Metadata = new Dictionary<string, string>
             {
-                { "subscriptionId", sub.Id.ToString() },
+                { "subscriptionId", sub.NID.ToString() },
                 { "userId", user.Id.ToString() },
-                { "planId", plan.Id.ToString() }
+                { "planId", plan.NID.ToString() }
             }
             };
 
@@ -67,7 +67,7 @@ namespace Uniceps.app.Services.PaymentServices
                 {
                     var session = stripeEvent.Data.Object as Session;
 
-                    var subId = int.Parse(session!.Metadata["subscriptionId"]);
+                    var subId = Guid.Parse(session!.Metadata["subscriptionId"]);
 
                     using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
