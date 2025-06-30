@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Uniceps.Entityframework.DBContext;
 
@@ -11,9 +12,11 @@ using Uniceps.Entityframework.DBContext;
 namespace Uniceps.Entityframework.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630095755_AddRelaionBusinessSubscriptionsWithPlayerModel")]
+    partial class AddRelaionBusinessSubscriptionsWithPlayerModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -329,8 +332,6 @@ namespace Uniceps.Entityframework.Migrations
                     b.HasKey("NID");
 
                     b.HasIndex("PlayerId");
-
-                    b.HasIndex("ServiceNID");
 
                     b.ToTable("BusinessSubscriptionModels");
                 });
@@ -893,14 +894,6 @@ namespace Uniceps.Entityframework.Migrations
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessServiceModel", "BusinessService")
-                        .WithMany()
-                        .HasForeignKey("ServiceNID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BusinessService");
 
                     b.Navigation("PlayerModel");
                 });

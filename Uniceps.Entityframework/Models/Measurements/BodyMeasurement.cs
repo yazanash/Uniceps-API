@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uniceps.Entityframework.Models.BusinessLocalModels;
 
 namespace Uniceps.Entityframework.Models.Measurements
 {
@@ -10,6 +12,8 @@ namespace Uniceps.Entityframework.Models.Measurements
     {
         public Guid Id { get; set; }
         public Guid PlayerId { get; set; }
+        [ForeignKey("PlayerId")]
+        public virtual PlayerModel? PlayerModel { get; set; }
         public string? BusinessId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }

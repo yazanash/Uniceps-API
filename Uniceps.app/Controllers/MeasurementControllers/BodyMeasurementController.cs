@@ -17,11 +17,28 @@ namespace Uniceps.app.Controllers.MeasurementControllers
     public class BodyMeasurementController : ControllerBase
     {
         private readonly IDataService<BodyMeasurement> _dataService;
+        private readonly IUserQueryDataService<BodyMeasurement> _userQueryDataService;
         private readonly IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> _mapperExtension;
-        public BodyMeasurementController(IDataService<BodyMeasurement> dataService, IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> mapperExtension)
+        public BodyMeasurementController(IDataService<BodyMeasurement> dataService, IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> mapperExtension, IUserQueryDataService<BodyMeasurement> userQueryDataService)
         {
             _dataService = dataService;
             _mapperExtension = mapperExtension;
+            _userQueryDataService = userQueryDataService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            IEnumerable<BodyMeasurement> players = await _userQueryDataService.GetAllByUser(userId);
+            return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
         }
         [HttpPost]
         public async Task<IActionResult> Create(BodyMeasurementCreationDto bodyMeasurementCreationDto)

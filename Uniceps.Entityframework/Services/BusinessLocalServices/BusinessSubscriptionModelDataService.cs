@@ -54,7 +54,7 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
         public async Task<IEnumerable<BusinessSubscriptionModel>> GetAllByUser(string? userid)
         {
             IEnumerable<BusinessSubscriptionModel>? entities = await _contextFactory.Set<BusinessSubscriptionModel>()
-                .Where(x=>x.BusinessId==userid).ToListAsync();
+                .Include(x=>x.BusinessService).AsNoTracking().Include(x=>x.PlayerModel).Where(x=>x.BusinessId==userid).ToListAsync();
             return entities;
         }
 

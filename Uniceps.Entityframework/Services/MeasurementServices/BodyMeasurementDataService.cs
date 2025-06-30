@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.Measurements;
 
 namespace Uniceps.Entityframework.Services.MeasurementServices
 {
-    public class BodyMeasurementDataService : IDataService<BodyMeasurement>
+    public class BodyMeasurementDataService : IDataService<BodyMeasurement>, IUserQueryDataService<BodyMeasurement>
     {
         private readonly AppDbContext _contextFactory;
 
@@ -49,8 +49,11 @@ namespace Uniceps.Entityframework.Services.MeasurementServices
             IEnumerable<BodyMeasurement>? entities = await _contextFactory.Set<BodyMeasurement>().ToListAsync();
             return entities;
         }
-
-     
+        public async Task<IEnumerable<BodyMeasurement>> GetAllByUser(string? userid)
+        {
+            IEnumerable<BodyMeasurement>? entities = await _contextFactory.Set<BodyMeasurement>().Include(x => x.PlayerModel).Where(x => x.PlayerModel != null && x.PlayerModel.UserId == userid).ToListAsync();
+            return entities;
+        }
 
         public async Task<BodyMeasurement> Update(BodyMeasurement entity)
         {
