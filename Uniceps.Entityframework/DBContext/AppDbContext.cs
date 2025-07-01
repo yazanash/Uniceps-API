@@ -80,6 +80,10 @@ namespace Uniceps.Entityframework.DBContext
                 .WithMany(ri => ri.Sets)
                 .HasForeignKey(s => s.RoutineItemNID);
 
+            modelBuilder.Entity<BusinessPaymentModel>()
+               .HasOne(d => d.BusinessSubscription)
+               .WithMany(r => r.BusinessPaymentModels)
+               .HasForeignKey(d => d.BusinessSubscriptionNID);
             modelBuilder.Entity<MuscleGroup>().HasData
                 (
                 new MuscleGroup { Id = 1, Name = "صدر", EngName = "Chest" },

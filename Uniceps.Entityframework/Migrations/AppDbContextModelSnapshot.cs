@@ -241,7 +241,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("OTPModels");
+                    b.ToTable("OTPModels", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessPaymentModel", b =>
@@ -270,7 +270,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("BusinessSubscriptionNID");
 
-                    b.ToTable("BusinessPaymentModels");
+                    b.ToTable("BusinessPaymentModels", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessServiceModel", b =>
@@ -306,7 +306,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("BusinessServiceModels");
+                    b.ToTable("BusinessServiceModels", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessSubscriptionModel", b =>
@@ -364,7 +364,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("ServiceNID");
 
-                    b.ToTable("BusinessSubscriptionModels");
+                    b.ToTable("BusinessSubscriptionModels", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.PlayerModel", b =>
@@ -403,7 +403,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("PlayerModels");
+                    b.ToTable("PlayerModels", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.BodyMeasurement", b =>
@@ -464,7 +464,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("BodyMeasurements");
+                    b.ToTable("BodyMeasurements", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.WorkoutLog", b =>
@@ -493,7 +493,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WorkoutLogs");
+                    b.ToTable("WorkoutLogs", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.NotificationModels.UserDevice", b =>
@@ -541,7 +541,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("UserDevices");
+                    b.ToTable("UserDevices", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.BusinessProfile", b =>
@@ -576,7 +576,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BusinessProfiles");
+                    b.ToTable("BusinessProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.NormalProfile", b =>
@@ -608,7 +608,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NormalProfiles");
+                    b.ToTable("NormalProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Day", b =>
@@ -628,7 +628,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("RoutineNID");
 
-                    b.ToTable("Days");
+                    b.ToTable("Days", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Exercise", b =>
@@ -653,7 +653,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("MuscleGroupId");
 
-                    b.ToTable("Exercises");
+                    b.ToTable("Exercises", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.ItemSet", b =>
@@ -676,7 +676,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("RoutineItemNID");
 
-                    b.ToTable("Sets");
+                    b.ToTable("Sets", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.MuscleGroup", b =>
@@ -695,7 +695,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MuscleGroups");
+                    b.ToTable("MuscleGroups", (string)null);
 
                     b.HasData(
                         new
@@ -781,7 +781,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("Routines");
+                    b.ToTable("Routines", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.RoutineItem", b =>
@@ -806,7 +806,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("RoutineItems");
+                    b.ToTable("RoutineItems", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", b =>
@@ -833,7 +833,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("Plans");
+                    b.ToTable("Plans", (string)null);
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.SystemSubscription", b =>
@@ -872,7 +872,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("SystemSubscriptions");
+                    b.ToTable("SystemSubscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

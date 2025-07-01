@@ -1,4 +1,6 @@
-﻿namespace Uniceps.app.DTOs.BusinessLocalDtos.BusinessSubscriptionsDtos
+﻿using Uniceps.app.DTOs.BusinessLocalDtos.BusinessPaymentDtos;
+
+namespace Uniceps.app.DTOs.BusinessLocalDtos.BusinessSubscriptionsDtos
 {
     public class BusinessSubscriptionDto
     {
@@ -16,5 +18,6 @@
         public double RestValue { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime LastPaid { get; set; }
+        public List<BusinessPaymentDto> BusinessPayments { get; set; } = new List<BusinessPaymentDto>();
     }
 }
