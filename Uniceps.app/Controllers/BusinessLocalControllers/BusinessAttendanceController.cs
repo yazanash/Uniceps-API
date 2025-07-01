@@ -62,5 +62,11 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             await _dataService.Update(newBusinessAttendanceRecord);
             return Ok("Updated successfully");
         }
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _dataService.Delete(id);
+            return Ok("Deleted successfully");
+        }
     }
 }
