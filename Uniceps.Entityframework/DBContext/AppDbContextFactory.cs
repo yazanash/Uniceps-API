@@ -13,7 +13,7 @@ namespace Uniceps.Entityframework.DBContext
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("");
+            optionsBuilder.UseSqlServer("data source=.\\sqlexpress;initial catalog=Uniceps_api; integrated security=SSPI ; TrustServerCertificate=True;");
 
             return new AppDbContext(optionsBuilder.Options);
         }

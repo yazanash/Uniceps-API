@@ -47,9 +47,15 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IUserQueryDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
 
             services.AddScoped<IDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
-
+            services.AddScoped<IUserQueryDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
 
             services.AddScoped<IDataService<BodyMeasurement>, BodyMeasurementDataService>();
+            services.AddScoped<IUserQueryDataService<BodyMeasurement>, BodyMeasurementDataService>();
+
+            services.AddScoped<IDataService<BusinessPaymentModel>, BusinessPaymentModelDataService>();
+
+            services.AddScoped<IDataService<BusinessAttendanceRecord>, BusinessAttendanceRecordDataService>();
+            services.AddScoped<IUserQueryDataService<BusinessAttendanceRecord>, BusinessAttendanceRecordDataService>();
             return services;
         }
     }
