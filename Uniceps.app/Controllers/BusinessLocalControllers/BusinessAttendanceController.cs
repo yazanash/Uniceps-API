@@ -40,5 +40,27 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             var result = await _dataService.Create(businessAttendance);
             return Ok(_mapperExtension.ToDto(businessAttendance));
         }
+        [HttpPut("Id")]
+        public async Task<IActionResult> Update(Guid Id, [FromBody] BusinessAttendanceRecordCreationDto businessAttendanceRecordCreationDto)
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            if (businessAttendanceRecordCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            BusinessAttendanceRecord businessAttendanceRecord = await _dataService.Get(Id);
+            BusinessAttendanceRecord newBusinessAttendanceRecord = _mapperExtension.FromCreationDto(businessAttendanceRecordCreationDto);
+            newBusinessAttendanceRecord.NID = businessAttendanceRecord.NID;
+            //newPlayerModel.UserId = userId;
+            await _dataService.Update(newBusinessAttendanceRecord);
+            return Ok("Updated successfully");
+        }
     }
 }
