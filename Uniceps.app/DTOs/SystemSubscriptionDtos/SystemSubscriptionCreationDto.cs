@@ -2,7 +2,6 @@
 {
     public class SystemSubscriptionCreationDto
     {
-        public int PlanId { get; set; }
-        public string? CouponCode { get; set; }
+        public Guid PlanId { get; set; }
     }
 }

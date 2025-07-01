@@ -22,7 +22,7 @@ namespace Uniceps.app.Extensions.BusinessLocalMappers
         public BusinessServiceDto ToDto(BusinessServiceModel data)
         {
             BusinessServiceDto businessServiceDto = new BusinessServiceDto();
-            businessServiceDto.Id = data.Id;
+            businessServiceDto.Id = data.NID;
             businessServiceDto.Name = data.Name;
             businessServiceDto.Price = data.Price;
             businessServiceDto.IsActive = data.IsActive;

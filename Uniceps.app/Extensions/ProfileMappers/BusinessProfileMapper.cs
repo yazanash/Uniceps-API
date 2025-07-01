@@ -21,7 +21,7 @@ namespace Uniceps.app.Extensions.ProfileMappers
         public BusinessProfileDto ToDto(BusinessProfile data)
         {
             BusinessProfileDto businessProfile = new BusinessProfileDto();
-            businessProfile.Id = data.Id;
+            businessProfile.Id = data.NID;
             businessProfile.BusinessName = data.BusinessName;
             businessProfile.OwnerName = data.OwnerName;
             businessProfile.Phone1 = data.Phone1;

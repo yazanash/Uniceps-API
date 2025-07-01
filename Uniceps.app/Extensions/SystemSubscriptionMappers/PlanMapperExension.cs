@@ -20,7 +20,7 @@ namespace Uniceps.app.Extensions.SystemSubscriptionMappers
         public PlanDto ToDto(PlanModel data)
         {
             PlanDto planDto = new PlanDto();
-            planDto.Id = data.Id;
+            planDto.Id = data.NID;
             planDto.Name = data.Name;
             planDto.Price = data.Price;
             planDto.Days = data.DurationInDays;

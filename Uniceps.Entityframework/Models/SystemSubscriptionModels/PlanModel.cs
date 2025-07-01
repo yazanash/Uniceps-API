@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.SystemSubscriptionModels
 {
-    public class PlanModel
+    public class PlanModel: EntityBase
     {
-        public int Id { get; set; }
         public string? Name { get; set; }
         public decimal Price { get; set; }
         public int DurationInDays { get; set; }

@@ -26,9 +26,9 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().FirstOrDefaultAsync((e) => e.Id == id);
+            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<SystemSubscription>().Remove(entity!);
@@ -36,9 +36,9 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return true;
         }
 
-        public async Task<SystemSubscription> Get(int id)
+        public async Task<SystemSubscription> Get(Guid id)
         {
-            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

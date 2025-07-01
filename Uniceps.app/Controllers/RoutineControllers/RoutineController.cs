@@ -30,7 +30,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             return Ok(routines.Select(x => _mapper.ToDto(x)).ToList());
         }
         [HttpGet("id")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             Routine routine = await _dataService.Get(id);
             return Ok(_mapper.ToDto(routine));
@@ -47,15 +47,15 @@ namespace Uniceps.app.Controllers.RoutineControllers
             return Ok(_mapper.ToDto(routine));
         }
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, [FromBody] RoutineCreationDto routineCreationDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] RoutineCreationDto routineCreationDto)
         {
             Routine routine = _mapper.FromCreationDto(routineCreationDto);
-            routine.Id = id;
+            routine.NID = id;
             var result = await _dataService.Update(routine);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _dataService.Delete(id);
             return Ok("Deleted successfully");

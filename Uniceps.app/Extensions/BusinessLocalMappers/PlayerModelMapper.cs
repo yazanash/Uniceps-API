@@ -22,7 +22,7 @@ namespace Uniceps.app.Extensions.BusinessLocalMappers
         public PlayerModelDto ToDto(PlayerModel data)
         {
             PlayerModelDto playerModelDto = new PlayerModelDto();
-            playerModelDto.Id = data.Id;
+            playerModelDto.Id = data.NID;
             playerModelDto.Name = data.Name;
             playerModelDto.Phone = data.Phone;
             playerModelDto.SubscribeDate = data.SubscribeDate;

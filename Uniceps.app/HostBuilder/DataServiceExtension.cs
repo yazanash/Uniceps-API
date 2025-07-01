@@ -11,15 +11,17 @@ using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Services.NotificationSystemServices;
 using Uniceps.Entityframework.Models.BusinessLocalModels;
 using Uniceps.Entityframework.Services.BusinessLocalServices;
+using Uniceps.Entityframework.Models.Measurements;
+using Uniceps.Entityframework.Services.MeasurementServices;
 namespace Uniceps.app.HostBuilder
 {
     public static class DataServiceExtension
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IDataService<Exercise>, ExerciseDataService>();
-            services.AddScoped<IEntityQueryDataService<Exercise>, ExerciseDataService>();
-            services.AddScoped<IDataService<MuscleGroup>, MuscleGroupDataService>();
+            services.AddScoped<IIntDataService<Exercise>, ExerciseDataService>();
+            services.AddScoped<IIntEntityQueryDataService<Exercise>, ExerciseDataService>();
+            services.AddScoped<IIntDataService<MuscleGroup>, MuscleGroupDataService>();
             services.AddScoped<IDataService<Routine>, RoutineDataService>();
             services.AddScoped<IEntityQueryDataService<Day>, RoutineDayDataService>();
             services.AddScoped<IEntityQueryDataService<RoutineItem>, RoutineItemDataService>();
@@ -45,6 +47,9 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IUserQueryDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
 
             services.AddScoped<IDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
+
+
+            services.AddScoped<IDataService<BodyMeasurement>, BodyMeasurementDataService>();
             return services;
         }
     }

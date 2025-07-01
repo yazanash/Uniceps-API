@@ -26,9 +26,9 @@ namespace Uniceps.Entityframework.Services.RoutineServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            Routine? entity = await _contextFactory.Set<Routine>().FirstOrDefaultAsync((e) => e.Id == id);
+            Routine? entity = await _contextFactory.Set<Routine>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<Routine>().Remove(entity!);
@@ -42,7 +42,7 @@ namespace Uniceps.Entityframework.Services.RoutineServices
             await _contextFactory.SaveChangesAsync();
             return entity;
         }
-        public async Task<Routine> Get(int id)
+        public async Task<Routine> Get(Guid id)
         {
             Routine? entity = await _contextFactory.Set<Routine>().AsNoTracking()
                 .Include(x => x.Days)
@@ -50,7 +50,7 @@ namespace Uniceps.Entityframework.Services.RoutineServices
                 .ThenInclude(x => x.Exercise)
                 .Include(x => x.Days)
                 .ThenInclude(d => d.RoutineItems)
-                .ThenInclude(i => i.Sets).FirstOrDefaultAsync((e) => e.Id == id);
+                .ThenInclude(i => i.Sets).FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.BusinessLocalModels;
+using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
@@ -32,21 +33,39 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<PlayerModel> PlayerModels { get; set; }
         public DbSet<BusinessServiceModel> BusinessServiceModels { get; set; }
         public DbSet<BusinessSubscriptionModel> BusinessSubscriptionModels { get; set; }
+        public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
+        public DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+
+       
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                var idProperty = entity.FindProperty("Id");
+                if (idProperty?.ClrType == typeof(Guid))
+                {
+                    idProperty.IsNullable = false;
+
+                    // Use database-generated GUIDs (SQL Server only)
+                    idProperty.SetDefaultValueSql("NEWSEQUENTIALID()");
+                }
+            }
+
             // Routine → Days (One-to-Many)
+           
+            modelBuilder.Entity<ItemSet>()
+    .HasKey(r => r.NID);
             modelBuilder.Entity<Day>()
                 .HasOne(d => d.Routine)
                 .WithMany(r => r.Days)
-                .HasForeignKey(d => d.RoutineId);
+                .HasForeignKey(d => d.RoutineNID);
 
             // Day → RoutineItems (One-to-Many)
             modelBuilder.Entity<RoutineItem>()
                 .HasOne(ri => ri.Day)
                 .WithMany(d => d.RoutineItems)
-                .HasForeignKey(ri => ri.DayId);
+                .HasForeignKey(ri => ri.DayNID);
 
             // RoutineItem → Exercise (One-to-One)
             modelBuilder.Entity<RoutineItem>()
@@ -58,7 +77,7 @@ namespace Uniceps.Entityframework.DBContext
             modelBuilder.Entity<ItemSet>()
                 .HasOne(s => s.RoutineItem)
                 .WithMany(ri => ri.Sets)
-                .HasForeignKey(s => s.RoutineItemId);
+                .HasForeignKey(s => s.RoutineItemNID);
 
             modelBuilder.Entity<MuscleGroup>().HasData
                 (
@@ -73,6 +92,8 @@ namespace Uniceps.Entityframework.DBContext
                 new MuscleGroup { Id = 9, Name = "سواعد", EngName = "ForeArms" },
                 new MuscleGroup { Id = 10, Name = "تربيز", EngName = "Shrug" }
                 );
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }

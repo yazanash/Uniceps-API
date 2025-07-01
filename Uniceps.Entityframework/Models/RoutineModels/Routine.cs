@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.RoutineModels
 {
-    public class Routine
+    public class Routine: EntityBase
     {
-        public int Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public virtual List<Day> Days { get; set; } = new List<Day>();

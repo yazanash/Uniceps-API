@@ -48,7 +48,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             var sub = new SystemSubscription
             {
                 UserId = user.Id,
-                PlanId = plan.Id,
+                PlanNID = plan.NID,
                 StartDate = DateTime.UtcNow,
                 EndDate = DateTime.UtcNow.AddDays(plan.DurationInDays),
                 Price = plan.Price,
@@ -90,10 +90,10 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             SystemSubscription systemSubscription = await _getByUserId.GetByUserId(userId);
-            PlanModel plan = await _planDataService.Get(systemSubscription.PlanId);
+            PlanModel plan = await _planDataService.Get(systemSubscription.PlanNID);
             SystemSubscriptionDto systemSubscriptionDto = new SystemSubscriptionDto()
             {
-                Id = systemSubscription.Id,
+                Id = systemSubscription.NID,
                 Price = systemSubscription.Price,
                 Plan = plan.Name,
                 StartDate = systemSubscription.StartDate,
