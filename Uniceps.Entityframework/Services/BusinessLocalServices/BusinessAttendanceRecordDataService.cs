@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.BusinessLocalModels;
 
 namespace Uniceps.Entityframework.Services.BusinessLocalServices
 {
-    public class BusinessAttendanceRecordDataService(AppDbContext dbContext) : IDataService<BusinessAttendanceRecord>
+    public class BusinessAttendanceRecordDataService(AppDbContext dbContext) : IDataService<BusinessAttendanceRecord>, IUserQueryDataService<BusinessAttendanceRecord>
     {
         private readonly AppDbContext _dbContext = dbContext;
         public async Task<BusinessAttendanceRecord> Create(BusinessAttendanceRecord entity)
@@ -42,6 +42,13 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
         public async Task<IEnumerable<BusinessAttendanceRecord>> GetAll()
         {
             IEnumerable<BusinessAttendanceRecord>? entities = await _dbContext.Set<BusinessAttendanceRecord>().ToListAsync();
+            return entities;
+        }
+
+        public async Task<IEnumerable<BusinessAttendanceRecord>> GetAllByUser(string? userid)
+        {
+            IEnumerable<BusinessAttendanceRecord>? entities = await _dbContext.Set<BusinessAttendanceRecord>()
+                .Where(x => x.BusinessId == userid).ToListAsync();
             return entities;
         }
 

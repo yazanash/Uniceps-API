@@ -14,12 +14,29 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
     public class BusinessAttendanceController : ControllerBase
     {
         private readonly IDataService<BusinessAttendanceRecord> _dataService;
+        private readonly IUserQueryDataService<BusinessAttendanceRecord> _userQueryDataService;
         private readonly IMapperExtension<BusinessAttendanceRecord, BusinessAttendanceRecordDto, BusinessAttendanceRecordCreationDto> _mapperExtension;
 
-        public BusinessAttendanceController(IDataService<BusinessAttendanceRecord> dataService, IMapperExtension<BusinessAttendanceRecord, BusinessAttendanceRecordDto, BusinessAttendanceRecordCreationDto> mapperExtension)
+        public BusinessAttendanceController(IDataService<BusinessAttendanceRecord> dataService, IMapperExtension<BusinessAttendanceRecord, BusinessAttendanceRecordDto, BusinessAttendanceRecordCreationDto> mapperExtension, IUserQueryDataService<BusinessAttendanceRecord> userQueryDataService)
         {
             _dataService = dataService;
             _mapperExtension = mapperExtension;
+            _userQueryDataService = userQueryDataService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            if (!HttpContext.IsBusinessUser())
+            {
+                return Forbid();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            IEnumerable<BusinessAttendanceRecord> businessAttendances = await _userQueryDataService.GetAllByUser(userId);
+            return Ok(businessAttendances.Select(x => _mapperExtension.ToDto(x)).ToList());
         }
         [HttpPost]
         public async Task<IActionResult> Create(BusinessAttendanceRecordCreationDto businessAttendanceRecordCreationDto)
