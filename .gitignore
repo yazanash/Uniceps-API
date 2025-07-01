@@ -11,7 +11,12 @@
 bin/
 obj/
 out/
-
+Uniceps.Entityframework/obj/Debug/net8.0/Uniceps.Entityframework.AssemblyInfo.cs
+Uniceps.Entityframework/obj/Debug/net8.0/Uniceps.Entityframework.AssemblyInfoInputs.cache
+Uniceps.Entityframework/obj/Debug/net8.0/Uniceps.Entityframework.csproj.AssemblyReference.cache
+Uniceps.app/obj/Debug/net8.0/Uniceps.app.AssemblyInfo.cs
+Uniceps.app/obj/Debug/net8.0/Uniceps.app.AssemblyInfoInputs.cache
+Uniceps.app/obj/Debug/net8.0/Uniceps.app.csproj.AssemblyReference.cache
 ## ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
