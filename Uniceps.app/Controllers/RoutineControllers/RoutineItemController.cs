@@ -24,7 +24,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             _entityQueryDataService = entityQueryDataService;
         }
         [HttpGet("dayId")]
-        public async Task<IActionResult> GetAll(int dayId)
+        public async Task<IActionResult> GetAll(Guid dayId)
         {
             IEnumerable<RoutineItem> routineItems = await _entityQueryDataService.GetAllById(dayId);
             return Ok(routineItems.Select(x => _mapper.ToDto(x)));
@@ -38,15 +38,15 @@ namespace Uniceps.app.Controllers.RoutineControllers
 
         }
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, [FromBody] RoutineItemCreationDto creationDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] RoutineItemCreationDto creationDto)
         {
             RoutineItem item = _mapper.FromCreationDto(creationDto);
-            item.Id = id;
+            item.NID = id;
             var result = await _dataService.Update(item);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _dataService.Delete(id);
             return Ok("Deleted successfully");

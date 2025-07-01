@@ -61,7 +61,7 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             return Ok(_mapperExtension.ToDto(player));
         }
         [HttpPut("playerId")]
-        public async Task<IActionResult> Update(int playerId, [FromBody] PlayerModelCreationDto playerModelCreationDto)
+        public async Task<IActionResult> Update(Guid playerId, [FromBody] PlayerModelCreationDto playerModelCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -77,13 +77,13 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             PlayerModel playerModel = await _dataService.Get(playerId);
             PlayerModel newPlayerModel = _mapperExtension.FromCreationDto(playerModelCreationDto);
-            newPlayerModel.Id = playerModel.Id;
+            newPlayerModel.NID = playerModel.NID;
             newPlayerModel.UserId = userId;
             await _dataService.Update(newPlayerModel);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _dataService.Delete(id);
             return Ok("Deleted successfully");

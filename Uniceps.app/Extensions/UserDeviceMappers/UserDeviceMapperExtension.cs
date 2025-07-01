@@ -24,7 +24,7 @@ namespace Uniceps.app.Extensions.UserDeviceMappers
         public UserDeviceDto ToDto(UserDevice data)
         {
             UserDeviceDto userDeviceDto = new UserDeviceDto();
-            userDeviceDto.Id = data.Id;
+            userDeviceDto.Id = data.NID;
             userDeviceDto.DeviceToken = data.DeviceToken;
             userDeviceDto.DeviceId = data.DeviceId;
             userDeviceDto.Platform = data.Platform;

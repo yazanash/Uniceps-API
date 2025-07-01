@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Uniceps.Core\Uniceps.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Measurements\" />
-  </ItemGroup>
-
 </Project>

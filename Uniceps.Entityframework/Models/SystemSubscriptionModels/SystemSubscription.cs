@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.SystemSubscriptionModels
 {
-    public class SystemSubscription
+    public class SystemSubscription: EntityBase
     {
-        public int Id { get; set; }
         public string? UserId { get; set; }
-        public int PlanId { get; set; }
+        public Guid PlanNID { get; set; }
         public decimal Price { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

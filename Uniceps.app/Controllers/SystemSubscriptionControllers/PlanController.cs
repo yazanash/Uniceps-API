@@ -42,15 +42,15 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             return Ok(_mapperExtension.ToDto(result));
         }
         [HttpPut("id")]
-        public async Task<IActionResult> Update(int id, [FromBody]  PlanCreationDto planCreationDto)
+        public async Task<IActionResult> Update(Guid id, [FromBody]  PlanCreationDto planCreationDto)
         {
             PlanModel plan = _mapperExtension.FromCreationDto(planCreationDto);
-            plan.Id = id;
+            plan.NID = id;
             var result = await _dataService.Update(plan);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _dataService.Delete(id);
             return Ok("Deleted successfully");

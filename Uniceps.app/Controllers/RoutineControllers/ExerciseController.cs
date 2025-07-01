@@ -11,12 +11,14 @@ namespace Uniceps.app.Controllers.RoutineControllers
     [ApiController]
     public class ExerciseController : ControllerBase
     {
-        private readonly IDataService<Exercise> _dataService;
-        private readonly IEntityQueryDataService<Exercise> _entityQueryDataService;
+        private readonly IIntDataService<Exercise> _dataService;
+        private readonly IIntEntityQueryDataService<Exercise> _entityQueryDataService;
         private ILogger<ExerciseController> _logger;
         IMapperExtension<Exercise, ExerciseDto, ExerciseCreateDto> _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ExerciseController(ILogger<ExerciseController> logger, IMapperExtension<Exercise, ExerciseDto, ExerciseCreateDto> mapper, IWebHostEnvironment webHostEnvironment, IDataService<Exercise> dataService, IEntityQueryDataService<Exercise> entityQueryDataService)
+        public ExerciseController(ILogger<ExerciseController> logger, 
+            IMapperExtension<Exercise, ExerciseDto, ExerciseCreateDto> mapper, IWebHostEnvironment webHostEnvironment,
+            IIntDataService<Exercise> dataService, IIntEntityQueryDataService<Exercise> entityQueryDataService)
         {
             _logger = logger;
             _mapper = mapper;

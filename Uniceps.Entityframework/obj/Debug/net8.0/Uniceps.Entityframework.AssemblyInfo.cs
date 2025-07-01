@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Uniceps.Entityframework")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f898352da3e1fcb9e55df7c82448f2ee1bffbee0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac657d9d080240bbf927b5d10fed0dd365978545")]
 [assembly: System.Reflection.AssemblyProductAttribute("Uniceps.Entityframework")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Uniceps.Entityframework")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

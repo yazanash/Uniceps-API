@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.BusinessLocalModels
 {
-    public class BusinessServiceModel
+    public class BusinessServiceModel: EntityBase
     {
-        public int Id { get; set; }
         public string? Name { get; set; }
         public double Price { get; set; }
         public bool IsActive { get; set; }

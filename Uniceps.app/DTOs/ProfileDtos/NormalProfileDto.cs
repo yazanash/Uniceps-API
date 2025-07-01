@@ -5,7 +5,7 @@ namespace Uniceps.app.DTOs.ProfileDtos
 {
     public class NormalProfileDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string? Name { get; set; }
         public string? Phone { get; set; }
         public DateTime DateOfBirth { get; set; }

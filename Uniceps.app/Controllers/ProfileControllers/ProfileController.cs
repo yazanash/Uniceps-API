@@ -61,7 +61,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             return Ok(_businessProfileMapperExtension.ToDto(businessProfile));
         }
         [HttpGet("id")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             NormalProfile normalProfile = await _profileDataService.Get(id);
 
@@ -112,7 +112,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             NormalProfile normalProfile = await _getProfileByUserId.GetByUserId(userId);
             NormalProfile newProfile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
-            newProfile.Id = normalProfile.Id;
+            newProfile.NID = normalProfile.NID;
             newProfile.UserId = userId;
             await _profileDataService.Update(newProfile);
             return Ok("Updated successfully");
@@ -130,7 +130,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             BusinessProfile businessProfile = await _getBusinessByUserId.GetByUserId(userId);
             BusinessProfile newProfile = _businessProfileMapperExtension.FromCreationDto(businessProfileCreationDto);
-            newProfile.Id = businessProfile.Id;
+            newProfile.NID = businessProfile.NID;
             newProfile.UserId = userId;
             await _businseeDataService.Update(newProfile);
             return Ok("Updated successfully");

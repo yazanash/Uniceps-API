@@ -21,7 +21,7 @@ namespace Uniceps.app.Extensions.ProfileMappers
         public NormalProfileDto ToDto(NormalProfile data)
         {
             NormalProfileDto normalProfile = new NormalProfileDto();
-            normalProfile.Id = data.Id;
+            normalProfile.Id = data.NID;
             normalProfile.Name = data.Name;
             normalProfile.Phone = data.Phone;
             normalProfile.DateOfBirth = data.DateOfBirth;

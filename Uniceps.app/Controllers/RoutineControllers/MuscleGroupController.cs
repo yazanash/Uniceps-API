@@ -12,9 +12,9 @@ namespace Uniceps.app.Controllers.RoutineControllers
     [ApiController]
     public class MuscleGroupController : ControllerBase
     {
-        private readonly IDataService<MuscleGroup> _dataService;
+        private readonly IIntDataService<MuscleGroup> _dataService;
         IMapperExtension<MuscleGroup, MuscleGroupDto, MuscleGroupCreateDto> _mapper;
-        public MuscleGroupController(IMapperExtension<MuscleGroup, MuscleGroupDto, MuscleGroupCreateDto> mapper, IDataService<MuscleGroup> dataService)
+        public MuscleGroupController(IMapperExtension<MuscleGroup, MuscleGroupDto, MuscleGroupCreateDto> mapper, IIntDataService<MuscleGroup> dataService)
         {
             _mapper = mapper;
             _dataService = dataService;

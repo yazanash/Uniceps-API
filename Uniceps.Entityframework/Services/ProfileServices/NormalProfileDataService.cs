@@ -27,9 +27,9 @@ namespace Uniceps.Entityframework.Services.ProfileServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            NormalProfile? entity = await _contextFactory.Set<NormalProfile>().FirstOrDefaultAsync((e) => e.Id == id);
+            NormalProfile? entity = await _contextFactory.Set<NormalProfile>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<NormalProfile>().Remove(entity!);
@@ -43,9 +43,9 @@ namespace Uniceps.Entityframework.Services.ProfileServices
             await _contextFactory.SaveChangesAsync();
             return entity;
         }
-        public async Task<NormalProfile> Get(int id)
+        public async Task<NormalProfile> Get(Guid id)
         {
-            NormalProfile? entity = await _contextFactory.Set<NormalProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            NormalProfile? entity = await _contextFactory.Set<NormalProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

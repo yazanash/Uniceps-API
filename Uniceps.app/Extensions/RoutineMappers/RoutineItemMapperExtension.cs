@@ -33,7 +33,7 @@ namespace Uniceps.app.Extensions.RoutineMappers
         public RoutineItemDto ToDto(RoutineItem data)
         {
             RoutineItemDto routineItem = new();
-            routineItem.Id = data.Id;
+            routineItem.Id = data.NID;
             routineItem.Order = data.Order;
             routineItem.ExerciseId = data.ExerciseId;
             routineItem.Exercise = _exerciseMapper.ToDto(data.Exercise!);
@@ -44,8 +44,8 @@ namespace Uniceps.app.Extensions.RoutineMappers
                 {
                     RoundIndex = itemSet.RoundIndex,
                     Repetition = itemSet.Repetition,
-                    RoutineItemId = itemSet.RoutineItemId,
-                    Id = itemSet.Id
+                    RoutineItemId = itemSet.RoutineItemNID,
+                    Id = itemSet.NID
                 });
             }
             return routineItem;

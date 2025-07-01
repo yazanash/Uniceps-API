@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.MuscleGroupServices
 {
-    public class MuscleGroupDataService : IDataService<MuscleGroup>
+    public class MuscleGroupDataService : IIntDataService<MuscleGroup>
     {
         private readonly AppDbContext _contextFactory;
 

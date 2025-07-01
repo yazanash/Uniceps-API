@@ -2,7 +2,7 @@
 {
     public class UserDeviceDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string? DeviceToken { get; set; } 
         public string? DeviceId { get; set; } 
         public string? Platform { get; set; }

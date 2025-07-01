@@ -27,9 +27,9 @@ namespace Uniceps.Entityframework.Services.NotificationSystemServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(Guid id)
         {
-            UserDevice? entity = await _contextFactory.Set<UserDevice>().FirstOrDefaultAsync((e) => e.Id == id);
+            UserDevice? entity = await _contextFactory.Set<UserDevice>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             _contextFactory.Set<UserDevice>().Remove(entity!);
@@ -37,9 +37,9 @@ namespace Uniceps.Entityframework.Services.NotificationSystemServices
             return true;
         }
 
-        public async Task<UserDevice> Get(int id)
+        public async Task<UserDevice> Get(Guid id)
         {
-            UserDevice? entity = await _contextFactory.Set<UserDevice>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            UserDevice? entity = await _contextFactory.Set<UserDevice>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;

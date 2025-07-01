@@ -24,11 +24,10 @@ namespace Uniceps.app.Extensions.RoutineMappers
         public DayDto ToDto(Day data)
         {
             DayDto day = new();
-            day.Id = data.Id;
+            day.Id = data.NID;
             day.Name = data.Name;
-            day.Id = data.Id;
             if (data.RoutineItems.Count() > 0)
-                day.RoutineItems.AddRange(data.RoutineItems.Select(x=>_routineItemMapper.ToDto(x)));
+                day.RoutineItems!.AddRange(data.RoutineItems.Select(x=>_routineItemMapper.ToDto(x)));
             return day;
         }
     }
