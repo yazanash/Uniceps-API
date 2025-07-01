@@ -34,6 +34,7 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<BusinessServiceModel> BusinessServiceModels { get; set; }
         public DbSet<BusinessSubscriptionModel> BusinessSubscriptionModels { get; set; }
         public DbSet<BusinessPaymentModel> BusinessPaymentModels { get; set; }
+        public DbSet<BusinessAttendanceRecord> BusinessAttendanceRecords { get; set; }
         public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
         public DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
