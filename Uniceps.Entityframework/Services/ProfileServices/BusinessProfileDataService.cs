@@ -12,41 +12,37 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.ProfileServices
 {
-    public class BusinessProfileDataService : IDataService<BusinessProfile>, IGetByUserId<BusinessProfile>
+    public class BusinessProfileDataService(AppDbContext dbContext) : IDataService<BusinessProfile>, IGetByUserId<BusinessProfile>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public BusinessProfileDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<BusinessProfile> Create(BusinessProfile entity)
         {
-            EntityEntry<BusinessProfile> CreatedResult = await _contextFactory.Set<BusinessProfile>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<BusinessProfile> CreatedResult = await _dbContext.Set<BusinessProfile>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            BusinessProfile? entity = await _contextFactory.Set<BusinessProfile>().FirstOrDefaultAsync((e) => e.NID == id);
+            BusinessProfile? entity = await _dbContext.Set<BusinessProfile>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<BusinessProfile>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BusinessProfile>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<BusinessProfile> Update(BusinessProfile entity)
         {
-            _contextFactory.Set<BusinessProfile>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BusinessProfile>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     
         public async Task<BusinessProfile> Get(Guid id)
         {
-            BusinessProfile? entity = await _contextFactory.Set<BusinessProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            BusinessProfile? entity = await _dbContext.Set<BusinessProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -54,13 +50,13 @@ namespace Uniceps.Entityframework.Services.ProfileServices
 
         public async Task<IEnumerable<BusinessProfile>> GetAll()
         {
-            IEnumerable<BusinessProfile>? entities = await _contextFactory.Set<BusinessProfile>().ToListAsync();
+            IEnumerable<BusinessProfile>? entities = await _dbContext.Set<BusinessProfile>().ToListAsync();
             return entities;
         }
 
         public async Task<BusinessProfile> GetByUserId(string userid)
         {
-            BusinessProfile? entity = await _contextFactory.Set<BusinessProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.UserId == userid);
+            BusinessProfile? entity = await _dbContext.Set<BusinessProfile>().AsNoTracking().FirstOrDefaultAsync((e) => e.UserId == userid);
             if (entity == null)
                 throw new Exception();
             return entity!;

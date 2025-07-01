@@ -11,40 +11,36 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.RoutineServices
 {
-    public class RoutineDataService : IDataService<Routine>
+    public class RoutineDataService(AppDbContext dbContext) : IDataService<Routine>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public RoutineDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<Routine> Create(Routine entity)
         {
-            EntityEntry<Routine> CreatedResult = await _contextFactory.Set<Routine>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<Routine> CreatedResult = await _dbContext.Set<Routine>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            Routine? entity = await _contextFactory.Set<Routine>().FirstOrDefaultAsync((e) => e.NID == id);
+            Routine? entity = await _dbContext.Set<Routine>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<Routine>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Routine>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<Routine> Update(Routine entity)
         {
-            _contextFactory.Set<Routine>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Routine>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
         public async Task<Routine> Get(Guid id)
         {
-            Routine? entity = await _contextFactory.Set<Routine>().AsNoTracking()
+            Routine? entity = await _dbContext.Set<Routine>().AsNoTracking()
                 .Include(x => x.Days)
                 .ThenInclude(d => d.RoutineItems)
                 .ThenInclude(x => x.Exercise)
@@ -58,7 +54,7 @@ namespace Uniceps.Entityframework.Services.RoutineServices
 
         public async Task<IEnumerable<Routine>> GetAll()
         {
-            IEnumerable<Routine>? entities = await _contextFactory.Set<Routine>()
+            IEnumerable<Routine>? entities = await _dbContext.Set<Routine>()
                 .Include(x => x.Days)
                 .ThenInclude(d => d.RoutineItems)
                 .ThenInclude(x => x.Exercise)

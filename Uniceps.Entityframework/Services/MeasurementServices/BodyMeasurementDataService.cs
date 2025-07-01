@@ -11,34 +11,30 @@ using Uniceps.Entityframework.Models.Measurements;
 
 namespace Uniceps.Entityframework.Services.MeasurementServices
 {
-    public class BodyMeasurementDataService : IDataService<BodyMeasurement>, IUserQueryDataService<BodyMeasurement>
+    public class BodyMeasurementDataService(AppDbContext dbContext) : IDataService<BodyMeasurement>, IUserQueryDataService<BodyMeasurement>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public BodyMeasurementDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<BodyMeasurement> Create(BodyMeasurement entity)
         {
-            EntityEntry<BodyMeasurement> CreatedResult = await _contextFactory.Set<BodyMeasurement>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<BodyMeasurement> CreatedResult = await _dbContext.Set<BodyMeasurement>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            BodyMeasurement? entity = await _contextFactory.Set<BodyMeasurement>().FirstOrDefaultAsync((e) => e.Id == id);
+            BodyMeasurement? entity = await _dbContext.Set<BodyMeasurement>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<BodyMeasurement>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BodyMeasurement>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<BodyMeasurement> Get(Guid id)
         {
-            BodyMeasurement? entity = await _contextFactory.Set<BodyMeasurement>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            BodyMeasurement? entity = await _dbContext.Set<BodyMeasurement>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -46,19 +42,19 @@ namespace Uniceps.Entityframework.Services.MeasurementServices
 
         public async Task<IEnumerable<BodyMeasurement>> GetAll()
         {
-            IEnumerable<BodyMeasurement>? entities = await _contextFactory.Set<BodyMeasurement>().ToListAsync();
+            IEnumerable<BodyMeasurement>? entities = await _dbContext.Set<BodyMeasurement>().ToListAsync();
             return entities;
         }
         public async Task<IEnumerable<BodyMeasurement>> GetAllByUser(string? userid)
         {
-            IEnumerable<BodyMeasurement>? entities = await _contextFactory.Set<BodyMeasurement>().Include(x => x.PlayerModel).Where(x => x.PlayerModel != null && x.PlayerModel.UserId == userid).ToListAsync();
+            IEnumerable<BodyMeasurement>? entities = await _dbContext.Set<BodyMeasurement>().Include(x => x.PlayerModel).Where(x => x.PlayerModel != null && x.PlayerModel.UserId == userid).ToListAsync();
             return entities;
         }
 
         public async Task<BodyMeasurement> Update(BodyMeasurement entity)
         {
-            _contextFactory.Set<BodyMeasurement>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BodyMeasurement>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     }
