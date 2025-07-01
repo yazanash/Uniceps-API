@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Uniceps.Entityframework.DBContext;
 
@@ -11,9 +12,11 @@ using Uniceps.Entityframework.DBContext;
 namespace Uniceps.Entityframework.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250701073843_AddBusinessPayments")]
+    partial class AddBusinessPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,7 +244,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("OTPModels", (string)null);
+                    b.ToTable("OTPModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessPaymentModel", b =>
@@ -253,9 +256,6 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.Property<double>("Amount")
                         .HasColumnType("float");
-
-                    b.Property<string>("BusinessId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("BusinessSubscriptionNID")
                         .HasColumnType("uniqueidentifier");
@@ -270,7 +270,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("BusinessSubscriptionNID");
 
-                    b.ToTable("BusinessPaymentModels", (string)null);
+                    b.ToTable("BusinessPaymentModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessServiceModel", b =>
@@ -306,7 +306,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("BusinessServiceModels", (string)null);
+                    b.ToTable("BusinessServiceModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.BusinessSubscriptionModel", b =>
@@ -364,7 +364,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("ServiceNID");
 
-                    b.ToTable("BusinessSubscriptionModels", (string)null);
+                    b.ToTable("BusinessSubscriptionModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.BusinessLocalModels.PlayerModel", b =>
@@ -403,7 +403,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("PlayerModels", (string)null);
+                    b.ToTable("PlayerModels");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.BodyMeasurement", b =>
@@ -464,7 +464,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("BodyMeasurements", (string)null);
+                    b.ToTable("BodyMeasurements");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.WorkoutLog", b =>
@@ -493,7 +493,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WorkoutLogs", (string)null);
+                    b.ToTable("WorkoutLogs");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.NotificationModels.UserDevice", b =>
@@ -541,7 +541,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("UserDevices", (string)null);
+                    b.ToTable("UserDevices");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.BusinessProfile", b =>
@@ -576,7 +576,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BusinessProfiles", (string)null);
+                    b.ToTable("BusinessProfiles");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.NormalProfile", b =>
@@ -608,7 +608,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NormalProfiles", (string)null);
+                    b.ToTable("NormalProfiles");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Day", b =>
@@ -628,7 +628,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("RoutineNID");
 
-                    b.ToTable("Days", (string)null);
+                    b.ToTable("Days");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Exercise", b =>
@@ -653,7 +653,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("MuscleGroupId");
 
-                    b.ToTable("Exercises", (string)null);
+                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.ItemSet", b =>
@@ -676,7 +676,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("RoutineItemNID");
 
-                    b.ToTable("Sets", (string)null);
+                    b.ToTable("Sets");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.MuscleGroup", b =>
@@ -695,7 +695,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MuscleGroups", (string)null);
+                    b.ToTable("MuscleGroups");
 
                     b.HasData(
                         new
@@ -781,7 +781,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("Routines", (string)null);
+                    b.ToTable("Routines");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.RoutineItem", b =>
@@ -806,7 +806,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasIndex("ExerciseId");
 
-                    b.ToTable("RoutineItems", (string)null);
+                    b.ToTable("RoutineItems");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", b =>
@@ -833,7 +833,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("Plans", (string)null);
+                    b.ToTable("Plans");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.SystemSubscription", b =>
@@ -872,7 +872,7 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.HasKey("NID");
 
-                    b.ToTable("SystemSubscriptions", (string)null);
+                    b.ToTable("SystemSubscriptions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

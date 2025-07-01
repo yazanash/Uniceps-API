@@ -11,40 +11,36 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.RoutineServices
 {
-    public class RoutineDayDataService : IDataService<Day>, IEntityQueryDataService<Day>
+    public class RoutineDayDataService(AppDbContext dbContext) : IDataService<Day>, IEntityQueryDataService<Day>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public RoutineDayDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<Day> Create(Day entity)
         {
-            EntityEntry<Day> CreatedResult = await _contextFactory.Set<Day>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<Day> CreatedResult = await _dbContext.Set<Day>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            Day? entity = await _contextFactory.Set<Day>().FirstOrDefaultAsync((e) => e.NID == id);
+            Day? entity = await _dbContext.Set<Day>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<Day>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Day>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<Day> Update(Day entity)
         {
-            _contextFactory.Set<Day>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Day>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
         public async Task<Day> Get(Guid id)
         {
-            Day? entity = await _contextFactory.Set<Day>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            Day? entity = await _dbContext.Set<Day>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -52,13 +48,13 @@ namespace Uniceps.Entityframework.Services.RoutineServices
 
         public async Task<IEnumerable<Day>> GetAll()
         {
-            IEnumerable<Day>? entities = await _contextFactory.Set<Day>().ToListAsync();
+            IEnumerable<Day>? entities = await _dbContext.Set<Day>().ToListAsync();
             return entities;
         }
 
         public async Task<IEnumerable<Day>> GetAllById(Guid entityId)
         {
-            IEnumerable<Day>? entities = await _contextFactory.Set<Day>().Where(x => x.RoutineNID == entityId).ToListAsync();
+            IEnumerable<Day>? entities = await _dbContext.Set<Day>().Where(x => x.RoutineNID == entityId).ToListAsync();
             return entities;
         }
     }

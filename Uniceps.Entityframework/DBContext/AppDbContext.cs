@@ -33,6 +33,7 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<PlayerModel> PlayerModels { get; set; }
         public DbSet<BusinessServiceModel> BusinessServiceModels { get; set; }
         public DbSet<BusinessSubscriptionModel> BusinessSubscriptionModels { get; set; }
+        public DbSet<BusinessPaymentModel> BusinessPaymentModels { get; set; }
         public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
         public DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
@@ -42,7 +43,7 @@ namespace Uniceps.Entityframework.DBContext
        
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
-                var idProperty = entity.FindProperty("Id");
+                var idProperty = entity.FindProperty("NID");
                 if (idProperty?.ClrType == typeof(Guid))
                 {
                     idProperty.IsNullable = false;
@@ -79,6 +80,10 @@ namespace Uniceps.Entityframework.DBContext
                 .WithMany(ri => ri.Sets)
                 .HasForeignKey(s => s.RoutineItemNID);
 
+            modelBuilder.Entity<BusinessPaymentModel>()
+               .HasOne(d => d.BusinessSubscription)
+               .WithMany(r => r.BusinessPaymentModels)
+               .HasForeignKey(d => d.BusinessSubscriptionNID);
             modelBuilder.Entity<MuscleGroup>().HasData
                 (
                 new MuscleGroup { Id = 1, Name = "صدر", EngName = "Chest" },

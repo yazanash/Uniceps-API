@@ -13,32 +13,32 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
     public class SystemSubscriptionDataService : IDataService<SystemSubscription>,IGetByUserId<SystemSubscription>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext;
 
-        public SystemSubscriptionDataService(AppDbContext contextFactory)
+        public SystemSubscriptionDataService(AppDbContext dbContext)
         {
-            _contextFactory = contextFactory;
+            _dbContext = dbContext;
         }
         public async Task<SystemSubscription> Create(SystemSubscription entity)
         {
-            EntityEntry<SystemSubscription> CreatedResult = await _contextFactory.Set<SystemSubscription>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<SystemSubscription> CreatedResult = await _dbContext.Set<SystemSubscription>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().FirstOrDefaultAsync((e) => e.NID == id);
+            SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<SystemSubscription>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<SystemSubscription>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<SystemSubscription> Get(Guid id)
         {
-            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -46,13 +46,13 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 
         public async Task<IEnumerable<SystemSubscription>> GetAll()
         {
-            IEnumerable<SystemSubscription>? entities = await _contextFactory.Set<SystemSubscription>().ToListAsync();
+            IEnumerable<SystemSubscription>? entities = await _dbContext.Set<SystemSubscription>().ToListAsync();
             return entities;
         }
 
         public async Task<SystemSubscription> GetByUserId(string userid)
         {
-            SystemSubscription? entity = await _contextFactory.Set<SystemSubscription>().Where(x=>x.UserId == userid
+            SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().Where(x=>x.UserId == userid
             && x.StartDate<=DateTime.Now 
             && x.EndDate>=DateTime.Now).AsNoTracking().FirstOrDefaultAsync();
             if (entity == null)
@@ -62,8 +62,8 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 
         public async Task<SystemSubscription> Update(SystemSubscription entity)
         {
-            _contextFactory.Set<SystemSubscription>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<SystemSubscription>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     }

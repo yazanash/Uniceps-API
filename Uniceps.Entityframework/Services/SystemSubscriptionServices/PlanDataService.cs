@@ -12,34 +12,30 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class PlanDataService : IDataService<PlanModel>, IGetByTargetType<PlanModel>
+    public class PlanDataService(AppDbContext dbContext) : IDataService<PlanModel>, IGetByTargetType<PlanModel>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public PlanDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<PlanModel> Create(PlanModel entity)
         {
-            EntityEntry<PlanModel> CreatedResult = await _contextFactory.Set<PlanModel>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<PlanModel> CreatedResult = await _dbContext.Set<PlanModel>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            PlanModel? entity = await _contextFactory.Set<PlanModel>().FirstOrDefaultAsync((e) => e.NID == id);
+            PlanModel? entity = await _dbContext.Set<PlanModel>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<PlanModel>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<PlanModel>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<PlanModel> Get(Guid id)
         {
-            PlanModel? entity = await _contextFactory.Set<PlanModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            PlanModel? entity = await _dbContext.Set<PlanModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -47,21 +43,21 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 
         public async Task<IEnumerable<PlanModel>> GetAll()
         {
-            IEnumerable<PlanModel>? entities = await _contextFactory.Set<PlanModel>().ToListAsync();
+            IEnumerable<PlanModel>? entities = await _dbContext.Set<PlanModel>().ToListAsync();
             return entities;
         }
 
         public async Task<IEnumerable<PlanModel>> GetAllByTarget(int target)
         {
             PlanTarget planTarget = (PlanTarget)target;
-            IEnumerable<PlanModel>? entities = await _contextFactory.Set<PlanModel>().Where(x=>x.TargetUserType == planTarget).ToListAsync();
+            IEnumerable<PlanModel>? entities = await _dbContext.Set<PlanModel>().Where(x=>x.TargetUserType == planTarget).ToListAsync();
             return entities;
         }
 
         public async Task<PlanModel> Update(PlanModel entity)
         {
-            _contextFactory.Set<PlanModel>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<PlanModel>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     }
