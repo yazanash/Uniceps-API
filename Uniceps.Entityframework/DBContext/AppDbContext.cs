@@ -33,6 +33,7 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<PlayerModel> PlayerModels { get; set; }
         public DbSet<BusinessServiceModel> BusinessServiceModels { get; set; }
         public DbSet<BusinessSubscriptionModel> BusinessSubscriptionModels { get; set; }
+        public DbSet<BusinessPaymentModel> BusinessPaymentModels { get; set; }
         public DbSet<BodyMeasurement> BodyMeasurements { get; set; }
         public DbSet<WorkoutLog> WorkoutLogs { get; set; }
 
@@ -42,7 +43,7 @@ namespace Uniceps.Entityframework.DBContext
        
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
-                var idProperty = entity.FindProperty("Id");
+                var idProperty = entity.FindProperty("NID");
                 if (idProperty?.ClrType == typeof(Guid))
                 {
                     idProperty.IsNullable = false;

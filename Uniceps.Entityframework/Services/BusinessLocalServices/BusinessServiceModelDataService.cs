@@ -11,35 +11,30 @@ using Uniceps.Entityframework.Models.BusinessLocalModels;
 
 namespace Uniceps.Entityframework.Services.BusinessLocalServices
 {
-    public class BusinessServiceModelDataService : IDataService<BusinessServiceModel>, IUserQueryDataService<BusinessServiceModel>
+    public class BusinessServiceModelDataService(AppDbContext dbContext) : IDataService<BusinessServiceModel>, IUserQueryDataService<BusinessServiceModel>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-
-        public BusinessServiceModelDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<BusinessServiceModel> Create(BusinessServiceModel entity)
         {
-            EntityEntry<BusinessServiceModel> CreatedResult = await _contextFactory.Set<BusinessServiceModel>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<BusinessServiceModel> CreatedResult = await _dbContext.Set<BusinessServiceModel>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(Guid id)
         {
-            BusinessServiceModel? entity = await _contextFactory.Set<BusinessServiceModel>().FirstOrDefaultAsync((e) => e.NID == id);
+            BusinessServiceModel? entity = await _dbContext.Set<BusinessServiceModel>().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<BusinessServiceModel>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BusinessServiceModel>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<BusinessServiceModel> Get(Guid id)
         {
-            BusinessServiceModel? entity = await _contextFactory.Set<BusinessServiceModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            BusinessServiceModel? entity = await _dbContext.Set<BusinessServiceModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -47,21 +42,21 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
 
         public async Task<IEnumerable<BusinessServiceModel>> GetAll()
         {
-            IEnumerable<BusinessServiceModel>? entities = await _contextFactory.Set<BusinessServiceModel>().ToListAsync();
+            IEnumerable<BusinessServiceModel>? entities = await _dbContext.Set<BusinessServiceModel>().ToListAsync();
             return entities;
         }
 
         public async Task<IEnumerable<BusinessServiceModel>> GetAllByUser(string? userid)
         {
-            IEnumerable<BusinessServiceModel>? entities = await _contextFactory.Set<BusinessServiceModel>()
+            IEnumerable<BusinessServiceModel>? entities = await _dbContext.Set<BusinessServiceModel>()
                 .Where(x=>x.BusinessId==userid||x.TrainerId==userid).ToListAsync();
             return entities;
         }
 
         public async Task<BusinessServiceModel> Update(BusinessServiceModel entity)
         {
-            _contextFactory.Set<BusinessServiceModel>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<BusinessServiceModel>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
     }

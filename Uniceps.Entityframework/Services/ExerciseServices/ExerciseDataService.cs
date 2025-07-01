@@ -12,39 +12,35 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.ExerciseServices
 {
-    public class ExerciseDataService : IIntDataService<Exercise>, IIntEntityQueryDataService<Exercise>
+    public class ExerciseDataService(AppDbContext dbContext) : IIntDataService<Exercise>, IIntEntityQueryDataService<Exercise>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public ExerciseDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<Exercise> Create(Exercise entity)
         {
-            EntityEntry<Exercise> CreatedResult = await _contextFactory.Set<Exercise>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<Exercise> CreatedResult = await _dbContext.Set<Exercise>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            Exercise? entity = await _contextFactory.Set<Exercise>().FirstOrDefaultAsync((e) => e.Id == id);
+            Exercise? entity = await _dbContext.Set<Exercise>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<Exercise>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Exercise>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
         public async Task<Exercise> Update(Exercise entity)
         {
-            _contextFactory.Set<Exercise>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<Exercise>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
         public async Task<Exercise> Get(int id)
         {
-            Exercise? entity = await _contextFactory.Set<Exercise>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            Exercise? entity = await _dbContext.Set<Exercise>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -52,14 +48,14 @@ namespace Uniceps.Entityframework.Services.ExerciseServices
 
         public async Task<IEnumerable<Exercise>> GetAll()
         {
-            IEnumerable<Exercise>? entities = await _contextFactory.Set<Exercise>().ToListAsync();
+            IEnumerable<Exercise>? entities = await _dbContext.Set<Exercise>().ToListAsync();
             return entities;
 
         }
 
         public async Task<IEnumerable<Exercise>> GetAllById(int entityId)
         {
-            IEnumerable<Exercise>? entities = await _contextFactory.Set<Exercise>().Where(x => x.MuscleGroupId == entityId).ToListAsync();
+            IEnumerable<Exercise>? entities = await _dbContext.Set<Exercise>().Where(x => x.MuscleGroupId == entityId).ToListAsync();
             return entities;
         }
     }

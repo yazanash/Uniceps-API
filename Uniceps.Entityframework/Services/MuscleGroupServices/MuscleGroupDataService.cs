@@ -11,40 +11,36 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.MuscleGroupServices
 {
-    public class MuscleGroupDataService : IIntDataService<MuscleGroup>
+    public class MuscleGroupDataService(AppDbContext dbContext) : IIntDataService<MuscleGroup>
     {
-        private readonly AppDbContext _contextFactory;
+        private readonly AppDbContext _dbContext = dbContext;
 
-        public MuscleGroupDataService(AppDbContext contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
         public async Task<MuscleGroup> Create(MuscleGroup entity)
         {
-            EntityEntry<MuscleGroup> CreatedResult = await _contextFactory.Set<MuscleGroup>().AddAsync(entity);
-            await _contextFactory.SaveChangesAsync();
+            EntityEntry<MuscleGroup> CreatedResult = await _dbContext.Set<MuscleGroup>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
         }
 
         public async Task<bool> Delete(int id)
         {
-            MuscleGroup? entity = await _contextFactory.Set<MuscleGroup>().FirstOrDefaultAsync((e) => e.Id == id);
+            MuscleGroup? entity = await _dbContext.Set<MuscleGroup>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
-            _contextFactory.Set<MuscleGroup>().Remove(entity!);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<MuscleGroup>().Remove(entity!);
+            await _dbContext.SaveChangesAsync();
             return true;
         }
 
         public async Task<MuscleGroup> Update(MuscleGroup entity)
         {
-            _contextFactory.Set<MuscleGroup>().Update(entity);
-            await _contextFactory.SaveChangesAsync();
+            _dbContext.Set<MuscleGroup>().Update(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
         public async Task<MuscleGroup> Get(int id)
         {
-            MuscleGroup? entity = await _contextFactory.Set<MuscleGroup>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            MuscleGroup? entity = await _dbContext.Set<MuscleGroup>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -52,7 +48,7 @@ namespace Uniceps.Entityframework.Services.MuscleGroupServices
 
         public async Task<IEnumerable<MuscleGroup>> GetAll()
         {
-            IEnumerable<MuscleGroup>? entities = await _contextFactory.Set<MuscleGroup>().ToListAsync();
+            IEnumerable<MuscleGroup>? entities = await _dbContext.Set<MuscleGroup>().ToListAsync();
             return entities;
 
         }
