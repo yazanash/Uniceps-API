@@ -17,6 +17,8 @@ namespace Uniceps.Entityframework.Services.BusinessLocalServices
 
         public async Task<BusinessSubscriptionModel> Create(BusinessSubscriptionModel entity)
         {
+            entity.PlayerModel = _dbContext.PlayerModels.FirstOrDefault(x=>x.NID==entity.PlayerId);
+            entity.BusinessService = _dbContext.BusinessServiceModels.FirstOrDefault(x => x.NID == entity.ServiceNID);
             EntityEntry<BusinessSubscriptionModel> CreatedResult = await _dbContext.Set<BusinessSubscriptionModel>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;

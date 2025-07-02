@@ -2,8 +2,7 @@
 {
     public class BodyMeasurementCreationDto
     {
-        public string? PlayerId { get; set; }
-        public string? BusinessId { get; set; }
+        public Guid PlayerId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }
         // Core
@@ -19,6 +18,5 @@
         public double RightThighCm { get; set; }
         public double LeftLegCm { get; set; }
         public double RightLegCm { get; set; }
-        public DateTime MeasuredAt { get; set; } = DateTime.UtcNow;
     }
 }

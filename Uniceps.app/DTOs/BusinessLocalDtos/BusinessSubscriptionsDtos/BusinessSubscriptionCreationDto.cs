@@ -3,7 +3,7 @@
     public class BusinessSubscriptionCreationDto
     {
         public Guid ServiceId { get; set; }
-        public string? PlayerId { get; set; }
+        public Guid PlayerId { get; set; }
         public DateTime RollDate { get; set; }
         public double Price { get; set; }
         public double OfferValue { get; set; }
