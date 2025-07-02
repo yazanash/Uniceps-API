@@ -18,8 +18,8 @@ namespace Uniceps.app.Extensions.BusinessLocalMappers
         public BusinessSubscriptionModel FromCreationDto(BusinessSubscriptionCreationDto data)
         {
            BusinessSubscriptionModel model = new BusinessSubscriptionModel();
-            model. ServiceNID=data.ServiceId;
-            model.PlayerId = data.ServiceId;
+            model.ServiceNID=data.ServiceId;
+            model.PlayerId = data.PlayerId;
             model.RollDate = data.RollDate;
             model.Price = data.Price;
             model.OfferValue = data.OfferValue;

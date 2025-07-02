@@ -78,7 +78,7 @@ namespace Uniceps.app.Controllers.BusinessLocalControllers
             PlayerModel playerModel = await _dataService.Get(playerId);
             PlayerModel newPlayerModel = _mapperExtension.FromCreationDto(playerModelCreationDto);
             newPlayerModel.NID = playerModel.NID;
-            newPlayerModel.UserId = userId;
+            newPlayerModel.BusinessId = userId;
             await _dataService.Update(newPlayerModel);
             return Ok("Updated successfully");
         }
