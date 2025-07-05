@@ -99,5 +99,14 @@ namespace Uniceps.app.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
             }
         }
+        [HttpGet]
+        public IActionResult VerifyConnection()
+        {
+            if (!User!.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            return Ok();
+        }
     }
 }
