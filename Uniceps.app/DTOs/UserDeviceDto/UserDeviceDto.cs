@@ -9,6 +9,7 @@
         public string? AppVersion { get; set; }
         public string? DeviceModel { get; set; } 
         public string? OsVersion { get; set; }
+        public string? NotifyToken { get; set; }
         public DateTime RegisteredAt { get; set; }
         public DateTime LastSeen { get; set; } 
         public bool IsActive { get; set; }

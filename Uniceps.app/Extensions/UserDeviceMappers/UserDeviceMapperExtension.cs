@@ -18,6 +18,7 @@ namespace Uniceps.app.Extensions.UserDeviceMappers
             userDevice.AppVersion = data.AppVersion;
             userDevice.DeviceModel = data.DeviceModel;
             userDevice.OsVersion = data.OsVersion;
+            userDevice.NotifyToken = data.NotifyToken;
             return userDevice;
         }
 
@@ -34,6 +35,7 @@ namespace Uniceps.app.Extensions.UserDeviceMappers
             userDeviceDto.RegisteredAt = data.RegisteredAt;
             userDeviceDto.LastSeen = data.LastSeen;
             userDeviceDto.IsActive = data.IsActive;
+            userDeviceDto.NotifyToken = data.NotifyToken;
             return userDeviceDto;
         }
     }

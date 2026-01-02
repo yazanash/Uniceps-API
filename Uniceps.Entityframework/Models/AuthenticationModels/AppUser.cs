@@ -10,6 +10,8 @@ namespace Uniceps.Entityframework.Models.AuthenticationModels
     public class AppUser : IdentityUser
     {
        public UserType UserType { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime LastLoginAt { get; set; } = DateTime.UtcNow;
     }
     public enum UserType
     {

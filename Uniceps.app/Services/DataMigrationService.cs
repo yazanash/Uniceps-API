@@ -4,18 +4,19 @@ using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Profile;
+using Uniceps.Entityframework.Services.ProfileServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Uniceps.app.Services
 {
     public class DataMigrationService
     {
-        private readonly IDataService<NormalProfile> _profileDataService;
+        private readonly IProfileDataService _profileDataService;
         private readonly AppDbContext _appDbContext;
         private readonly UserManager<AppUser> _userManager;
         private readonly MongoDbService _mongoDbService;
 
-        public DataMigrationService(IDataService<NormalProfile> profileDataService, AppDbContext appDbContext, UserManager<AppUser> userManager, MongoDbService mongoDbService)
+        public DataMigrationService(IProfileDataService profileDataService, AppDbContext appDbContext, UserManager<AppUser> userManager, MongoDbService mongoDbService)
         {
             _profileDataService = profileDataService;
             _appDbContext = appDbContext;

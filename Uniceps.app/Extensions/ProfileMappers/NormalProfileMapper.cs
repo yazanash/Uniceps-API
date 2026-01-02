@@ -13,6 +13,8 @@ namespace Uniceps.app.Extensions.ProfileMappers
           NormalProfile normalProfile = new NormalProfile();
             normalProfile.Name = data.Name;
             normalProfile.Phone = data.Phone;
+            normalProfile.Address = data.Address;
+            normalProfile.OwnerName = data.OwnerName;
             normalProfile.DateOfBirth = data.DateOfBirth;
             normalProfile.Gender = (GenderType)data.Gender;
             return normalProfile;
@@ -24,6 +26,8 @@ namespace Uniceps.app.Extensions.ProfileMappers
             normalProfile.Id = data.NID;
             normalProfile.Name = data.Name;
             normalProfile.Phone = data.Phone;
+            normalProfile.OwnerName = data.OwnerName;
+            normalProfile.Address = data.Address;
             normalProfile.DateOfBirth = data.DateOfBirth;
             normalProfile.Gender =(int) data.Gender;
             normalProfile.PictureUrl = data.PictureUrl;

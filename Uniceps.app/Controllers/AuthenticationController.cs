@@ -10,11 +10,16 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
+using Telegram.Bot.Types;
 using Uniceps.app.DTOs;
 using Uniceps.app.DTOs.AuthenticationDtos;
 using Uniceps.app.Services;
+using Uniceps.app.Services.TesterServices;
+using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.NotificationModels;
+using Uniceps.Entityframework.Services.NotificationSystemServices;
 using static System.Net.WebRequestMethods;
 
 namespace Uniceps.app.Controllers
@@ -23,90 +28,194 @@ namespace Uniceps.app.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly AppDbContext _appDbContext;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _configuration;
         private readonly EmailService _emailService;
         private readonly IJwtTokenService _tokenService;
-        public AuthenticationController(AppDbContext appDbContext, UserManager<AppUser> userManager, IConfiguration configuration, EmailService emailService, IJwtTokenService tokenService)
+        private readonly IOTPGenerateService<OTPModel> _otpGenerateService;
+        private readonly IBypassService _bypassService;
+        private readonly IUserDeviceDataService _userDeviceDataService;
+        public AuthenticationController(UserManager<AppUser> userManager, EmailService emailService, IJwtTokenService tokenService, IOTPGenerateService<OTPModel> otpGenerateService, IBypassService bypassService, IUserDeviceDataService userDeviceDataService)
         {
-            _appDbContext = appDbContext;
             _userManager = userManager;
-            _configuration = configuration;
             _emailService = emailService;
             _tokenService = tokenService;
+            _otpGenerateService = otpGenerateService;
+            _bypassService = bypassService;
+            _userDeviceDataService = userDeviceDataService;
         }
         [HttpPost]
-        public async Task<IActionResult> RequestOtp([FromBody] string email)
+        public async Task<IActionResult> RequestOtp([FromBody] EmailDto emailDto)
         {
             try
             {
-                List<OTPModel> otps = await _appDbContext.OTPModels.Where(x => x.Email == email).ToListAsync();
-                _appDbContext.RemoveRange(otps);
-                OTPModel model = new OTPModel();
-                model.Email = email;
-                model.Otp = new Random().Next(111111, 999999);
-                model.ExpireDate = DateTime.Now.AddMinutes(30);
-                await _appDbContext.AddAsync(model);
-                await _appDbContext.SaveChangesAsync();
-                await _emailService.SendEmailAsync(email, model.Otp);
+                if (string.IsNullOrEmpty(emailDto.Email?.Trim()) || !IsValidEmail(emailDto.Email))
+                {
+                    return BadRequest("Invalid Email");
+                }
+                if (_bypassService.IsTester(emailDto.Email))
+                    return Ok("Email sent successfully");
+                OTPModel model = await _otpGenerateService.GenerateAsync(emailDto.Email.Trim());
+                await _emailService.SendEmailAsync(emailDto.Email.Trim(), model.Otp);
                 return Ok("Email sent successfully");
             }
-          catch
+            catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong");
             }
         }
-        
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var _ = new System.Net.Mail.MailAddress(email);
+                return true;
+            }
+            catch { return false; }
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> VerifyOtp([FromBody] OTPDto oTPDto)
         {
             try
             {
-                OTPModel? oTPModel = await _appDbContext.OTPModels.FirstOrDefaultAsync(x => x.Email == oTPDto.Email);
-                if (oTPModel != null && oTPModel.Otp == oTPDto.Otp && oTPModel.ExpireDate.Subtract(DateTime.Now).TotalMinutes > 0)
+                if (string.IsNullOrEmpty(oTPDto.Email?.Trim()) || !IsValidEmail(oTPDto.Email))
                 {
-                    _appDbContext.OTPModels.Remove(oTPModel);
-                    await _appDbContext.SaveChangesAsync();
-                    AppUser? user = await _userManager.FindByEmailAsync(oTPDto.Email!);
-                    if (user == null)
-                    {
-                        user = new()
-                        {
-                            Email = oTPDto.Email,
-                            UserName = oTPDto.Email!.Split('@')[0],
-                            UserType = UserType.Normal
-                        };
-                        IdentityResult result = await _userManager.CreateAsync(user);
+                    return BadRequest("Invalid Email");
+                }
+                bool isAuthorized = _bypassService.IsValidTester(oTPDto.Email, oTPDto.Otp.ToString());
 
-                    }
-                    IList<string> roles = await _userManager.GetRolesAsync(user!);
-                    JwtTokenResult token = _tokenService.GenerateToken(user, roles);
-                    return Created("created", token);
-                }
-                else
+                if (!isAuthorized)
                 {
-                    if (oTPModel != null)
-                    {
-                        _appDbContext.OTPModels.Remove(oTPModel);
-                        await _appDbContext.SaveChangesAsync();
-                    }
-                    return BadRequest("otp invalid");
+                    var oTPModel = await _otpGenerateService.VerifyAsync(oTPDto.Email, oTPDto.Otp);
+                    if (oTPModel == null) return Unauthorized("Invalid OTP");
                 }
+
+                AppUser? user = await _userManager.FindByEmailAsync(oTPDto.Email!);
+                if (user == null)
+                {
+                    user = new()
+                    {
+                        Email = oTPDto.Email,
+                        UserName = oTPDto.Email!.Split('@')[0],
+                        UserType = UserType.Normal
+                    };
+                    IdentityResult result = await _userManager.CreateAsync(user);
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+                IList<string> roles = await _userManager.GetRolesAsync(user!);
+                JwtTokenResult token = _tokenService.GenerateToken(user, roles);
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // على الإنتاج لازم يكون https
+                    SameSite = SameSiteMode.None,
+                    Expires = token.ExpiresAt,
+                    Path = "/"
+                };
+                if (!string.IsNullOrEmpty(oTPDto.DeviceId))
+                {
+                    UserDevice userDevice = new();
+                    userDevice.AppVersion = oTPDto.AppVersion;
+                    userDevice.OsVersion = oTPDto.OsVersion;
+                    userDevice.UserId = user.Id;
+                    userDevice.DeviceId = oTPDto.DeviceId;
+                    userDevice.DeviceToken = oTPDto.DeviceToken;
+                    userDevice.Platform = oTPDto.Platform;
+                    userDevice.DeviceModel = oTPDto.DeviceModel;
+                    userDevice.NotifyToken = oTPDto.NotifyToken;
+                    await _userDeviceDataService.UpsertUserDeviceAsync(userDevice);
+                }
+             
+
+
+                Response.Cookies.Append("auth", token.Token, cookieOptions);
+
+                return Created("created", token);
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Something went wrong.");
             }
         }
-        [HttpGet]
-        public IActionResult VerifyConnection()
+        [HttpGet("[action]")]
+        public async Task<IActionResult> VerifyConnection()
         {
             if (!User!.Identity!.IsAuthenticated)
             {
                 return Unauthorized();
             }
-            return Ok();
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null)
+            {
+                AppUser? user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    user.LastLoginAt = DateTime.Now;
+                    await _userManager.UpdateAsync(user);
+                    return Ok();
+                }
+            }
+            return Forbid();
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RefreshToken([FromQuery] string? notify, [FromQuery] string? deviceId)
+        {
+            if (!User!.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null)
+            {
+                AppUser? user = await _userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    IList<string> roles = await _userManager.GetRolesAsync(user!);
+                    JwtTokenResult token = _tokenService.GenerateToken(user, roles);
+                    var cookieOptions = new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true, // على الإنتاج لازم يكون https
+                        SameSite = SameSiteMode.None,
+                        Expires = token.ExpiresAt,
+                        Path = "/"
+                    };
+                    if (!string.IsNullOrEmpty(deviceId) && !string.IsNullOrEmpty(notify))
+                    {
+                        var deviceData = new UserDevice
+                        {
+                            UserId = user.Id,
+                            DeviceId = deviceId,
+                            NotifyToken = notify ,
+                        };
+
+                        await _userDeviceDataService.UpsertUserDeviceAsync(deviceData);
+                    }
+                  
+                 
+
+
+                    Response.Cookies.Append("auth", token.Token, cookieOptions);
+                    user.LastLoginAt = DateTime.UtcNow;
+                    await _userManager.UpdateAsync(user);
+                    return Ok(token);
+                }
+            }
+            return Forbid();
+        }
+        [HttpPost("Logout")]
+        public IActionResult Logout()
+        {
+            // مسح الكوكي عن طريق إرسال كوكي بنفس الاسم وتاريخ منتهي
+            Response.Cookies.Delete("auth", new CookieOptions
+            {
+                Path = "/",
+                HttpOnly = true,
+                Secure = true, // مهم إذا كنت تستخدم HTTPS
+                SameSite = SameSiteMode.None
+            });
+
+            return Ok(new { message = "Logged out successfully" });
         }
     }
 }

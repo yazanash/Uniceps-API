@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Profile;
+using Uniceps.Entityframework.Services.ProfileServices;
 
 namespace Uniceps.app.Controllers.ProfileControllers
 {
@@ -13,20 +14,12 @@ namespace Uniceps.app.Controllers.ProfileControllers
     [ApiController]
     public class ProfilePictureController : ControllerBase
     {
-        private readonly IDataService<NormalProfile> _normalProfileDataService;
-        private readonly IDataService<BusinessProfile> _businessProfileDataService;
-        private readonly IGetByUserId<NormalProfile> _getNormalProfileByUserId;
-        private readonly IGetByUserId<BusinessProfile> _getBusinessProfileByUserId;
+        private readonly IProfileDataService _normalProfileDataService;
         private readonly UserManager<AppUser> _userManager;
 
-        public ProfilePictureController(IDataService<NormalProfile> normalProfileDataService,
-            IDataService<BusinessProfile> businessProfileDataService, IGetByUserId<NormalProfile> getNormalProfileByUserId,
-            IGetByUserId<BusinessProfile> getBusinessProfileByUserId, UserManager<AppUser> userManager)
+        public ProfilePictureController(IProfileDataService normalProfileDataService, UserManager<AppUser> userManager)
         {
             _normalProfileDataService = normalProfileDataService;
-            _businessProfileDataService = businessProfileDataService;
-            _getNormalProfileByUserId = getNormalProfileByUserId;
-            _getBusinessProfileByUserId = getBusinessProfileByUserId;
             _userManager = userManager;
         }
 
@@ -55,18 +48,11 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             AppUser? user = await _userManager.FindByIdAsync(userId);
-            if(user!.UserType == UserType.Normal)
+            if(user!=null)
             {
-                NormalProfile normalProfile = await _getNormalProfileByUserId.GetByUserId(user.Id);
+                NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(user.Id);
                 normalProfile.PictureUrl = imageUrl;
                 await _normalProfileDataService.Update(normalProfile);
-            }
-            else
-            {
-                BusinessProfile businessProfile= await _getBusinessProfileByUserId.GetByUserId(user.Id);
-                businessProfile.PictureUrl = imageUrl;
-                await _businessProfileDataService.Update(businessProfile);
-
             }
 
             return Ok(new { imageUrl });

@@ -1,4 +1,4 @@
-using FirebaseAdmin;
+﻿using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +40,20 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 builder.Services.AddCustomSwaggerGenAuth();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000",
+                    "https://uniceps-admin.vercel.app",
+                    "https://uniceps.trio-verse.com")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials(); 
+        });
+});
+
 
 
 var app = builder.Build();
@@ -49,10 +63,29 @@ if (app.Environment.IsDevelopment())
 {
     
 }
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>(); 
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "حدث خطأ أثناء عمل Migration لقاعدة البيانات.");
+    }
+}
+await DbInitializer.SeedRolesAndAdminAsync(app.Services);
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.UseMiddleware<UserTypeMiddleware>();
 app.MapControllers();

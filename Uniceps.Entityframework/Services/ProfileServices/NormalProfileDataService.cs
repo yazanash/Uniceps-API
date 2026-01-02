@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.Profile;
 
 namespace Uniceps.Entityframework.Services.ProfileServices
 {
-    public class NormalProfileDataService : IDataService<NormalProfile>, IGetByUserId<NormalProfile>
+    public class NormalProfileDataService : IProfileDataService
     {
         private readonly AppDbContext _dbContext;
 
@@ -63,6 +63,11 @@ namespace Uniceps.Entityframework.Services.ProfileServices
             if (entity == null)
                 throw new Exception();
             return entity!;
+        }
+
+        public Task<IEnumerable<NormalProfile>> GetByUserIdListAsync(string userid)
+        {
+            throw new NotImplementedException();
         }
     }
 }

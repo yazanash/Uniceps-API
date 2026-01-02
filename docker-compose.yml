@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: uniceps-db
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:
+    build: 
+      context: .
+      dockerfile: Uniceps.app/Dockerfile
+    container_name: uniceps-api
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5000:8080"
+    volumes:
+      - ./appsettings.Production.json:/app/appsettings.Production.json:ro
+
+      - ./wwwroot/downloads:/app/wwwroot/downloads
+      - ./wwwroot/profile-pictures:/app/wwwroot/profile-pictures
+      - ./wwwroot/temp:/app/wwwroot/temp
+      - ./wwwroot/uploads:/app/wwwroot/uploads
+      - ./wwwroot/ExerciseImages:/app/wwwroot/ExerciseImages
+
+volumes:
+  sql_data:

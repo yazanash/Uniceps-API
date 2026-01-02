@@ -1,4 +1,5 @@
-﻿using Uniceps.app.DTOs.SystemSubscriptionDtos;
+﻿using Stripe;
+using Uniceps.app.DTOs.SystemSubscriptionDtos;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
@@ -10,10 +11,7 @@ namespace Uniceps.app.Extensions.SystemSubscriptionMappers
         {
             PlanModel plan = new PlanModel();
             plan.Name = data.Name;
-            plan.Price = data.Price;
-            plan.DurationInDays = data.Days;
-            plan.IsFree = data.IsFree;
-            plan.TargetUserType = (PlanTarget) data.TargetUserType;
+            plan.ProductId = data.ProductId;
             return plan;
         }
 
@@ -22,10 +20,18 @@ namespace Uniceps.app.Extensions.SystemSubscriptionMappers
             PlanDto planDto = new PlanDto();
             planDto.Id = data.NID;
             planDto.Name = data.Name;
-            planDto.Price = data.Price;
-            planDto.Days = data.DurationInDays;
-            planDto.TargetUserType = (int)data.TargetUserType;
-            planDto.IsFree = data.IsFree;
+            planDto.ProductId = data.ProductId;
+            foreach (PlanItem planItem in data.PlanItems)
+            {
+                PlanItemDto planItemDto = new PlanItemDto();
+                planItemDto.Id = planItem.Id;
+                planItemDto.PlanId = planItem.PlanNID.ToString();
+                planItemDto.IsFree = planItem.IsFree;
+                planItemDto.Price = planItem.Price;
+                planItemDto.DaysCount = planItem.DaysCount;
+                planItemDto.DurationString = planItem.DurationString;
+                planDto.PlanItems.Add(planItemDto);
+            }
             return planDto;
         }
     }

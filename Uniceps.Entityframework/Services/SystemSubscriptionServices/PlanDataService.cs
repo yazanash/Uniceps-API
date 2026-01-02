@@ -12,7 +12,7 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class PlanDataService(AppDbContext dbContext) : IDataService<PlanModel>, IGetByTargetType<PlanModel>
+    public class PlanDataService(AppDbContext dbContext) : IPlanDataService
     {
         private readonly AppDbContext _dbContext = dbContext;
 
@@ -35,23 +35,23 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 
         public async Task<PlanModel> Get(Guid id)
         {
-            PlanModel? entity = await _dbContext.Set<PlanModel>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
+            PlanModel? entity = await _dbContext.Set<PlanModel>().Include(x => x.PlanItems).AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
         }
 
-        public async Task<IEnumerable<PlanModel>> GetAll()
+        public async Task<IEnumerable<PlanModel>> GetPlansForApp(int productId)
         {
-            IEnumerable<PlanModel>? entities = await _dbContext.Set<PlanModel>().ToListAsync();
+            IEnumerable<PlanModel>? entities = await _dbContext.Set<PlanModel>().Include(x=>x.PlanItems).Where(x => x.ProductId == productId).ToListAsync();
             return entities;
         }
-
-        public async Task<IEnumerable<PlanModel>> GetAllByTarget(int target)
+        public async Task<PlanItem> GetItemById(int id)
         {
-            PlanTarget planTarget = (PlanTarget)target;
-            IEnumerable<PlanModel>? entities = await _dbContext.Set<PlanModel>().Where(x=>x.TargetUserType == planTarget).ToListAsync();
-            return entities;
+            PlanItem? entity = await _dbContext.Set<PlanItem>().Include(x=>x.PlanModel).AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            if (entity == null)
+                throw new Exception();
+            return entity!;
         }
 
         public async Task<PlanModel> Update(PlanModel entity)

@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Uniceps.app.DTOs.BusinessLocalDtos;
-using Uniceps.app.DTOs.BusinessLocalDtos.BusinessServicesDtos;
 using Uniceps.app.DTOs.MeasurementDtos;
 using Uniceps.app.Helpers;
 using Uniceps.app.HostBuilder;
 using Uniceps.Core.Services;
-using Uniceps.Entityframework.Models.BusinessLocalModels;
 using Uniceps.Entityframework.Models.Measurements;
 
 namespace Uniceps.app.Controllers.MeasurementControllers
@@ -32,10 +29,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             {
                 return Unauthorized();
             }
-            if (!HttpContext.IsBusinessUser())
-            {
-                return Forbid();
-            }
+            
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             IEnumerable<BodyMeasurement> players = await _userQueryDataService.GetAllByUser(userId);
             return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
@@ -47,10 +41,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             {
                 return Unauthorized();
             }
-            if (!HttpContext.IsBusinessUser())
-            {
-                return Forbid();
-            }
+           
             if (bodyMeasurementCreationDto == null)
                 return BadRequest("Body Measurment data is missing.");
 
@@ -67,10 +58,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             {
                 return Unauthorized();
             }
-            if (!HttpContext.IsBusinessUser())
-            {
-                return Forbid();
-            }
+           
             if (bodyMeasurementCreationDto == null)
                 return BadRequest("Exercise data is missing.");
 

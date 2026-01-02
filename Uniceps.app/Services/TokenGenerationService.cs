@@ -21,7 +21,6 @@ namespace Uniceps.app.Services
             List<Claim> claims = new();
             claims.Add(new Claim(ClaimTypes.Name, user.UserName!));
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id!));
             claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
             claims.Add(new Claim("userType", user.UserType.ToString()));
 
@@ -38,15 +37,11 @@ namespace Uniceps.app.Services
                 expires: DateTime.Now.AddMonths(1),
                 signingCredentials: sc
             );
-            var _token = new
-            {
-               
-
-            };
             return new JwtTokenResult() {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 ExpiresAt = token.ValidTo,
-                UserType = user.UserType
+                UserType = user.UserType,
+                Id=user.Id
             };
         }
     }

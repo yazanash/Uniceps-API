@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Uniceps.app.Controllers.RoutineControllers;
 using Uniceps.app.DTOs.ProfileDtos;
-using Uniceps.app.DTOs.RoutineDtos;
 using Uniceps.app.Services;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
+using Uniceps.Entityframework.Services.ProfileServices;
 
 namespace Uniceps.app.Controllers.ProfileControllers
 {
@@ -15,23 +15,15 @@ namespace Uniceps.app.Controllers.ProfileControllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        private readonly IDataService<NormalProfile> _profileDataService;
-        private readonly IDataService<BusinessProfile> _businseeDataService;
-        private readonly IGetByUserId<NormalProfile> _getProfileByUserId;
-        private readonly IGetByUserId<BusinessProfile> _getBusinessByUserId;
+        private readonly IProfileDataService _profileDataService;
         IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> _normalProfileMapperExtension;
-        IMapperExtension<BusinessProfile, BusinessProfileDto, BusinessProfileCreationDto> _businessProfileMapperExtension;
         private ILogger<ProfileController> _logger;
         private readonly DataMigrationService _dataMigrationService;
-        public ProfileController(IDataService<NormalProfile> profileDataService, IDataService<BusinessProfile> businseeDataService, ILogger<ProfileController> logger, IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> normalProfileMapperExtension, IMapperExtension<BusinessProfile, BusinessProfileDto, BusinessProfileCreationDto> businessProfileMapperExtension, IGetByUserId<NormalProfile> getProfileByUserId, IGetByUserId<BusinessProfile> getBusinessByUserId, DataMigrationService dataMigrationService)
+        public ProfileController(IProfileDataService profileDataService, ILogger<ProfileController> logger, IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> normalProfileMapperExtension, DataMigrationService dataMigrationService)
         {
             _profileDataService = profileDataService;
-            _businseeDataService = businseeDataService;
             _logger = logger;
             _normalProfileMapperExtension = normalProfileMapperExtension;
-            _businessProfileMapperExtension = businessProfileMapperExtension;
-            _getProfileByUserId = getProfileByUserId;
-            _getBusinessByUserId = getBusinessByUserId;
             _dataMigrationService = dataMigrationService;
         }
 
@@ -43,23 +35,11 @@ namespace Uniceps.app.Controllers.ProfileControllers
                 return Unauthorized();
             }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            NormalProfile normalProfile = await _getProfileByUserId.GetByUserId(userId);
+            NormalProfile normalProfile = await _profileDataService.GetByUserId(userId);
 
             return Ok(_normalProfileMapperExtension.ToDto(normalProfile));
         }
-        [HttpGet("business")]
-        public async Task<IActionResult> GetBusinessProfile()
-        {
-            
-            if (!User.Identity!.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            BusinessProfile businessProfile = await _getBusinessByUserId.GetByUserId(userId);
-
-            return Ok(_businessProfileMapperExtension.ToDto(businessProfile));
-        }
+      
         [HttpGet("id")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -83,22 +63,6 @@ namespace Uniceps.app.Controllers.ProfileControllers
             _logger.LogInformation("Created Successfully");
             return Ok(_normalProfileMapperExtension.ToDto(profile));
         }
-        [HttpPost("business")]
-        public async Task<IActionResult> CreateBusinessProfile(BusinessProfileCreationDto businessProfileCreationDto)
-        {
-            if (!User.Identity!.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
-            if (businessProfileCreationDto == null)
-                return BadRequest("Exercise data is missing.");
-
-            BusinessProfile profile = _businessProfileMapperExtension.FromCreationDto(businessProfileCreationDto);
-            profile.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            var result = await _businseeDataService.Create(profile);
-            _logger.LogInformation("Created Successfully");
-            return Ok(_businessProfileMapperExtension.ToDto(profile));
-        }
         [HttpPut()]
         public async Task<IActionResult> Update([FromBody] NormalProfileCreationDto profileCreationDto)
         {
@@ -110,31 +74,12 @@ namespace Uniceps.app.Controllers.ProfileControllers
                 return BadRequest("Exercise data is missing.");
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            NormalProfile normalProfile = await _getProfileByUserId.GetByUserId(userId);
+            NormalProfile normalProfile = await _profileDataService.GetByUserId(userId);
             NormalProfile newProfile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
             newProfile.NID = normalProfile.NID;
             newProfile.UserId = userId;
             await _profileDataService.Update(newProfile);
-            return Ok("Updated successfully");
+            return Ok(_normalProfileMapperExtension.ToDto(newProfile));
         }
-        [HttpPut("business")]
-        public async Task<IActionResult> UpdateBusiness([FromBody] BusinessProfileCreationDto businessProfileCreationDto)
-        {
-            if (!User.Identity!.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
-            if (businessProfileCreationDto == null)
-                return BadRequest("Exercise data is missing.");
-
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            BusinessProfile businessProfile = await _getBusinessByUserId.GetByUserId(userId);
-            BusinessProfile newProfile = _businessProfileMapperExtension.FromCreationDto(businessProfileCreationDto);
-            newProfile.NID = businessProfile.NID;
-            newProfile.UserId = userId;
-            await _businseeDataService.Update(newProfile);
-            return Ok("Updated successfully");
-        }
-      
     }
 }
