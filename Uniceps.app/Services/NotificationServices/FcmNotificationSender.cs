@@ -2,14 +2,15 @@
 using FirebaseAdmin.Messaging;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.NotificationModels;
+using Uniceps.Entityframework.Services.NotificationSystemServices;
 
 namespace Uniceps.app.Services.NotificationServices
 {
     public class FcmNotificationSender : INotificationSender
     {
-        private readonly IUserQueryDataService<UserDevice> _dataService;
+        private readonly IUserDeviceDataService _dataService;
 
-        public FcmNotificationSender(IUserQueryDataService<UserDevice> dataService)
+        public FcmNotificationSender(IUserDeviceDataService dataService)
         {
             _dataService = dataService;
         }
@@ -19,7 +20,7 @@ namespace Uniceps.app.Services.NotificationServices
             IEnumerable<UserDevice> devices = await _dataService.GetAllByUser(userId);
             if (!devices.Any()) return;
 
-            var tokens = devices.Select(x => x.DeviceToken).ToList();
+            var tokens = devices.Where(d=>!string.IsNullOrEmpty(d.NotifyToken)).Select(x => x.NotifyToken).ToList();
 
             var message = new MulticastMessage
             {

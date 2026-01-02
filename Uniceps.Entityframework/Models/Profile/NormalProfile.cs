@@ -12,6 +12,8 @@ namespace Uniceps.Entityframework.Models.Profile
     {
         public string? Name { get; set; }
         public string? Phone { get; set; }
+        public string? OwnerName { get; set; }
+        public string? Address { get; set; }
         public DateTime DateOfBirth { get; set; }
         public GenderType Gender { get; set; }
         public string? PictureUrl { get; set; }

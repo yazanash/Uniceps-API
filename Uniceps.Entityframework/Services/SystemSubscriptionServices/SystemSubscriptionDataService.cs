@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class SystemSubscriptionDataService : IDataService<SystemSubscription>,IGetByUserId<SystemSubscription>
+    public class SystemSubscriptionDataService : IMembershipDataService
     {
         private readonly AppDbContext _dbContext;
 
@@ -40,24 +40,34 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         {
             SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == id);
             if (entity == null)
-                throw new Exception();
+                throw new Exception($"subscription With Id {id} not exist");
             return entity!;
         }
 
-        public async Task<IEnumerable<SystemSubscription>> GetAll()
-        {
-            IEnumerable<SystemSubscription>? entities = await _dbContext.Set<SystemSubscription>().ToListAsync();
-            return entities;
-        }
-
-        public async Task<SystemSubscription> GetByUserId(string userid)
+        public async Task<SystemSubscription> GetActiveSubscriptionByAppId(string userid,int productId)
         {
             SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().Where(x=>x.UserId == userid
+            && x.ProductId == productId
             && x.StartDate<=DateTime.Now 
-            && x.EndDate>=DateTime.Now).AsNoTracking().FirstOrDefaultAsync();
+            && x.EndDate>=DateTime.Now&&x.ISPaid).AsNoTracking().FirstOrDefaultAsync();
             if (entity == null)
-                throw new Exception();
+                throw new Exception("Subscription Not found");
             return entity!;
+        }
+
+        public async Task<IEnumerable<SystemSubscription>> GetByUserIdListAsync(string userid)
+        {
+            IEnumerable<SystemSubscription>? entity = await _dbContext.Set<SystemSubscription>().Where(x => x.UserId == userid
+         && x.StartDate <= DateTime.Now
+         && x.EndDate >= DateTime.Now && x.ISPaid == false).AsNoTracking().ToListAsync();
+            
+            return entity!;
+        }
+
+        public async Task<bool> HasUsedTrialForProduct(string userId, int productId)
+        {
+           return await _dbContext.Set<SystemSubscription>()
+            .AnyAsync(s => s.UserId == userId && s.ProductId == productId);
         }
 
         public async Task<SystemSubscription> Update(SystemSubscription entity)

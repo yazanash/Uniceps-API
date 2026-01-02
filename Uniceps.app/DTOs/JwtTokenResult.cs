@@ -7,6 +7,7 @@ namespace Uniceps.app.DTOs
         public string Token { get; set; } = null!;
         public DateTime ExpiresAt { get; set; }
         public UserType UserType { get; set; }
+        public string? Id { get; set; }
     }
 
 }

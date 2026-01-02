@@ -1,32 +1,37 @@
 ﻿using Stripe;
 using Stripe.Checkout;
+using System.Numerics;
 using System.Transactions;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
+using Uniceps.Entityframework.Services.ProductServices;
+using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 
 namespace Uniceps.app.Services.PaymentServices
 {
     public class StripeGateway : IPaymentGateway
     {
         private readonly IConfiguration _config;
-        private readonly IDataService<SystemSubscription> _dataService;
-
-        public StripeGateway(IConfiguration config, IDataService<SystemSubscription> dataService)
+        private readonly IMembershipDataService _dataService;
+        private readonly IProductDataService _productDataService;
+        public StripeGateway(IConfiguration config, IMembershipDataService dataService, IProductDataService productDataService)
         {
             _config = config;
             Stripe.StripeConfiguration.ApiKey = _config["Stripe:SecretKey"];
             _dataService = dataService;
+            _productDataService = productDataService;
         }
 
-        public async Task<string?> CreateSessionAsync(SystemSubscription sub, AppUser user, PlanModel plan)
+        public async Task<string?> CreateSessionAsync(SystemSubscription sub, AppUser user, PlanItem planItem)
         {
+            var product = await _productDataService.Get(sub.ProductId);
             var options = new SessionCreateOptions
             {
-                PaymentMethodTypes = new List<string> { "card" },
+                PaymentMethodTypes = ["card"],
                 Mode = "payment",
-                LineItems = new List<SessionLineItemOptions>
-            {
+                LineItems =
+            [
                 new()
                 {
                     PriceData = new SessionLineItemPriceDataOptions
@@ -35,19 +40,19 @@ namespace Uniceps.app.Services.PaymentServices
                         UnitAmount = (long)(sub.Price * 100),
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = plan.Name
+                            Name = product.Name +" - " + planItem.PlanModel?.Name+" - "+planItem.DurationString
                         }
                     },
                     Quantity = 1
                 }
-            },
+            ],
                 SuccessUrl = "https://yourdomain.com/payment-success",
                 CancelUrl = "https://yourdomain.com/payment-cancelled",
                 Metadata = new Dictionary<string, string>
             {
                 { "subscriptionId", sub.NID.ToString() },
                 { "userId", user.Id.ToString() },
-                { "planId", plan.NID.ToString() }
+                { "planItemId", planItem.Id.ToString() }
             }
             };
 

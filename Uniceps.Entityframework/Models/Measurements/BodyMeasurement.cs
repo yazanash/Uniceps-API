@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Uniceps.Entityframework.Models.BusinessLocalModels;
+using Uniceps.Entityframework.Models.AuthenticationModels;
 
 namespace Uniceps.Entityframework.Models.Measurements
 {
     public class BodyMeasurement
     {
         public Guid Id { get; set; }
-        public Guid PlayerId { get; set; }
-        [ForeignKey("PlayerId")]
-        public virtual PlayerModel? PlayerModel { get; set; }
+        public string? UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual AppUser? AppUser { get; set; }
         public string? BusinessId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }

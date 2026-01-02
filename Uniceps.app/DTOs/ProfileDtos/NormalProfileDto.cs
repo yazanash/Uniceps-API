@@ -11,5 +11,7 @@ namespace Uniceps.app.DTOs.ProfileDtos
         public DateTime DateOfBirth { get; set; }
         public int Gender { get; set; }
         public string? PictureUrl { get; set; }
+        public string? OwnerName { get; set; }
+        public string? Address { get; set; }
     }
 }

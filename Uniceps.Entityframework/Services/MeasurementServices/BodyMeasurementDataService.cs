@@ -47,7 +47,7 @@ namespace Uniceps.Entityframework.Services.MeasurementServices
         }
         public async Task<IEnumerable<BodyMeasurement>> GetAllByUser(string? userid)
         {
-            IEnumerable<BodyMeasurement>? entities = await _dbContext.Set<BodyMeasurement>().Include(x => x.PlayerModel).Where(x => x.PlayerModel != null && x.PlayerModel.UserId == userid).ToListAsync();
+            IEnumerable<BodyMeasurement>? entities = await _dbContext.Set<BodyMeasurement>().Where(x =>  x.UserId == userid).ToListAsync();
             return entities;
         }
 

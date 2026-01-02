@@ -9,8 +9,6 @@ namespace Uniceps.app.Extensions.MeasurementMappers
         public BodyMeasurement FromCreationDto(BodyMeasurementCreationDto data)
         {
             BodyMeasurement bodyMeasurement = new BodyMeasurement();
-            bodyMeasurement.PlayerId = data.PlayerId;
-
             bodyMeasurement.HeightCm = data.HeightCm;
             bodyMeasurement.WeightKg = data.WeightKg;
             // Core
@@ -33,7 +31,6 @@ namespace Uniceps.app.Extensions.MeasurementMappers
         {
             BodyMeasurementDto bodyMeasurementDto = new BodyMeasurementDto();
             bodyMeasurementDto.Id = data.Id;
-            bodyMeasurementDto.PlayerId = data.PlayerId;
             bodyMeasurementDto.HeightCm = data.HeightCm;
             bodyMeasurementDto.WeightKg = data.WeightKg;
             // Core

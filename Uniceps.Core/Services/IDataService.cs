@@ -14,4 +14,8 @@ namespace Uniceps.Core.Services
         public Task<IEnumerable<T>> GetAll();
         public Task<T> Get(Guid id);
     }
+    public interface IGetItem<T> where T : class
+    {
+        public Task<T> GetItemById(int id);
+    }
 }

@@ -1,18 +1,20 @@
-﻿using Uniceps.Core.Services;
+﻿using Uniceps.app.Services.PaymentServices;
+using Uniceps.Core.Services;
+using Uniceps.Entityframework.Models;
+using Uniceps.Entityframework.Models.Measurements;
+using Uniceps.Entityframework.Models.NotificationModels;
+using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
-using Uniceps.Entityframework.Services.ExerciseServices;
-using Uniceps.Entityframework.Services.MuscleGroupServices;
-using Uniceps.Entityframework.Services.RoutineServices;
-using Uniceps.Entityframework.Services.ProfileServices;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
-using Uniceps.Entityframework.Services.SystemSubscriptionServices;
-using Uniceps.Entityframework.Models.NotificationModels;
-using Uniceps.Entityframework.Services.NotificationSystemServices;
-using Uniceps.Entityframework.Models.BusinessLocalModels;
-using Uniceps.Entityframework.Services.BusinessLocalServices;
-using Uniceps.Entityframework.Models.Measurements;
+using Uniceps.Entityframework.Services;
+using Uniceps.Entityframework.Services.ExerciseServices;
 using Uniceps.Entityframework.Services.MeasurementServices;
+using Uniceps.Entityframework.Services.MuscleGroupServices;
+using Uniceps.Entityframework.Services.NotificationSystemServices;
+using Uniceps.Entityframework.Services.ProductServices;
+using Uniceps.Entityframework.Services.ProfileServices;
+using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 namespace Uniceps.app.HostBuilder
 {
     public static class DataServiceExtension
@@ -22,40 +24,31 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IIntDataService<Exercise>, ExerciseDataService>();
             services.AddScoped<IIntEntityQueryDataService<Exercise>, ExerciseDataService>();
             services.AddScoped<IIntDataService<MuscleGroup>, MuscleGroupDataService>();
-            services.AddScoped<IDataService<Routine>, RoutineDataService>();
-            services.AddScoped<IEntityQueryDataService<Day>, RoutineDayDataService>();
-            services.AddScoped<IEntityQueryDataService<RoutineItem>, RoutineItemDataService>();
-            services.AddScoped<IDataService<RoutineItem>, RoutineItemDataService>();
+            
+            services.AddScoped<IProfileDataService, NormalProfileDataService>();
+            services.AddScoped<IIntDataService<WorkoutSession>, WorkoutSessionDataService>();
 
-            services.AddScoped<IDataService<NormalProfile>, NormalProfileDataService>();
-            services.AddScoped<IDataService<BusinessProfile>, BusinessProfileDataService>();
+            services.AddScoped<IUserQueryDataService<WorkoutSession>, WorkoutSessionDataService>();
 
-            services.AddScoped<IGetByUserId<NormalProfile>, NormalProfileDataService>();
-            services.AddScoped<IGetByUserId<BusinessProfile>, BusinessProfileDataService>();
+            services.AddScoped<IPlanDataService, PlanDataService>();
+            services.AddScoped<IIntDataService<PlanItem>, PlanItemDataService>();
+            services.AddScoped<IMembershipDataService, SystemSubscriptionDataService>();
 
-            services.AddScoped<IDataService<PlanModel>, PlanDataService>();
-            services.AddScoped<IDataService<SystemSubscription>, SystemSubscriptionDataService>();
-            services.AddScoped<IGetByUserId<SystemSubscription>, SystemSubscriptionDataService>();
-            services.AddScoped<IGetByTargetType<PlanModel>, PlanDataService>();
-
-            services.AddScoped<IDataService<UserDevice>, UserDeviceDataService>();
-            services.AddScoped<IUserQueryDataService<UserDevice>, UserDeviceDataService>();
-
-            services.AddScoped<IDataService<PlayerModel>, PlayerModelDataService>();
-            services.AddScoped<IUserQueryDataService<PlayerModel>, PlayerModelDataService>();
-            services.AddScoped<IDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
-            services.AddScoped<IUserQueryDataService<BusinessServiceModel>, BusinessServiceModelDataService>();
-
-            services.AddScoped<IDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
-            services.AddScoped<IUserQueryDataService<BusinessSubscriptionModel>, BusinessSubscriptionModelDataService>();
+            services.AddScoped<IUserDeviceDataService, UserDeviceDataService>();
 
             services.AddScoped<IDataService<BodyMeasurement>, BodyMeasurementDataService>();
             services.AddScoped<IUserQueryDataService<BodyMeasurement>, BodyMeasurementDataService>();
 
-            services.AddScoped<IDataService<BusinessPaymentModel>, BusinessPaymentModelDataService>();
+            services.AddScoped<ITelegramUserStateDataService<TelegramUserState>, TelegramUserStateDataService>();
+            services.AddScoped<IIntDataService<PaymentGateway>, PaymentGatewayDataService>();
+            services.AddScoped<IIntDataService<CashPaymentRequest>, CashPaymentRequestDataService>();
 
-            services.AddScoped<IDataService<BusinessAttendanceRecord>, BusinessAttendanceRecordDataService>();
-            services.AddScoped<IUserQueryDataService<BusinessAttendanceRecord>, BusinessAttendanceRecordDataService>();
+            services.AddScoped<IProductDataService, ProductDataService>();
+            services.AddScoped<IProductRelatedDataService<FrequentlyAskedQuestion>, FAQDataService>();
+            services.AddScoped<IProductRelatedDataService<ProductFeature>, ProductFeatureDataService>();
+            services.AddScoped<IProductRelatedDataService<UserStep>, UserStepDataService>();
+            services.AddScoped<IReleaseDataService, ReleaseDataService>();
+            services.AddScoped<ISiteSettingsService, SiteSettingsDataService>();
             return services;
         }
     }

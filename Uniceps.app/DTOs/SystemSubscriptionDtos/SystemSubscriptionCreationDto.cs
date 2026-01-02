@@ -2,6 +2,6 @@
 {
     public class SystemSubscriptionCreationDto
     {
-        public Guid PlanId { get; set; }
+        public int PlanItemId { get; set; }
     }
 }

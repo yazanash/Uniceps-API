@@ -9,10 +9,9 @@ namespace Uniceps.Entityframework.Models.SystemSubscriptionModels
     public class PlanModel: EntityBase
     {
         public string? Name { get; set; }
-        public decimal Price { get; set; }
-        public int DurationInDays { get; set; }
         public PlanTarget TargetUserType { get; set; }
-        public bool IsFree { get; set; }
+        public int ProductId { get; set; }
+        public List<PlanItem> PlanItems { get; set; } = new();
     }
     public enum PlanTarget
     {

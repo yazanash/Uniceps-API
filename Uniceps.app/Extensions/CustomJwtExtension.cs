@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -25,6 +26,25 @@ namespace Uniceps.app.Extensions
                     ValidateAudience = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configurationManager["JWT:SecretKey"]!))
+                };
+                o.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // أولاً جرّب تقرأ من الـ Authorization header
+                        var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+                        {
+                            context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                        }
+                        // إذا ما في Authorization header، جرّب تقرأ من الكوكي
+                        else if (context.Request.Cookies.ContainsKey("auth"))
+                        {
+                            context.Token = context.Request.Cookies["auth"];
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
 
             });

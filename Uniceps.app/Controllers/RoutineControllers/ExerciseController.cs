@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uniceps.app.DTOs.ExerciseDtos;
@@ -33,6 +34,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             return Ok(groups.Select(x => _mapper.ToDto(x)).ToList());
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ExerciseCreateDto exerciseDto)
         {
             if (exerciseDto == null)
@@ -63,6 +65,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             return Ok(_mapper.ToDto(exercise));
         }
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(ExerciseCreateDto exerciseDto)
         {
             Exercise exercise = _mapper.FromCreationDto(exerciseDto);
@@ -70,6 +73,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _dataService.Delete(id);
@@ -84,6 +88,9 @@ namespace Uniceps.app.Controllers.RoutineControllers
                 return NotFound("Image not found.");
             }
             var image = System.IO.File.OpenRead(imagePath);
+            Response.Headers.Append("Cache-Control", "public,max-age=2592000");
+
+
             return File(image, "image/jpeg"); // Adjust the MIME type as needed
         }
     }
