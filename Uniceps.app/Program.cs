@@ -23,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(
     options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("myasp")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();

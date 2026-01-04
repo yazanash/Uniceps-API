@@ -76,19 +76,25 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 {
                     return Ok(membershipPayDto);
                 }
-                var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
-
-                if (!string.IsNullOrEmpty(sessionUrl))
+                else 
                 {
-                    sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
-                    await _subscriptionDataService.Update(sub);
                     membershipPayDto.RequirePayment = true;
-                    membershipPayDto.PaymentUrl = sessionUrl;
                     membershipPayDto.Message = "Membership Created Successfully, but require payment";
                     return Ok(membershipPayDto);
                 }
-                else
-                    return BadRequest("Error in payment gate");
+                //var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
+
+                //if (!string.IsNullOrEmpty(sessionUrl))
+                //{
+                //    sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
+                //    await _subscriptionDataService.Update(sub);
+                //    membershipPayDto.RequirePayment = true;
+                //    membershipPayDto.PaymentUrl = sessionUrl;
+                //    membershipPayDto.Message = "Membership Created Successfully, but require payment";
+                //    return Ok(membershipPayDto);
+                //}
+                //else
+                //    return BadRequest("Error in payment gate");
             }
             catch (Exception ex)
             {
