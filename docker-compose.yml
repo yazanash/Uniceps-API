@@ -24,7 +24,7 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - DB_PASSWORD=${DB_PASSWORD}
     ports:
-      - "5000:8080"
+      - "8090:8080"
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json:ro
 
