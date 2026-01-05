@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Uniceps.app.DTOs.ReleaseDtos;
@@ -14,10 +15,12 @@ namespace Uniceps.app.Controllers.ProductControllers
     {
         private readonly IReleaseDataService _releaseDataService;
         private readonly IProductDataService _productDataService;
-        public ReleaseController(IReleaseDataService releaseDataService, IProductDataService productDataService)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ReleaseController(IReleaseDataService releaseDataService, IProductDataService productDataService, IWebHostEnvironment webHostEnvironment)
         {
             _releaseDataService = releaseDataService;
             _productDataService = productDataService;
+            _webHostEnvironment = webHostEnvironment;
         }
         [HttpPost("upload")]
         public async Task<IActionResult> UploadRelease(ReleaseCreationDto dto)
@@ -54,7 +57,7 @@ namespace Uniceps.app.Controllers.ProductControllers
 
         public async Task<IActionResult> UploadChunk([FromForm] ChunkUploadDto dto)
         {
-            var tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "temp", dto.UploadId);
+            var tempFolder = Path.Combine(_webHostEnvironment.WebRootPath, "temp", dto.UploadId);
             if (!Directory.Exists(tempFolder))
                 Directory.CreateDirectory(tempFolder);
 
@@ -67,7 +70,7 @@ namespace Uniceps.app.Controllers.ProductControllers
 
             if (dto.ChunkIndex == dto.TotalChunks - 1)
             {
-                var finalFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "downloads", "releases");
+                var finalFolder = Path.Combine(_webHostEnvironment.WebRootPath, "downloads", "releases");
                 if (!Directory.Exists(finalFolder))
                     Directory.CreateDirectory(finalFolder);
 

@@ -46,7 +46,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             if (exerciseDto.Image != null && exerciseDto.Image.Length > 0)
             {
                 // Save the file as before and obtain a unique file name.
-                string uploadsFolder = Path.Combine(_webHostEnvironment.ContentRootPath, "ExerciseImages");
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "ExerciseImages");
                 if (!Directory.Exists(uploadsFolder))
                     Directory.CreateDirectory(uploadsFolder);
 
@@ -82,7 +82,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
         [HttpGet("ExerciseImages/{imageName}")]
         public IActionResult GetExerciseImage(string imageName)
         {
-            var imagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "ExerciseImages", imageName);
+            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "ExerciseImages", imageName);
             if (!System.IO.File.Exists(imagePath))
             {
                 return NotFound("Image not found.");

@@ -28,10 +28,10 @@ services:
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json:ro
 
-      - ./wwwroot/downloads:/app/wwwroot/downloads
+      - ./wwwroot/uploads:/app/wwwroot/uploads
       - ./wwwroot/profile-pictures:/app/wwwroot/profile-pictures
       - ./wwwroot/temp:/app/wwwroot/temp
-      - ./wwwroot/uploads:/app/wwwroot/uploads
+      - ./wwwroot/downloads:/app/wwwroot/downloads
       - ./wwwroot/ExerciseImages:/app/wwwroot/ExerciseImages
 
 volumes:
