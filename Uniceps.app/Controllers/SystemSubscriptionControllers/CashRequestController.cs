@@ -18,11 +18,11 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
     public class CashRequestController : ControllerBase
     {
         private readonly IIntDataService<PaymentGateway> _gatewayService;
-        private readonly IIntDataService<CashPaymentRequest> _paymentRequestService;
+        private readonly ICashRequest _paymentRequestService;
         private readonly IMembershipDataService _subscriptionDataService;
         private readonly TelegramBotService _telegramBotService;
 
-        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, IIntDataService<CashPaymentRequest> paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService)
+        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService)
         {
             _gatewayService = gatewayService;
             _paymentRequestService = paymentRequestService;
@@ -30,11 +30,11 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             _telegramBotService = telegramBotService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] CashRequestStatus cashRequestStatus = CashRequestStatus.Pending)
         {
             try
             {
-                IEnumerable<CashPaymentRequest> cashPaymentRequests = await _paymentRequestService.GetAll();
+                IEnumerable<CashPaymentRequest> cashPaymentRequests = await _paymentRequestService.GetAll(cashRequestStatus);
                 List<CashRequestDto> requests = new List<CashRequestDto>();
                 foreach (CashPaymentRequest cashPaymentRequest in cashPaymentRequests)
                 {

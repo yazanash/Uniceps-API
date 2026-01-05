@@ -115,6 +115,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             }));
         }
         [HttpGet("app/{appId}/latest/{os}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetLatestReleaseByOs(int appId, TargetOS os)
         {
             var product = await _productDataService.GetByAppId(appId);
@@ -181,6 +182,37 @@ namespace Uniceps.app.Controllers.ProductControllers
             var deleted = await _releaseDataService.DeleteReleaseAsync(id);
             if (!deleted) return NotFound("Release not found");
             return Ok();
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRelease(int id,ReleaseCreationDto dto)
+        {
+           var release = new Release
+           {
+               Version = dto.Version,
+               TargetOS = dto.TargetOS,
+               DownloadSource = dto.DownloadSource,
+               DownloadUrl = dto.DownloadUrl ?? "",
+               ChangeLog = dto.ChangeLog,
+               ProductId = dto.ProductId,
+               CreatedAt = DateTime.UtcNow,
+               Id = id
+           };
+
+            await _releaseDataService.UpdateReleaseAsync(release);
+            ReleaseDto releaseDto = new ReleaseDto()
+            {
+                Id = release.Id,
+                Version = release.Version,
+                TargetOS = release.TargetOS,
+                DownloadSource = release.DownloadSource,
+                TargetOSText = release.TargetOS.ToString(),
+                DownloadSourceText = release.DownloadSource.ToString(),
+                DownloadUrl = release.DownloadUrl ?? "",
+                ChangeLog = release.ChangeLog,
+                ProductId = release.ProductId,
+                CreatedAt = DateTime.UtcNow
+            };
+            return Ok(releaseDto);
         }
     }
 }
