@@ -14,8 +14,6 @@ using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.SystemSubscriptionServices;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Uniceps.app.Services
 {
@@ -24,14 +22,14 @@ namespace Uniceps.app.Services
         private readonly ITelegramBotClient _bot;
         private readonly ITelegramUserStateDataService<TelegramUserState> _telegramUserStateDataService;
         private readonly IIntDataService<PaymentGateway> _gatewayService;
-        private readonly IIntDataService<CashPaymentRequest> _paymentRequestService;
+        private readonly ICashRequest _paymentRequestService;
         private readonly IMembershipDataService _getByUserId;
         private readonly UserManager<AppUser> _userManager;
         private readonly EmailService _emailService;
         private readonly IOTPGenerateService<OTPModel> _otpGenerateService;
         private readonly IBypassService _bypassService;
         private readonly IConfiguration _config;
-        public TelegramBotService(ITelegramUserStateDataService<TelegramUserState> telegramUserStateDataService, IIntDataService<PaymentGateway> gatewayService, IIntDataService<CashPaymentRequest> paymentRequestService, IMembershipDataService getByUserId, UserManager<AppUser> userManager, EmailService emailService, IOTPGenerateService<OTPModel> otpGenerateService, IBypassService bypassService, IConfiguration config)
+        public TelegramBotService(ITelegramUserStateDataService<TelegramUserState> telegramUserStateDataService, IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService getByUserId, UserManager<AppUser> userManager, EmailService emailService, IOTPGenerateService<OTPModel> otpGenerateService, IBypassService bypassService, IConfiguration config)
         {
             _config = config;
             string botToken= _config.GetValue<string>("Telegram:Token")!;

@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class CashPaymentRequestDataService(AppDbContext dbContext) : IIntDataService<CashPaymentRequest>
+    public class CashPaymentRequestDataService(AppDbContext dbContext) : ICashRequest
     {
         private readonly AppDbContext _dbContext = dbContext;
 
@@ -40,9 +40,9 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return entity!;
         }
 
-        public async Task<IEnumerable<CashPaymentRequest>> GetAll()
+        public async Task<IEnumerable<CashPaymentRequest>> GetAll(CashRequestStatus status)
         {
-            IEnumerable<CashPaymentRequest>? entities = await _dbContext.Set<CashPaymentRequest>().ToListAsync();
+            IEnumerable<CashPaymentRequest>? entities = await _dbContext.Set<CashPaymentRequest>().Where(x=>x.Status == status).ToListAsync();
             return entities;
         }
 

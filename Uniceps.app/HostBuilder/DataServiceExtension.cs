@@ -41,7 +41,7 @@ namespace Uniceps.app.HostBuilder
 
             services.AddScoped<ITelegramUserStateDataService<TelegramUserState>, TelegramUserStateDataService>();
             services.AddScoped<IIntDataService<PaymentGateway>, PaymentGatewayDataService>();
-            services.AddScoped<IIntDataService<CashPaymentRequest>, CashPaymentRequestDataService>();
+            services.AddScoped<ICashRequest, CashPaymentRequestDataService>();
 
             services.AddScoped<IProductDataService, ProductDataService>();
             services.AddScoped<IProductRelatedDataService<FrequentlyAskedQuestion>, FAQDataService>();
