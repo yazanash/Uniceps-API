@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,12 @@ namespace Uniceps.app.Controllers.ProfileControllers
     {
         private readonly IProfileDataService _normalProfileDataService;
         private readonly UserManager<AppUser> _userManager;
-
-        public ProfilePictureController(IProfileDataService normalProfileDataService, UserManager<AppUser> userManager)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProfilePictureController(IProfileDataService normalProfileDataService, UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _normalProfileDataService = normalProfileDataService;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
@@ -33,7 +35,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/profile-pictures");
+            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
@@ -60,7 +62,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
         [HttpGet("{fileName}")]
         public IActionResult GetProfilePicture(string fileName)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/profile-pictures", fileName);
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures", fileName);
             if (!System.IO.File.Exists(filePath))
                 return NotFound();
 
