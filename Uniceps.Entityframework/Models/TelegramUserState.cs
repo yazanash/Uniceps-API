@@ -26,12 +26,10 @@ namespace Uniceps.Entityframework.Models
         Start,
         WaitingEmail,
         WaitingConfirmation,
-        WaitingOtp,
         ShowingInvoice,
         ChoosingGateway,
         ChoosingSubscription,
         WaitingGateway,
-        WaitingTransferCode,
         WaitingReceiptImage,
         Done
     }

@@ -27,6 +27,7 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped < IOTPGenerateService <OTPModel>, OTPGenerateService>();
             services.AddScoped<IStatsDataService<DashboardStats>, StatsDataService>();
             services.AddScoped<IBypassService, BypassService>();
+            services.AddScoped<ExerciseImageService>();
             return services;
         }
     }

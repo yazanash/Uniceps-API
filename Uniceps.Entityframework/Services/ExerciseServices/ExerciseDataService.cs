@@ -12,15 +12,31 @@ using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services.ExerciseServices
 {
-    public class ExerciseDataService(AppDbContext dbContext) : IIntDataService<Exercise>, IIntEntityQueryDataService<Exercise>
+    public class ExerciseDataService(AppDbContext dbContext) : IExerciseDataService
     {
         private readonly AppDbContext _dbContext = dbContext;
 
-        public async Task<Exercise> Create(Exercise entity)
+        public async Task<Exercise> UpsertAsync(Exercise entity)
         {
-            EntityEntry<Exercise> CreatedResult = await _dbContext.Set<Exercise>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return CreatedResult.Entity;
+            var existing = await _dbContext.Exercises
+        .FirstOrDefaultAsync(e => e.Name == entity.Name);
+
+            if (existing != null)
+            {
+                existing.MuscleGroupId = entity.MuscleGroupId;
+                existing.ImageUrl = entity.ImageUrl;
+
+                _dbContext.Exercises.Update(existing);
+                await _dbContext.SaveChangesAsync();
+                return existing;
+            }
+            else
+            {
+                // إضافة تمرين جديد
+                _dbContext.Exercises.Add(entity);
+                await _dbContext.SaveChangesAsync();
+                return entity;
+            }
         }
 
         public async Task<bool> Delete(int id)
@@ -32,12 +48,6 @@ namespace Uniceps.Entityframework.Services.ExerciseServices
             await _dbContext.SaveChangesAsync();
             return true;
         }
-        public async Task<Exercise> Update(Exercise entity)
-        {
-            _dbContext.Set<Exercise>().Update(entity);
-            await _dbContext.SaveChangesAsync();
-            return entity;
-        }
         public async Task<Exercise> Get(int id)
         {
             Exercise? entity = await _dbContext.Set<Exercise>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
@@ -45,14 +55,12 @@ namespace Uniceps.Entityframework.Services.ExerciseServices
                 throw new Exception();
             return entity!;
         }
-
         public async Task<IEnumerable<Exercise>> GetAll()
         {
             IEnumerable<Exercise>? entities = await _dbContext.Set<Exercise>().ToListAsync();
             return entities;
 
         }
-
         public async Task<IEnumerable<Exercise>> GetAllById(int entityId)
         {
             IEnumerable<Exercise>? entities = await _dbContext.Set<Exercise>().Where(x => x.MuscleGroupId == entityId).ToListAsync();

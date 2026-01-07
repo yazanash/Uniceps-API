@@ -21,8 +21,7 @@ namespace Uniceps.app.HostBuilder
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IIntDataService<Exercise>, ExerciseDataService>();
-            services.AddScoped<IIntEntityQueryDataService<Exercise>, ExerciseDataService>();
+            services.AddScoped<IExerciseDataService, ExerciseDataService>();
             services.AddScoped<IIntDataService<MuscleGroup>, MuscleGroupDataService>();
             
             services.AddScoped<IProfileDataService, NormalProfileDataService>();

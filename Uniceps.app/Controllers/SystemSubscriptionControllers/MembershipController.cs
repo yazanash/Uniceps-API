@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Stripe;
 using System.Security.Claims;
+using Telegram.Bot.Types;
 using Uniceps.app.DTOs.SystemSubscriptionDtos;
 using Uniceps.app.Services.PaymentServices;
+using Uniceps.app.Services.TesterServices;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
@@ -24,13 +27,15 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly UserManager<AppUser> _userManager;
         private readonly IProductDataService _productDataService;
-        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IIntDataService<PlanItem> dataService, IProductDataService productDataService)
+        private readonly IBypassService _bypassService;
+        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IIntDataService<PlanItem> dataService, IProductDataService productDataService, IBypassService bypassService)
         {
             _subscriptionDataService = subscriptionDataService;
             _paymentGateway = paymentGateway;
             _userManager = userManager;
             _dataService = dataService;
             _productDataService = productDataService;
+            _bypassService = bypassService;
         }
         [HttpPost]
         [Authorize]
@@ -45,7 +50,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
                 var user = await _userManager.FindByIdAsync(userId);
                 var plan = await _dataService.Get(request.PlanItemId);
-            
+
                 if (user == null || plan == null)
                     return BadRequest("Invalid user or plan");
 
@@ -57,7 +62,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     UserId = user.Id,
                     PlanNID = plan.PlanNID,
                     PlanItemId = plan.Id,
-                    ProductId = plan.PlanModel?.ProductId??0,
+                    ProductId = plan.PlanModel?.ProductId ?? 0,
                     PlanName = plan.PlanModel?.Name ?? "",
                     PlanDaysCount = plan.DaysCount,
                     PlanDuration = plan.DurationString ?? "",
@@ -76,7 +81,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 {
                     return Ok(membershipPayDto);
                 }
-                else 
+                else
                 {
                     membershipPayDto.RequirePayment = true;
                     membershipPayDto.Message = "Membership Created Successfully, but require payment";
@@ -123,9 +128,17 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             {
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
                 AppUser? appUser = await _userManager.FindByIdAsync(userId);
-                if(appUser == null)
+                if (appUser == null)
                     return Unauthorized();
 
+                if (_bypassService.IsTester(appUser.Email ?? ""))
+                {
+                    SystemSubscriptionDto? subsForTest = _bypassService.GetSubscriptionForTester();
+                    if (subsForTest != null)
+                        return Ok(subsForTest);
+                    else
+                        return NotFound("You are not Subscriped");
+                }
                 var product = await _productDataService.GetByAppId(appId);
                 SystemSubscription systemSubscription = await _subscriptionDataService.GetActiveSubscriptionByAppId(userId, product.Id);
                 SystemSubscriptionDto systemSubscriptionDto = new SystemSubscriptionDto()
@@ -142,11 +155,87 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 await _userManager.UpdateAsync(appUser);
                 return Ok(systemSubscriptionDto);
             }
-            catch (Exception ex)
+            catch
             {
-                return NotFound(ex.Message);
+                return NotFound("You are not Subscriped");
             }
 
+        }
+        [HttpGet("pending-subscriptions")]
+        [Authorize(Roles = "Admin")] // حماية الرابط للمسؤولين فقط
+        public async Task<IActionResult> GetPendingSubscriptions([FromQuery] string? email)
+        {
+            List<MembershipDto> membershipDtos = new List<MembershipDto>();
+            if (email != null)
+            {
+                AppUser? appUser = await _userManager.FindByEmailAsync(email);
+                if (appUser != null)
+                {
+                    var userSubs = await _subscriptionDataService.GetByUserIdListAsync(appUser.Id);
+
+                   
+                    foreach (var sub in userSubs)
+                    {
+                        MembershipDto membership = new MembershipDto
+                        {
+                            Email = appUser.Email,
+                            EndDate = sub.EndDate,
+                            Id = sub.NID,
+                            Plan = sub.PlanName,
+                            Price = sub.Price,
+                            StartDate = sub.StartDate,
+                        };
+                        membershipDtos.Add(membership);
+                    }
+                }
+            }
+            else
+            {
+                var subs = await _subscriptionDataService.GetUnPaidSubscription();
+                foreach (var sub in subs)
+                {
+
+                    AppUser? appUser = await _userManager.FindByIdAsync(sub.UserId ?? "");
+                    if (appUser != null)
+                    {
+                        MembershipDto membership = new MembershipDto
+                        {
+                            Email = appUser.Email,
+                            EndDate = sub.EndDate,
+                            Id = sub.NID,
+                            Plan = sub.PlanName,
+                            Price = sub.Price,
+                            StartDate = sub.StartDate,
+                        };
+                        membershipDtos.Add(membership);
+                    }
+                }
+               
+            }
+            if (membershipDtos.Count > 0)
+                return Ok(membershipDtos);
+            else
+                return NotFound("No subscriptions");
+
+        }
+        [HttpPost("activate-subscription")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateSubscriptions([FromBody] MemberShipIdDto   memberShipIdDto)
+        {
+            if (memberShipIdDto.MembershipId == Guid.Empty)
+                return BadRequest("No subscriptions selected.");
+            await _subscriptionDataService.SetSubscriptionAsPaid(memberShipIdDto.MembershipId);
+            return Ok(new { Message = $" subscription activated successfully." });
+        }
+        [HttpDelete("delete-subscription")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteSubscriptions([FromBody] MemberShipIdDto memberShipIdDto)
+        {
+            if (memberShipIdDto.MembershipId == Guid.Empty)
+                return BadRequest("No subscriptions selected.");
+
+            await _subscriptionDataService.Delete(memberShipIdDto.MembershipId);
+            return Ok(new { Message = $" subscription Deleted successfully." });
         }
     }
 }
