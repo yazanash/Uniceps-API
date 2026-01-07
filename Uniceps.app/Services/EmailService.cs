@@ -57,7 +57,7 @@ namespace Uniceps.app.Services
     </div>";
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("yazan.ash.doonaas@gmail.com"),
+                From = new MailAddress("Unicepse@gmail.com"),
                 Subject = "Your OTP Code",
                 Body = htmlBody,
                 IsBodyHtml = true,
