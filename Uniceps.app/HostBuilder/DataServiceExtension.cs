@@ -48,6 +48,8 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IProductRelatedDataService<UserStep>, UserStepDataService>();
             services.AddScoped<IReleaseDataService, ReleaseDataService>();
             services.AddScoped<ISiteSettingsService, SiteSettingsDataService>();
+
+            services.AddScoped<INotificationDataService, NotificationDataService>();
             return services;
         }
     }

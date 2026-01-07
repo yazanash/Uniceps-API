@@ -32,7 +32,7 @@ builder.Services.AddMappers();
 builder.Services.AddSystemServices();
 builder.Services.AddCustomJwtAuth(builder.Configuration);
 builder.Services.AddFirebaseAdmin(builder.Configuration);
-
+builder.Services.AddHostedService<NotificationWorker>();
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssemblyContaining<Lib>());
 builder.Services.AddControllers();

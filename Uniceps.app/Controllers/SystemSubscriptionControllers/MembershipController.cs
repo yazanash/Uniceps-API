@@ -10,8 +10,11 @@ using Uniceps.app.DTOs.SystemSubscriptionDtos;
 using Uniceps.app.Services.PaymentServices;
 using Uniceps.app.Services.TesterServices;
 using Uniceps.Core.Services;
+using Uniceps.Entityframework.Models;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
+using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.ProductServices;
 using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 
@@ -28,7 +31,8 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IProductDataService _productDataService;
         private readonly IBypassService _bypassService;
-        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IIntDataService<PlanItem> dataService, IProductDataService productDataService, IBypassService bypassService)
+        private readonly INotificationDataService _notificationDataService;
+        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IIntDataService<PlanItem> dataService, IProductDataService productDataService, IBypassService bypassService, INotificationDataService notificationDataService)
         {
             _subscriptionDataService = subscriptionDataService;
             _paymentGateway = paymentGateway;
@@ -36,6 +40,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             _dataService = dataService;
             _productDataService = productDataService;
             _bypassService = bypassService;
+            _notificationDataService = notificationDataService;
         }
         [HttpPost]
         [Authorize]
@@ -225,6 +230,18 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             if (memberShipIdDto.MembershipId == Guid.Empty)
                 return BadRequest("No subscriptions selected.");
             await _subscriptionDataService.SetSubscriptionAsPaid(memberShipIdDto.MembershipId);
+            var subs = await _subscriptionDataService.Get(memberShipIdDto.MembershipId);
+            if (subs != null&& subs.UserId!=null)
+            {
+                await _notificationDataService.CreateAsync(new Notification
+                {
+                    UserId = subs.UserId,
+                    Title = $"اهلا وسهلا فيك بعالم uniceps",
+                    Body = "تم تفعيل الاشتراك الخاص بك بنجاح . خلينا نشوف النتائج الحلوة يابطل ",
+                    ScheduledTime = DateTime.UtcNow.AddHours(22)
+                });
+            }
+          
             return Ok(new { Message = $" subscription activated successfully." });
         }
         [HttpDelete("delete-subscription")]
