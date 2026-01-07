@@ -42,7 +42,7 @@ namespace Uniceps.app.Services
             <p style='color: #aaaaaa; font-size: 14px; margin-bottom: 30px;'>Use the code below to complete your secure login.</p>
             
             <div style='background-color: #000000; border: 1px dashed #22d3ee; border-radius: 12px; padding: 20px; margin-bottom: 30px;'>
-                <span style='font-family: monospace; font-size: 38px; font-weight: bold; color: #22d3ee; letter-spacing: 10px; display: block;'>{otp}</span>
+                <span style='font-family: monospace; font-size: 25px; font-weight: bold; color: #22d3ee; letter-spacing: 10px; display: block;'>{otp}</span>
             </div>
             
             <p style='color: #555; font-size: 12px; margin-top: 20px;'>

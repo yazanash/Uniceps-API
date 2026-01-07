@@ -28,6 +28,7 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IStatsDataService<DashboardStats>, StatsDataService>();
             services.AddScoped<IBypassService, BypassService>();
             services.AddScoped<ExerciseImageService>();
+
             return services;
         }
     }

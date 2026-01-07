@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Telegram.Bot.Types;
 using Uniceps.app.DTOs.MeasurementDtos;
 using Uniceps.app.Helpers;
 using Uniceps.Core.Services;
+using Uniceps.Entityframework.Models;
 using Uniceps.Entityframework.Models.Measurements;
+using Uniceps.Entityframework.Services;
 
 namespace Uniceps.app.Controllers.MeasurementControllers
 {
@@ -15,12 +18,13 @@ namespace Uniceps.app.Controllers.MeasurementControllers
         private readonly IIntDataService<WorkoutSession> _dataService;
         private readonly IUserQueryDataService<WorkoutSession> _userQueryDataService;
         private readonly IMapperExtension<WorkoutSession, WorkoutSessionDto, WorkoutSessionCreationDto> _mapperExtension;
-
-        public WorkoutController(IIntDataService<WorkoutSession> dataService, IUserQueryDataService<WorkoutSession> userQueryDataService, IMapperExtension<WorkoutSession, WorkoutSessionDto, WorkoutSessionCreationDto> mapperExtension)
+        private readonly INotificationDataService _notificationDataService;
+        public WorkoutController(IIntDataService<WorkoutSession> dataService, IUserQueryDataService<WorkoutSession> userQueryDataService, IMapperExtension<WorkoutSession, WorkoutSessionDto, WorkoutSessionCreationDto> mapperExtension, INotificationDataService notificationDataService)
         {
             _dataService = dataService;
             _userQueryDataService = userQueryDataService;
             _mapperExtension = mapperExtension;
+            _notificationDataService = notificationDataService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -48,6 +52,13 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             WorkoutSession bodyMeasurement = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
 
             bodyMeasurement.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            await _notificationDataService.CreateAsync(new Notification
+            {
+                UserId = bodyMeasurement.UserId,
+                Title = $"كيفك يابطل",
+                Body = "تمرينك المعتاد بيبدأ بعد ساعة، جاهز؟",
+                ScheduledTime = DateTime.UtcNow.AddHours(22)
+            });
             var result = await _dataService.Create(bodyMeasurement);
             return Ok(new WorkoutSessionIdDto() { Id= result.Id});
         }

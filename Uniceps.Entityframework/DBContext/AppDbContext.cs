@@ -40,6 +40,7 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions{ get; set; }
         public DbSet<DownloadLog> DownloadLogs { get; set; }
         public DbSet<SiteSettings> SiteSettings{  get; set;}
+        public DbSet<Notification> Notifications{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -117,6 +117,26 @@ namespace Uniceps.app.Controllers.ProductControllers
                 CreatedAt = DateTime.UtcNow
             }));
         }
+        [HttpGet("GetRelease/{id}")]
+        public async Task<IActionResult> GetRelease(int id)
+        {
+            var release = await _releaseDataService.GetReleaseByIdAsync(id);
+            if (release == null) return NotFound("No release found");
+
+            return Ok( new ReleaseDto()
+            {
+                Id = release.Id,
+                Version = release.Version,
+                TargetOS = release.TargetOS,
+                DownloadSource = release.DownloadSource,
+                TargetOSText = release.TargetOS.ToString(),
+                DownloadSourceText = release.DownloadSource.ToString(),
+                DownloadUrl = release.DownloadUrl ?? "",
+                ChangeLog = release.ChangeLog,
+                ProductId = release.ProductId,
+                CreatedAt = DateTime.UtcNow
+            });
+        }
         [HttpGet("app/{appId}/latest/{os}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetLatestReleaseByOs(int appId, TargetOS os)

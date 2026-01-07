@@ -8,6 +8,7 @@ using Uniceps.app.Services;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
+using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 
 namespace Uniceps.app.Controllers.SystemSubscriptionControllers
@@ -21,13 +22,14 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
         private readonly ICashRequest _paymentRequestService;
         private readonly IMembershipDataService _subscriptionDataService;
         private readonly TelegramBotService _telegramBotService;
-
-        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService)
+        private readonly INotificationDataService _notificationDataService;
+        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService, INotificationDataService notificationDataService)
         {
             _gatewayService = gatewayService;
             _paymentRequestService = paymentRequestService;
             _subscriptionDataService = subscriptionDataService;
             _telegramBotService = telegramBotService;
+            _notificationDataService = notificationDataService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] CashRequestStatus cashRequestStatus = CashRequestStatus.Pending)
@@ -72,15 +74,26 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     bool systemSubscription = await _subscriptionDataService.SetSubscriptionAsPaid(Guid.Parse(cashPaymentRequest.SubscriptionId!));
                     if (systemSubscription)
                     {
-                         await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId);
+                        await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId);
+                        var subs = await _subscriptionDataService.Get(Guid.Parse(cashPaymentRequest.SubscriptionId!));
+                        if (subs != null && subs.UserId != null)
+                        {
+                            await _notificationDataService.CreateAsync(new Notification
+                            {
+                                UserId = subs.UserId,
+                                Title = $"اهلا وسهلا فيك بعالم uniceps",
+                                Body = "تم تفعيل الاشتراك الخاص بك بنجاح . خلينا نشوف النتائج الحلوة يابطل ",
+                                ScheduledTime = DateTime.UtcNow.AddHours(22)
+                            });
+                        }
                     }
-                   
+
                 }
                 else
                 {
                     await _telegramBotService.HandelRequestDenied(cashPaymentRequest.ChatId);
                 }
-                    await _paymentRequestService.Update(cashPaymentRequest);
+                await _paymentRequestService.Update(cashPaymentRequest);
                 return Ok();
             }
             catch (Exception ex)
