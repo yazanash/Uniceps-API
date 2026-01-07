@@ -16,5 +16,8 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         Task<IEnumerable<SystemSubscription>> GetByUserIdListAsync(string userid);
         Task<SystemSubscription> Update(SystemSubscription entity);
         Task<bool> HasUsedTrialForProduct(string userID,int productId);
+        Task<IEnumerable<SystemSubscription>> GetUnPaidSubscription();
+
+        Task<bool> SetSubscriptionAsPaid(Guid subId);
     }
 }

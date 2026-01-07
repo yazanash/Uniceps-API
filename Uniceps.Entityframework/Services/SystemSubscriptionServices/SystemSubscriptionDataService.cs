@@ -64,10 +64,29 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return entity!;
         }
 
+        public async Task<IEnumerable<SystemSubscription>> GetUnPaidSubscription()
+        {
+            IEnumerable<SystemSubscription>? entity = await _dbContext.Set<SystemSubscription>().Where(x => x.ISPaid == false).AsNoTracking().ToListAsync();
+            return entity!;
+        }
+
         public async Task<bool> HasUsedTrialForProduct(string userId, int productId)
         {
            return await _dbContext.Set<SystemSubscription>()
             .AnyAsync(s => s.UserId == userId && s.ProductId == productId);
+        }
+
+        public async Task<bool> SetSubscriptionAsPaid(Guid subId)
+        {
+            SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().AsNoTracking().FirstOrDefaultAsync((e) => e.NID == subId);
+            if (entity == null)
+                return false;
+
+            entity.ISPaid = true;
+            entity.IsActive = true;
+            _dbContext.Set<SystemSubscription>().Update(entity);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<SystemSubscription> Update(SystemSubscription entity)

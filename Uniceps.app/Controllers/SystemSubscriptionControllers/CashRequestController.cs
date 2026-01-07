@@ -69,11 +69,12 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 cashPaymentRequest.Status = changeCashRequestStatusDto.CashRequestStatus;
                 if (cashPaymentRequest.Status == CashRequestStatus.Accepted)
                 {
-                    SystemSubscription systemSubscription = await _subscriptionDataService.Get(Guid.Parse(cashPaymentRequest.SubscriptionId!));
-                    systemSubscription.ISPaid = true;
-                    systemSubscription.IsActive = true;
-                    await _subscriptionDataService.Update(systemSubscription);
-                    await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId);
+                    bool systemSubscription = await _subscriptionDataService.SetSubscriptionAsPaid(Guid.Parse(cashPaymentRequest.SubscriptionId!));
+                    if (systemSubscription)
+                    {
+                         await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId);
+                    }
+                   
                 }
                 else
                 {

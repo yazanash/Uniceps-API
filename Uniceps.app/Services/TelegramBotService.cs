@@ -25,23 +25,19 @@ namespace Uniceps.app.Services
         private readonly ICashRequest _paymentRequestService;
         private readonly IMembershipDataService _getByUserId;
         private readonly UserManager<AppUser> _userManager;
-        private readonly EmailService _emailService;
-        private readonly IOTPGenerateService<OTPModel> _otpGenerateService;
-        private readonly IBypassService _bypassService;
         private readonly IConfiguration _config;
-        public TelegramBotService(ITelegramUserStateDataService<TelegramUserState> telegramUserStateDataService, IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService getByUserId, UserManager<AppUser> userManager, EmailService emailService, IOTPGenerateService<OTPModel> otpGenerateService, IBypassService bypassService, IConfiguration config)
+        private readonly IWebHostEnvironment _env;
+        public TelegramBotService(ITelegramUserStateDataService<TelegramUserState> telegramUserStateDataService, IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService getByUserId, UserManager<AppUser> userManager, IConfiguration config, IWebHostEnvironment env)
         {
             _config = config;
-            string botToken= _config.GetValue<string>("Telegram:Token")!;
+            string botToken = _config.GetValue<string>("Telegram:Token")!;
             _bot = new TelegramBotClient(botToken);
             _telegramUserStateDataService = telegramUserStateDataService;
             _gatewayService = gatewayService;
             _paymentRequestService = paymentRequestService;
             _getByUserId = getByUserId;
             _userManager = userManager;
-            _emailService = emailService;
-            _otpGenerateService = otpGenerateService;
-            _bypassService = bypassService;
+            _env = env;
         }
 
         public async Task HandleUpdate(Update update)
@@ -51,16 +47,24 @@ namespace Uniceps.app.Services
                 await HandleCallback(update.CallbackQuery!);
                 return;
             }
-            if (update.Type == UpdateType.Message && update.Message!.Photo != null)
+            if (update.Type == UpdateType.Message)
             {
-                await HandleWaitingReceiptImage(await _telegramUserStateDataService.GetOrCreateAsync(update.Message.Chat.Id), update.Message);
-                return;
-            }
-            // 2) معالجة الرسائل النصية
-            if (update.Type == UpdateType.Message && update.Message!.Text != null)
-            {
-                await HandleMessage(update.Message);
-                return;
+                var msg = update.Message!;
+                var user = await _telegramUserStateDataService.GetOrCreateAsync(msg.Chat.Id);
+
+                // إذا أرسل المستخدم صورة وكان في مرحلة انتظار الوصل
+                if (msg.Photo != null && user.Step == BotStep.WaitingReceiptImage)
+                {
+                    await HandleWaitingReceiptImage(user, msg);
+                    return;
+                }
+
+                // إذا أرسل نصاً (مثل /start أو البريد الإلكتروني)
+                if (msg.Text != null)
+                {
+                    await HandleMessage(msg);
+                    return;
+                }
             }
         }
         private async Task HandleCallback(CallbackQuery query)
@@ -98,25 +102,48 @@ namespace Uniceps.app.Services
                 if (int.TryParse(methodIdStr, out var gatewayId))
                 {
                     user.PaymentGatewayId = gatewayId;
-                    user.Step = BotStep.WaitingTransferCode;
+                    user.Step = BotStep.WaitingReceiptImage;
                     await _telegramUserStateDataService.UpdateAsync(user);
 
                     var gateway = await _gatewayService.Get(gatewayId);
-                    await _bot.SendMessage(chatId, $"اخترت: {gateway?.Name}\n\n{gateway?.TransferInfo}\n\nالآن أرسل رقم الحوالة:");
+                    string message = $"💎 بوابة {gateway?.Name}\n\n" +
+                           $"{gateway?.TransferInfo}\n\n" +
+                           "✅ لإتمام الطلب، يرجى إرسال **صورة الوصل** الآن:";
+
+                    await _bot.SendMessage(chatId, message, parseMode: ParseMode.Markdown);
                 }
             }
 
             if (query.Data == "confirm_payment")
             {
+                string localPath = "";
+                if (!string.IsNullOrEmpty(user.ReceiptFileId))
+                {
+                    var file = await _bot.GetFile(user.ReceiptFileId);
+
+                    var fileName = $"{user.ReceiptFileId}.jpg";
+                    var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "receipts");
+
+                    if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var saveFileStream = System.IO.File.OpenWrite(filePath))
+                    {
+                        await _bot.DownloadFile(file.FilePath!, saveFileStream);
+                    }
+
+                    localPath = $"/uploads/receipts/{fileName}";
+                }
                 var req = new CashPaymentRequest
                 {
                     ChatId = chatId,
                     Email = user.Email!,
                     PaymentGatewayId = user.PaymentGatewayId,
                     SubscriptionId = user.SubscriptionId,
-                    TransferCode = user.TransferCode!,
+                    TransferCode = user.TransferCode?? "تم ارسال صورة التحويل",
                     Amount = user.Amount,
-                    ReceiptFileId = user.ReceiptFileId,
+                    ReceiptFileId = localPath,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -150,20 +177,12 @@ namespace Uniceps.app.Services
                 await HandleStartAsync(user);
                 return;
             }
-            if (text.Equals("/invoice", StringComparison.OrdinalIgnoreCase))
-            {
-                await ShowUserSubscriptionsOrAskEmail(user);
-                return;
-            }
-
-            // Timeout
             if (DateTime.UtcNow - user.LastUpdated > TimeSpan.FromMinutes(15))
             {
                 await ResetUserState(chatId);
                 return;
             }
 
-            // Flow
             switch (user.Step)
             {
                 case BotStep.Start:
@@ -174,21 +193,10 @@ namespace Uniceps.app.Services
                     await HandleWaitingEmail(user, text);
                     break;
 
-                case BotStep.WaitingOtp:
-                    if (!int.TryParse(text, out _))
-                    {
-                        await _bot.SendMessage(chatId, "رجاءً أدخل كود تحقق صحيح أو أرسل /cancel.");
-                        return;
-                    }
-                    await HandleEmailVerification(user, text);
-                    break;
 
-                case BotStep.WaitingTransferCode:
-                    user.TransferCode = text;
-                    user.Step = BotStep.WaitingReceiptImage;
-                    user.LastUpdated = DateTime.UtcNow;
-                    await _telegramUserStateDataService.UpdateAsync(user);
-                    await _bot.SendMessage(chatId, "تم استلام رقم الحوالة. أرسل صورة الإيصال الآن.");
+                case BotStep.WaitingReceiptImage:
+                    // إذا أرسل نصاً بدلاً من صورة، نكتفي بالتنبيه فقط
+                    await _bot.SendMessage(chatId, "⚠️ عذراً، يجب إرسال **صورة الوصل** (Attachment) لإتمام العملية، الرسائل النصية غير مقبولة في هذه الخطوة.");
                     break;
 
                 case BotStep.Done:
@@ -201,61 +209,12 @@ namespace Uniceps.app.Services
             }
 
         }
-        private async Task ShowUserSubscriptionsOrAskEmail(TelegramUserState user)
-        {
-            // إذا عنده إيميل محفوظ
-            if (!string.IsNullOrWhiteSpace(user.Email))
-            {
-                var appUser = await _userManager.FindByEmailAsync(user.Email);
-                if (appUser == null)
-                {
-                    await _bot.SendMessage(user.ChatId, "لا يمكن إيجاد حسابك. أرسل بريدك مرة أخرى بـ /start.");
-                    user.Step = BotStep.Start;
-                    user.LastUpdated = DateTime.UtcNow;
-                    await _telegramUserStateDataService.UpdateAsync(user);
-                    return;
-                }
-
-                // جلب الاشتراكات
-                var subscriptions = await _getByUserId.GetByUserIdListAsync(appUser.Id);
-                if (!subscriptions.Any())
-                {
-                    await _bot.SendMessage(user.ChatId, "لا يوجد لديك اشتراكات حالياً.");
-                    return;
-                }
-
-                // بناء أزرار لكل اشتراك
-                var buttons = subscriptions
-                    .Select(s => InlineKeyboardButton.WithCallbackData(
-                        $"{s.PlanName} - {s.Price}$ / {s.PlanDuration}",
-                        $"sub_{s.NID}"
-                    ))
-                    .Select(b => new[] { b })
-                    .ToArray();
-
-                var keyboard = new InlineKeyboardMarkup(buttons);
-                await _bot.SendMessage(user.ChatId, "اختر الاشتراك الذي تريد الدفع عليه:", replyMarkup: keyboard);
-
-                user.Step = BotStep.ChoosingSubscription;
-                user.LastUpdated = DateTime.UtcNow;
-                await _telegramUserStateDataService.UpdateAsync(user);
-            }
-            else
-            {
-                // إذا ما عنده إيميل
-                await _bot.SendMessage(user.ChatId, "أرسل بريدك الإلكتروني أولاً بـ /start لتأكيد هويتك.");
-                user.Step = BotStep.WaitingEmail;
-                user.LastUpdated = DateTime.UtcNow;
-                await _telegramUserStateDataService.UpdateAsync(user);
-            }
-        }
         public async Task HandleStartAsync(TelegramUserState userState)
         {
             string welcomeMessage =
  @"أهلاً 👋 أنا بوت الدفع النقدي الخاص ب Uniceps.
 الأوامر الرئيسية:
 - /start : بدء العملية من جديد
-- /invoice : عرض اشتراكاتك المتاحة
 - /cancel : إلغاء العملية الحالية
 
 الرجاء إرسال بريدك الإلكتروني لتأكيد هويتك:";
@@ -273,86 +232,40 @@ namespace Uniceps.app.Services
                 await _bot.SendMessage(userState.ChatId, "رجاءً أدخل بريد إلكتروني صحيح.");
                 return;
             }
-          
+
             userState.Email = text;
-            if (_bypassService.IsTester(userState.Email))
-            {
-                await _bot.SendMessage(userState.ChatId, $"لقد قمنا بارسال كود التحقق الى بريدك الالكتروني ارسله هنا");
-
-                userState.Step = BotStep.WaitingOtp;
-                await _telegramUserStateDataService.UpdateAsync(userState);
-                return;
-            }
-
-            var otpmodel = await _otpGenerateService.GenerateAsync(userState.Email);
             AppUser? appUser = await _userManager.FindByEmailAsync(userState.Email);
+
             if (appUser != null)
             {
-                await _emailService.SendEmailAsync(otpmodel.Email!, otpmodel.Otp);
-                await _bot.SendMessage(userState.ChatId, $"لقد قمنا بارسال كود التحقق الى بريدك الالكتروني ارسله هنا");
+                // جلب الاشتراكات مباشرة بدون OTP
+                var subscriptions = await _getByUserId.GetByUserIdListAsync(appUser.Id);
 
-                userState.Step = BotStep.WaitingOtp;
-                await _telegramUserStateDataService.UpdateAsync(userState);
-            }
-            else
-            {
-                await _bot.SendMessage(userState.ChatId, "هذا الحساب غير مسجل لدينا حاليا");
-                userState.Step = BotStep.Start;
-                await _telegramUserStateDataService.UpdateAsync(userState);
-                return;
-            }
-        }
-        public async Task HandleEmailVerification(TelegramUserState userState, string text)
-        {
-            if (string.IsNullOrEmpty(userState.Email))
-            {
-                return;
-            }
-            try
-            {
-                int otp = Convert.ToInt32(text);
-                AppUser? appUser=null;
-                if (_bypassService.IsValidTester(userState.Email, otp.ToString()))
+                if (!subscriptions.Any())
                 {
-                    appUser = await _userManager.FindByEmailAsync(userState.Email!);
-                    return;
+                    await _bot.SendMessage(userState.ChatId, "هذا الحساب لا يملك اشتراكات معلقة حالياً.");
+                    userState.Step = BotStep.Start;
                 }
                 else
                 {
-                    var otpModel = await _otpGenerateService.VerifyAsync(userState.Email!, otp);
-                    appUser = await _userManager.FindByEmailAsync(userState.Email!);
+                    var buttons = subscriptions
+                        .Select(s => InlineKeyboardButton.WithCallbackData($"{s.PlanName} - {s.Price}$", $"sub_{s.NID}"))
+                        .Select(b => new[] { b })
+                        .ToArray();
+
+                    var keyboard = new InlineKeyboardMarkup(buttons);
+                    await _bot.SendMessage(userState.ChatId, "تم العثور على الحساب. اختر الاشتراك المراد تسديده:", replyMarkup: keyboard);
+                    userState.Step = BotStep.ChoosingSubscription;
                 }
-                if (appUser == null)
-                {
-                    await _bot.SendMessage(userState.ChatId, "الحساب غير موجود.");
-                    userState.Step = BotStep.Start;
-                    await _telegramUserStateDataService.UpdateAsync(userState);
-                    return;
-                }
-
-                var subscriptions = await _getByUserId.GetByUserIdListAsync(appUser.Id);
-                if (!subscriptions.Any())
-                {
-                    await _bot.SendMessage(userState.ChatId, "لا يوجد لديك اشتراكات.");
-                    return;
-                }
-
-                var buttons = subscriptions
-                    .Select(s => InlineKeyboardButton.WithCallbackData($"{s.PlanName} - {s.Price}$", $"sub_{s.NID}"))
-                    .Select(b => new[] { b })
-                    .ToArray();
-
-                var keyboard = new InlineKeyboardMarkup(buttons);
-                await _bot.SendMessage(userState.ChatId, "اختر الاشتراك الذي تريد الدفع عليه:", replyMarkup: keyboard);
-
-                userState.Step = BotStep.ChoosingSubscription;
-                await _telegramUserStateDataService.UpdateAsync(userState);
             }
-            catch(Exception ex)
+            else
             {
-                await _bot.SendMessage(userState.ChatId, ex.Message);
+                await _bot.SendMessage(userState.ChatId, "هذا الإيميل غير مسجل في Uniceps. تأكد من الإيميل المحفوظ في تطبيقك.");
+                userState.Step = BotStep.Start;
             }
+            await _telegramUserStateDataService.UpdateAsync(userState);
         }
+
         public async Task HandleWaitingReceiptImage(TelegramUserState userState, Message message)
         {
             try
