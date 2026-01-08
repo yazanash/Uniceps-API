@@ -25,7 +25,14 @@ namespace Uniceps.app.Services.NotificationServices
             var message = new MulticastMessage
             {
                 Tokens = tokens,
-                Notification = new Notification { Title = title, Body = body }
+                Notification = new Notification { Title = title, Body = body },
+                Android = new AndroidConfig
+                {
+                    Notification = new AndroidNotification
+                    {
+                        Icon = "ic_state"
+                    }
+                }
             };
 
             await FirebaseMessaging.DefaultInstance.SendEachForMulticastAsync(message);
