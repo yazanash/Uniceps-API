@@ -52,7 +52,8 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             WorkoutSession bodyMeasurement = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
 
             bodyMeasurement.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            string Length = bodyMeasurement.FinishedAt?.Subtract(bodyMeasurement.CreatedAt).TotalMinutes.ToString()??"";
+            var totalMinutes = bodyMeasurement.FinishedAt?.Subtract(bodyMeasurement.CreatedAt).TotalMinutes ?? 0;
+             string Length = Math.Ceiling(totalMinutes).ToString("0");
             await _notificationDataService.CreateAsync(new Notification
             {
                 UserId = bodyMeasurement.UserId,
