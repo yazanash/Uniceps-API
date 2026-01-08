@@ -29,7 +29,7 @@ namespace Uniceps.Entityframework.Services
 
         public async Task<IEnumerable<Notification>> GetNotifications()
         {
-            IEnumerable<Notification>? entities = await _dbContext.Set<Notification>().ToListAsync();
+            IEnumerable<Notification>? entities = await _dbContext.Set<Notification>().Where(x=>x.ScheduledTime<DateTime.UtcNow).ToListAsync();
             return entities;
         }
 

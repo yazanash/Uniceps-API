@@ -52,6 +52,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             WorkoutSession bodyMeasurement = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
 
             bodyMeasurement.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            string Length = bodyMeasurement.FinishedAt?.Subtract(bodyMeasurement.CreatedAt).TotalMinutes.ToString()??"";
             await _notificationDataService.CreateAsync(new Notification
             {
                 UserId = bodyMeasurement.UserId,
@@ -59,6 +60,17 @@ namespace Uniceps.app.Controllers.MeasurementControllers
                 Body = "تمرينك المعتاد بيبدأ بعد ساعة، جاهز؟",
                 ScheduledTime = DateTime.UtcNow.AddHours(22)
             });
+            if (!string.IsNullOrEmpty(Length))
+            {
+                await _notificationDataService.CreateAsync(new Notification
+                {
+                    UserId = bodyMeasurement.UserId,
+                    Title = $"حماستك بالاداء رهيبة",
+                    Body = $"{Length} دقائق في التمرين رائعة",
+                    ScheduledTime = DateTime.UtcNow.AddMinutes(10)
+                });
+            }
+           
             var result = await _dataService.Create(bodyMeasurement);
             return Ok(new WorkoutSessionIdDto() { Id= result.Id});
         }
