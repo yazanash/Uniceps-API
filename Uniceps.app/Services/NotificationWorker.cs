@@ -22,36 +22,27 @@ namespace Uniceps.app.Services
             // حلقة تكرار لضمان بقاء الخدمة تعمل بالخلفية
             while (!stoppingToken.IsCancellationRequested)
             {
-                try
+                using (var scope = _serviceProvider.CreateScope()) // إنشاء سكوب جديد لكل لفة
                 {
-                    using (var scope = _serviceProvider.CreateScope())
+                    try
                     {
-                        // جلب الخدمات داخل السكوب
-                        var notificationDataService = scope.ServiceProvider.GetRequiredService<INotificationDataService>();
-                        var notificationSender = scope.ServiceProvider.GetRequiredService<INotificationSender>();
+                        var db = scope.ServiceProvider.GetRequiredService<INotificationDataService>();
+                        var sender = scope.ServiceProvider.GetRequiredService<INotificationSender>();
 
-                        var notifications = await notificationDataService.GetNotifications();
+                        // هنا يتم فتح اتصال جديد ونظيف مع قاعدة البيانات الصحيحة
+                        var notes = await db.GetNotifications();
 
-                        foreach (var notification in notifications)
+                        foreach (var n in notes)
                         {
-                            try
-                            {
-                                await notificationSender.SendAsync(notification.UserId, notification.Title, notification.Body);
-                                await notificationDataService.RemoveAsync(notification.Id);
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex, "Failed to send notification to user {UserId}", notification.UserId);
-                            }
+                            await sender.SendAsync(n.UserId, n.Title, n.Body);
+                            await db.RemoveAsync(n.Id);
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error in Notification Loop");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred in NotificationWorker loop");
-                }
-
-                // الانتظار قبل الجولة القادمة
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
             }
         }
