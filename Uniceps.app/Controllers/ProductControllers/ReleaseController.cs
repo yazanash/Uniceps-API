@@ -186,6 +186,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             }));
         }
         [HttpGet("download/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DownloadRelease(int id)
         {
             var release = await _releaseDataService.GetReleaseByIdAsync(id);
