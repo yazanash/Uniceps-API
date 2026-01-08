@@ -30,7 +30,7 @@ namespace Uniceps.app.Services.NotificationServices
                 {
                     Notification = new AndroidNotification
                     {
-                        Icon = "ic_state"
+                        Icon = "ic_stat"
                     }
                 }
             };
