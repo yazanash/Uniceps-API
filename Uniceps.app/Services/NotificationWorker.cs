@@ -42,7 +42,6 @@ namespace Uniceps.app.Services
                             catch (Exception ex)
                             {
                                 _logger.LogError(ex, "Failed to send notification to user {UserId}", notification.UserId);
-                                // هنا يمكنك اتخاذ قرار: هل تحذف الإشعار أم تتركه للمحاولة القادمة؟
                             }
                         }
                     }
