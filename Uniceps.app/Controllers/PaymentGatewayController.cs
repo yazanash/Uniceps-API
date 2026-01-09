@@ -49,6 +49,16 @@ namespace Uniceps.app.Controllers
             var result = await _paymentGatewayService.Create(paymentGateway);
             return Ok(_mapperExtension.ToDto(paymentGateway));
         }
-    
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePaymentGateway(int id , [FromBody] PaymentGatewayCreationDto paymentGatewayCreationDto)
+        {
+            if (paymentGatewayCreationDto == null)
+                return BadRequest("Exercise data is missing.");
+
+            PaymentGateway paymentGateway = _mapperExtension.FromCreationDto(paymentGatewayCreationDto);
+            paymentGateway.Id = id;
+            var result = await _paymentGatewayService.Update(paymentGateway);
+            return Ok(_mapperExtension.ToDto(paymentGateway));
+        }
     }
 }
