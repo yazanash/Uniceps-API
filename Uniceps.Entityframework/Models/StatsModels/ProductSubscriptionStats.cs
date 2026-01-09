@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.StatsModels
 {
-    public class MonthlyNewUsers
+    public class ProductSubscriptionStats
     {
-        public string Month { get; set; } = "";
-        public int Users { get; set; }
+        public string ProductName { get; set; } = "";
+        public int Count { get; set; }
     }
 }

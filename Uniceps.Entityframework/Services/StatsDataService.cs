@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.StatsModels;
+using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services
 {
@@ -20,19 +22,21 @@ namespace Uniceps.Entityframework.Services
         {
             return new DashboardStats
             {
-                UsersCount = await _db.Users.CountAsync(),
-
-                TotalBusinessUsers = await _db.Users
-                 .Where(u => u.UserType == UserType.Business)
-                 .CountAsync(),
+                UsersCount = await _db.Users.AsNoTracking().CountAsync(),
 
                 ActiveUsers = await GetActiveUsers(),
+
+                TotalDownloads = await _db.Set<DownloadLog>().AsNoTracking().CountAsync(),
+
+                SubscriptionsByProduct = await GetSubscriptionsByProduct(),
 
                 MonthlyNewUsers = await GetMonthlyNewUsers(),
 
                 ActiveSubscriptions = await GetSubscriptionStats(),
 
                 TrainingSessions = await GetTrainingSessions(),
+
+                UnpaidSubscriptionCount = await _db.Set<SystemSubscription>().AsNoTracking().Where(x => !x.ISPaid).CountAsync(),
             };
         }
         private async Task<int> GetActiveUsers()
@@ -43,21 +47,20 @@ namespace Uniceps.Entityframework.Services
         }
         private async Task<List<MonthlyNewUsers>> GetMonthlyNewUsers()
         {
-            return await _db.Users
+            return await _db.Users.AsNoTracking()
                 .GroupBy(u => new { u.CreatedAt.Year, u.CreatedAt.Month })
                 .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
                 .Select(g => new MonthlyNewUsers
                 {
                     Month = $"{g.Key.Month}/{g.Key.Year}",
-                    NormalUsers = g.Count(u => u.UserType == UserType.Normal),
-                    BusinessUsers = g.Count(u => u.UserType == UserType.Business)
+                    Users = g.Count()
                 })
                 .ToListAsync();
         }
 
         private async Task<List<ActiveSubscriptions>> GetSubscriptionStats()
         {
-            return await _db.SystemSubscriptions
+            return await _db.SystemSubscriptions.AsNoTracking()
                 .Where(s => s.ISPaid && s.EndDate > DateTime.Now)
                 .GroupBy(s => new { s.StartDate.Year, s.StartDate.Month })
                 .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
@@ -71,7 +74,7 @@ namespace Uniceps.Entityframework.Services
 
         private async Task<List<TrainingSessions>> GetTrainingSessions()
         {
-            return await _db.WorkoutSessions
+            return await _db.WorkoutSessions.AsNoTracking()
                 .GroupBy(s => new { s.CreatedAt.Year, s.CreatedAt.Month })
                 .OrderBy(g => g.Key.Year).ThenBy(g => g.Key.Month)
                 .Select(g => new TrainingSessions
@@ -80,6 +83,22 @@ namespace Uniceps.Entityframework.Services
                     Sessions = g.Count()
                 })
                 .ToListAsync();
+        }
+        private async Task<List<ProductSubscriptionStats>> GetSubscriptionsByProduct()
+        {
+            return await _db.SystemSubscriptions.AsNoTracking()
+          .Where(s => s.ISPaid && s.EndDate > DateTime.Now)
+          .Join(_db.Products,
+                sub => sub.ProductId,
+                prod => prod.Id,
+                (sub, prod) => new { sub, prod })
+          .GroupBy(x => x.prod.Name)
+          .Select(g => new ProductSubscriptionStats
+          {
+              ProductName = g.Key,
+              Count = g.Count()
+          })
+          .ToListAsync();
         }
     }
 }
