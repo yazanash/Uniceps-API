@@ -63,38 +63,67 @@ namespace Uniceps.app.Controllers.ProductControllers
 
             var chunkPath = Path.Combine(tempFolder, $"{dto.ChunkIndex}.part");
 
+            // 2. حفظ الـ Chunk الحالي
             using (var stream = new FileStream(chunkPath, FileMode.Create))
             {
                 await dto.Chunk.CopyToAsync(stream);
             }
 
+            // 3. التحقق إذا كان هذا هو الـ Chunk الأخير لبدء التجميع
             if (dto.ChunkIndex == dto.TotalChunks - 1)
             {
-                var finalFolder = Path.Combine(_webHostEnvironment.WebRootPath, "downloads", "releases");
-                if (!Directory.Exists(finalFolder))
-                    Directory.CreateDirectory(finalFolder);
-
-                var finalPath = Path.Combine(finalFolder, $"{dto.UploadId}_{DateTime.UtcNow.Ticks}.exe");
-
-                using (var finalStream = new FileStream(finalPath, FileMode.Create))
+                try
                 {
-                    for (int i = 0; i < dto.TotalChunks; i++)
+                    var finalFolder = Path.Combine(_webHostEnvironment.WebRootPath, "downloads", "releases");
+                    if (!Directory.Exists(finalFolder)) Directory.CreateDirectory(finalFolder);
+
+                    string originalFileName = string.IsNullOrWhiteSpace(dto.FileName)
+                                                ? dto.UploadId
+                                                : dto.FileName;
+
+                    string cleanFileName = string.Join("_", originalFileName.Split(Path.GetInvalidFileNameChars()));
+
+                    string fileNameOnly = Path.GetFileNameWithoutExtension(cleanFileName);
+                    string extension = Path.GetExtension(cleanFileName);
+
+                    string finalPath = Path.Combine(finalFolder, cleanFileName);
+                    int count = 1;
+
+                    while (System.IO.File.Exists(finalPath))
                     {
-                        var partPath = Path.Combine(tempFolder, $"{i}.part");
-                        var bytes = await System.IO.File.ReadAllBytesAsync(partPath);
-                        await finalStream.WriteAsync(bytes, 0, bytes.Length);
+                        string tempFileName = $"{fileNameOnly}({count}){extension}";
+                        finalPath = Path.Combine(finalFolder, tempFileName);
+                        count++;
                     }
+
+                    using (var finalStream = new FileStream(finalPath, FileMode.Create))
+                    {
+                        for (int i = 0; i < dto.TotalChunks; i++)
+                        {
+                            var partPath = Path.Combine(tempFolder, $"{i}.part");
+                            if (System.IO.File.Exists(partPath))
+                            {
+                                using (var partStream = new FileStream(partPath, FileMode.Open))
+                                {
+                                    await partStream.CopyToAsync(finalStream);
+                                }
+                            }
+                        }
+                    }
+
+                    if (Directory.Exists(tempFolder))
+                        Directory.Delete(tempFolder, true);
+
+                    var downloadUrl = $"/downloads/releases/{Path.GetFileName(finalPath)}";
+                    return Ok(new { DownloadUrl = downloadUrl });
                 }
-
-                Directory.Delete(tempFolder, true);
-
-                // توليد رابط التحميل
-                var downloadUrl = $"/downloads/releases/{Path.GetFileName(finalPath)}";
-
-                return Ok(new { DownloadUrl = downloadUrl });
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { Message = "Error during file merging", Detail = ex.Message });
+                }
             }
 
-            return Ok(new { Message = $"Chunk {dto.ChunkIndex} uploaded" });
+            return Ok(new { Message = $"Chunk {dto.ChunkIndex} uploaded successfully" });
         }
 
         [HttpGet("product/{productId}/latest")]
@@ -203,10 +232,39 @@ namespace Uniceps.app.Controllers.ProductControllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRelease(int id)
         {
-            var deleted = await _releaseDataService.DeleteReleaseAsync(id);
-            if (!deleted) return NotFound("Release not found");
-            return Ok();
+            var entityToDelete = await _releaseDataService.GetReleaseByIdAsync(id);
+            if (entityToDelete != null)
+            {
+                DeletePhysicalFile(entityToDelete.DownloadUrl);
+                 await _releaseDataService.DeleteReleaseAsync(id);
+                return Ok();
+            }
+            return NotFound("Release not found");
         }
+        private void DeletePhysicalFile(string downloadUrl)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(downloadUrl)) return;
+
+                if (downloadUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                {
+                    return;
+                }
+
+                var relativePath = downloadUrl.TrimStart('/');
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, relativePath);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+            catch 
+            {
+            }
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRelease(int id,ReleaseCreationDto dto)
         {
@@ -222,6 +280,7 @@ namespace Uniceps.app.Controllers.ProductControllers
                Id = id
            };
 
+           
             await _releaseDataService.UpdateReleaseAsync(release);
             ReleaseDto releaseDto = new ReleaseDto()
             {
