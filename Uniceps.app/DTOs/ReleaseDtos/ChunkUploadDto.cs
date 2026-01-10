@@ -6,6 +6,6 @@
         public int ChunkIndex { get; set; }
         public int TotalChunks { get; set; }
         public string UploadId { get; set; } = "";
-        public string FileName { get; internal set; }
+        public string FileName { get;  set; } ="";
     }
 }
