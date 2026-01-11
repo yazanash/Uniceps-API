@@ -35,7 +35,8 @@ namespace Uniceps.Entityframework.Services
                 ActiveSubscriptions = await GetSubscriptionStats(),
 
                 TrainingSessions = await GetTrainingSessions(),
-
+                Revenue = await _db.Set<SystemSubscription>().AsNoTracking().Where(x=>x.ISPaid).SumAsync(x => x.Price),
+                CashRequests = await _db.Set<CashPaymentRequest>().AsNoTracking().Where(x => x.Status == CashRequestStatus.Pending).CountAsync(),
                 UnpaidSubscriptionCount = await _db.Set<SystemSubscription>().AsNoTracking().Where(x => !x.ISPaid).CountAsync(),
             };
         }
