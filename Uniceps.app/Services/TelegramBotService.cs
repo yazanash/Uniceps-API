@@ -106,9 +106,29 @@ namespace Uniceps.app.Services
                     await _telegramUserStateDataService.UpdateAsync(user);
 
                     var gateway = await _gatewayService.Get(gatewayId);
+
                     string message = $"💎 بوابة {gateway?.Name}\n\n" +
-                           $"{gateway?.TransferInfo}\n\n" +
-                           "✅ لإتمام الطلب، يرجى إرسال **صورة الوصل** الآن:";
+                                     $"{gateway?.TransferInfo}\n\n" +
+                                     "✅ لإتمام الطلب، يرجى إرسال **صورة الوصل** الآن:";
+
+                    if (!string.IsNullOrEmpty(gateway?.QrCodeUrl))
+                    {
+                        var qrPath = Path.Combine(_env.WebRootPath, gateway.QrCodeUrl.TrimStart('/'));
+
+                        if (System.IO.File.Exists(qrPath))
+                        {
+                            using (var stream = System.IO.File.OpenRead(qrPath))
+                            {
+                                await _bot.SendPhoto(
+                                    chatId: chatId,
+                                    photo: InputFile.FromStream(stream),
+                                    caption: message,
+                                    parseMode: ParseMode.Markdown
+                                );
+                            }
+                            return; 
+                        }
+                    }
 
                     await _bot.SendMessage(chatId, message, parseMode: ParseMode.Markdown);
                 }
@@ -141,7 +161,7 @@ namespace Uniceps.app.Services
                     Email = user.Email!,
                     PaymentGatewayId = user.PaymentGatewayId,
                     SubscriptionId = user.SubscriptionId,
-                    TransferCode = user.TransferCode?? "تم ارسال صورة التحويل",
+                    TransferCode = user.TransferCode ?? "تم ارسال صورة التحويل",
                     Amount = user.Amount,
                     ReceiptFileId = localPath,
                     CreatedAt = DateTime.UtcNow
@@ -165,7 +185,7 @@ namespace Uniceps.app.Services
         {
             var chatId = message.Chat.Id;
             var text = message.Text?.Trim() ?? string.Empty;
-         
+
             var user = await _telegramUserStateDataService.GetOrCreateAsync(chatId);
             if (text.Equals("/cancel", StringComparison.OrdinalIgnoreCase))
             {
@@ -238,7 +258,6 @@ namespace Uniceps.app.Services
 
             if (appUser != null)
             {
-                // جلب الاشتراكات مباشرة بدون OTP
                 var subscriptions = await _getByUserId.GetByUserIdListAsync(appUser.Id);
 
                 if (!subscriptions.Any())
@@ -249,7 +268,7 @@ namespace Uniceps.app.Services
                 else
                 {
                     var buttons = subscriptions
-                        .Select(s => InlineKeyboardButton.WithCallbackData($"{s.PlanName} - {s.Price}$", $"sub_{s.NID}"))
+                        .Select(s => InlineKeyboardButton.WithCallbackData($"{s.PlanName} - {s.Price}$ -( {s.StartDate.ToString("MM-yyyy")})", $"sub_{s.NID}"))
                         .Select(b => new[] { b })
                         .ToArray();
 

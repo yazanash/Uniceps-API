@@ -6,5 +6,6 @@
         public string TransferInfo { get; set; } = null!;
         public string? QrCodeUrl { get; set; }
         public bool IsActive { get; set; } = true;
+        public IFormFile? QrCodeFile { get; set; }
     }
 }

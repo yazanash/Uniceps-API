@@ -76,8 +76,7 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         public async Task<IEnumerable<SystemSubscription>> GetByUserIdListAsync(string userid)
         {
             IEnumerable<SystemSubscription>? entity = await _dbContext.Set<SystemSubscription>().Where(x => x.UserId == userid
-         && x.StartDate <= DateTime.Now
-         && x.EndDate >= DateTime.Now && x.ISPaid == false).AsNoTracking().ToListAsync();
+         && x.ISPaid == false).AsNoTracking().ToListAsync();
             
             return entity!;
         }

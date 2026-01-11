@@ -52,6 +52,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     cashRequestDto.SubscriptionPrice = systemSubscription.Price.ToString();
                     cashRequestDto.PaymentGateway = paymentGateway.Name;
                     cashRequestDto.CreatedAt = cashPaymentRequest.CreatedAt.ToString();
+                    cashRequestDto.ImageUrl = cashPaymentRequest.ReceiptFileId;
                     requests.Add(cashRequestDto);
                 }
                 return Ok(requests);

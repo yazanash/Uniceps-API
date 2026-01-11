@@ -11,7 +11,8 @@ namespace Uniceps.app.Extensions.SystemSubscriptionMappers
             PaymentGateway paymentGateway = new PaymentGateway()
             {
                 Name = data.Name!,
-                TransferInfo = data.TransferInfo
+                TransferInfo = data.TransferInfo,
+                IsActive = data.IsActive,
             };
             return paymentGateway;
         }
@@ -22,7 +23,9 @@ namespace Uniceps.app.Extensions.SystemSubscriptionMappers
             {
                 Id = data.Id,
                 Name = data.Name!,
-                TransferInfo = data.TransferInfo
+                TransferInfo = data.TransferInfo,
+                 QrCodeUrl = data.QrCodeUrl,
+                  IsActive = data.IsActive,
             };
             return paymentGatewayDto;
         }
