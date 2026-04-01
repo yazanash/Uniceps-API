@@ -12,5 +12,6 @@ namespace Uniceps.app.DTOs.ProductDtos
         public string DescriptionAr { get; set; } = "";
         public string? HeroImage { get; set; } = "";
         public int AppId { get; set; }
+        public string Slug { get; set; } = "";
     }
 }

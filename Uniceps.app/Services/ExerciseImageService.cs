@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Google.Api.Gax.ResourceNames;
+using Microsoft.AspNetCore.Hosting;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Processing;
+using Telegram.Bot.Types;
 
 namespace Uniceps.app.Services
 {
@@ -14,19 +16,19 @@ namespace Uniceps.app.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task SaveImageAsWebP(IFormFile file, string fileName)
+        public async Task<string> SaveImageAsWebP(IFormFile file, string fileNameWithoutExtension, string folderName = "ExerciseImages")
         {
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "ExerciseImages");
+            var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
+            var uploadsFolder = Path.Combine(rootPath, folderName);
             if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
+            var fileName = $"{fileNameWithoutExtension}.webp";
             var filePath = Path.Combine(uploadsFolder, fileName);
 
-            // إذا الملف موجود مسبقاً بنحذفه عشان نضمن التحديث
-            if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
+            if (File.Exists(filePath)) File.Delete(filePath);
 
             using (var image = await Image.LoadAsync(file.OpenReadStream()))
             {
-                // تصغير العرض لـ 1080 بكسل مع الحفاظ على التناسب (إذا كانت الصورة ضخمة)
                 if (image.Width > 1080)
                 {
                     image.Mutate(x => x.Resize(new ResizeOptions
@@ -36,13 +38,19 @@ namespace Uniceps.app.Services
                     }));
                 }
 
-                // تحويل وحفظ بصيغة WebP مع ضغط احترافي
                 await image.SaveAsWebpAsync(filePath, new WebpEncoder
                 {
-                    Quality = 80, // جودة ممتازة وحجم صغير جداً
+                    Quality = 80,
                     Method = WebpEncodingMethod.BestQuality
                 });
             }
+            return $"{folderName}/{fileName}";
+        }
+        public string GetImagePath(string imagePath)
+        {
+            var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
+            var filePath = Path.Combine(rootPath, imagePath);
+            return filePath;
         }
     }
 }

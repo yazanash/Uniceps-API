@@ -7,11 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Uniceps.Entityframework.Models;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Billing;
 using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
+using Uniceps.Entityframework.Models.RoutineModelsV2;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.DBContext
@@ -41,6 +43,14 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<DownloadLog> DownloadLogs { get; set; }
         public DbSet<SiteSettings> SiteSettings{  get; set;}
         public DbSet<Notification> Notifications{ get; set; }
+
+        public DbSet<ExerciseV2> ExercisesV2 { get; set; }
+        public DbSet<MuscleGroupV2> MuscleGroupsV2{ get; set; }
+        public DbSet<MuscleHead> Heads { get; set; }
+        public DbSet<Equipment> Equipment { get; set; }
+
+        public DbSet<LicenseActivation> LicenseActivations{ get; set; }
+        public DbSet<BillingLicense> BillingLicenses{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,6 +86,44 @@ namespace Uniceps.Entityframework.DBContext
              .HasMany(plan => plan.PlanItems)
              .WithOne(planItem => planItem.PlanModel) 
              .HasForeignKey(ri => ri.PlanNID);
+            modelBuilder.Entity<ExerciseV2>()
+        .HasKey(e => e.ExerciseId);
+
+            modelBuilder.Entity<ExerciseV2>()
+        .HasIndex(e => e.MuscleGroupCode)
+        .HasDatabaseName("Index_MuscleGroupV2");
+
+            modelBuilder.Entity<ExerciseV2>()
+                .HasIndex(e => e.EquipmentCode)
+                .HasDatabaseName("Index_Equipment");
+
+            modelBuilder.Entity<ExerciseV2>()
+        .Property(e => e.Mechanism)
+        .HasConversion<string>();
+
+            modelBuilder.Entity<MuscleHead>()
+                .HasOne(h => h.Group)
+                .WithMany(g => g.Heads)
+                .HasForeignKey(h => h.MuscleGroupCode)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ExerciseV2>()
+           .HasOne(e => e.MuscleGroupV2)
+           .WithMany() 
+           .HasForeignKey(e => e.MuscleGroupCode)
+           .OnDelete(DeleteBehavior.NoAction); 
+
+            modelBuilder.Entity<ExerciseV2>()
+                .HasOne(e => e.MuscleHead)
+                .WithMany()
+                .HasForeignKey(e => e.MuscleHeadCode)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ExerciseV2>()
+                .HasOne(e => e.Equipment)
+                .WithMany()
+                .HasForeignKey(e => e.EquipmentCode)
+                .OnDelete(DeleteBehavior.NoAction);
             base.OnModelCreating(modelBuilder);
 
         }

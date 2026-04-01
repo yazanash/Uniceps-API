@@ -227,7 +227,38 @@ namespace Uniceps.app.Controllers.ProductControllers
                 Request.Headers["User-Agent"].ToString()
             );
 
-            return Redirect(release.DownloadUrl);
+            string url = release.DownloadUrl;
+
+            if (Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+            {
+                return Redirect(url);
+            }
+            else
+            {
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", url.TrimStart('/'));
+
+                if (!System.IO.File.Exists(filePath))
+                    return NotFound("File not found on server");
+
+                var fileName = Path.GetFileName(filePath);
+                var mimeType = GetMimeType(filePath);
+
+                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                return File(fileStream, mimeType, fileName);
+            }
+        }
+        private string GetMimeType(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToLowerInvariant();
+            return extension switch
+            {
+                ".exe" => "application/vnd.microsoft.portable-executable",
+                ".apk" => "application/vnd.android.package-archive",
+                ".zip" => "application/x-zip-compressed",
+                ".pdf" => "application/pdf",
+                _ => "application/octet-stream",
+            };
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRelease(int id)

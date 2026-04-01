@@ -5,6 +5,7 @@ using Uniceps.app.Services.PaymentServices;
 using Uniceps.app.Services.TesterServices;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Billing;
 using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.StatsModels;
 using Uniceps.Entityframework.Services;
@@ -28,6 +29,7 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IStatsDataService<DashboardStats>, StatsDataService>();
             services.AddScoped<IBypassService, BypassService>();
             services.AddScoped<ExerciseImageService>();
+            services.AddScoped<ILicenseGenerationService<LicenseActivation>,LicenseGenerationService>();
 
             return services;
         }

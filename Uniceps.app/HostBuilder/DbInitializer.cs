@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.Products;
 
 namespace Uniceps.app.HostBuilder
 {
@@ -9,14 +12,14 @@ namespace Uniceps.app.HostBuilder
         {
             var scope = serviceProvider.CreateScope();
 
-            // جلب الخدمات اللازمة من الـ Scope
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
             var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
 
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
             try
             {
-                // 1. تعريف الأدوار الأساسية في النظام
                 string[] roleNames = { "Admin", "User", "Tester" };
                 foreach (var roleName in roleNames)
                 {
@@ -26,8 +29,6 @@ namespace Uniceps.app.HostBuilder
                     }
                 }
 
-                // 2. جلب قائمة الإيميلات التي ستكون Admin من appsettings.json
-                // نتوقع في الملف قائمة: "InitialSetup": { "Admins": ["email1", "email2"] }
                 var adminEmails = configuration.GetSection("InitialSetup:Admins").Get<List<string>>();
 
                 if (adminEmails != null && adminEmails.Any())
@@ -38,13 +39,12 @@ namespace Uniceps.app.HostBuilder
 
                         if (user == null)
                         {
-                            // إنشاء المستخدم إذا لم يكن موجوداً (بدون كلمة مرور لأنك تستخدم OTP)
                             var newAdmin = new AppUser
                             {
                                 UserName = email.Split('@')[0],
                                 Email = email,
                                 EmailConfirmed = true,
-                                UserType = UserType.Normal, // عدلها حسب نوع المستخدم عندك
+                                UserType = UserType.Normal, 
                                 CreatedAt = DateTime.UtcNow
                             };
 
@@ -57,13 +57,23 @@ namespace Uniceps.app.HostBuilder
                         }
                         else
                         {
-                            // إذا كان المستخدم موجوداً أصلاً، نتأكد فقط أنه يملك دور Admin
                             if (!await userManager.IsInRoleAsync(user, "Admin"))
                             {
                                 await userManager.AddToRoleAsync(user, "Admin");
                             }
                         }
                     }
+                }
+
+                var productsToUpdate = await context.Set<Product>().ToListAsync();
+
+                if (productsToUpdate.Any())
+                {
+                    foreach (var product in productsToUpdate)
+                    {
+                        product.GenerateSlug();
+                    }
+                    await context.SaveChangesAsync();
                 }
             }
             catch

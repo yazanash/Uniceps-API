@@ -9,5 +9,10 @@ namespace Uniceps.app.Helpers
 
         public static bool IsPlayerUser(this HttpContext context)
             => context.Items["UserType"]?.ToString() == UserType.Normal.ToString();
+        public static string GetLanguage(this HttpRequest request)
+        {
+            return request.Headers["Accept-Language"].ToString()
+                .ToLower().StartsWith("ar") ? "ar" : "en";
+        }
     }
 }

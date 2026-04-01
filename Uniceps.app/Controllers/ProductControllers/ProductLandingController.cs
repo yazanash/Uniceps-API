@@ -66,22 +66,20 @@ namespace Uniceps.app.Controllers.ProductControllers
         }
 
         [HttpGet("{productId}")]
-        public async Task<IActionResult> GetFullProductData(int productId)
+        public async Task<IActionResult> GetFullProductData(string productId)
         {
             try
             {
                 var response = new ProductLandingDto();
-                var product = await _productDataService.Get(productId);
-                // 1. جلب المهام بالتوازي لتحسين الأداء
+                var product = await _productDataService.GetBySlug(productId);
                 var settings = await _settingsService.Get();
-                var features = await _featureService.GetAllByProductId(productId);
-                var faqs = await _faqService.GetAllByProductId(productId);
-                var steps = await _stepService.GetAllByProductId(productId);
-                var releases = await _releaseService.GetLatestReleasesAsync(productId);
-                var plans = await _planDataService.GetPlansForApp(productId);
+                var features = await _featureService.GetAllByProductId(product.Id);
+                var faqs = await _faqService.GetAllByProductId(product.Id);
+                var steps = await _stepService.GetAllByProductId(product.Id);
+                var releases = await _releaseService.GetLatestReleasesAsync(product.Id);
+                var plans = await _planDataService.GetPlansForApp(product.Id);
 
 
-                // 2. تعبئة البيانات الأساسية
                 response.SiteSettings = settings;
                 response.Features = features.Select(x=> _featureMapperExtension.ToDto(x)).ToList();
                 response.FAQs = faqs.Select(x => _faqMapperExtension.ToDto(x)).ToList(); 
@@ -89,14 +87,12 @@ namespace Uniceps.app.Controllers.ProductControllers
                 response.LatestReleases = releases.Select(x => _releaseMapperExtension.ToDto(x)).ToList();
                 response.PricingPlans = plans.Select(x => _planMapperExtension.ToDto(x)).ToList();
                 response.Product = _productMapper.ToDto(product);
-                // 3. منطق جلب الخطط المفلترة (حسب الـ AppId وفحص الفترة التجريبية)
 
                 if (User.Identity?.IsAuthenticated == true)
                 {
                     string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
 
-                    // هل المستخدم اشترك مسبقاً بهذا المنتج؟ (لمنع تكرار الـ IsFree)
-                    bool hasHistory = await _membershipDataService.HasUsedTrialForProduct(userId, productId);
+                    bool hasHistory = await _membershipDataService.HasUsedTrialForProduct(userId, product.Id);
                         
                     if (hasHistory)
                     {

@@ -17,6 +17,7 @@ namespace Uniceps.Entityframework.Services.ProductServices
         private readonly AppDbContext _dbContext = dbContext;
         public async Task<Product> Create(Product entity)
         {
+            entity.GenerateSlug();
             EntityEntry<Product> CreatedResult = await _dbContext.Set<Product>().AddAsync(entity);
             await _dbContext.SaveChangesAsync();
             return CreatedResult.Entity;
@@ -30,6 +31,13 @@ namespace Uniceps.Entityframework.Services.ProductServices
         public async Task<Product> Get(int id)
         {
             Product? entity = await _dbContext.Set<Product>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
+            if (entity == null)
+                throw new Exception();
+            return entity!;
+        }
+        public async Task<Product> GetBySlug(string slug)
+        {
+            Product? entity = await _dbContext.Set<Product>().AsNoTracking().FirstOrDefaultAsync((e) => e.Slug == slug);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -51,6 +59,7 @@ namespace Uniceps.Entityframework.Services.ProductServices
 
         public async Task<Product> Update(Product entity)
         {
+            entity.GenerateSlug();
             _dbContext.Set<Product>().Update(entity);
             await _dbContext.SaveChangesAsync();
             return entity;

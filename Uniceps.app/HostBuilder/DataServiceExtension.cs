@@ -8,6 +8,7 @@ using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 using Uniceps.Entityframework.Services;
+using Uniceps.Entityframework.Services.BillingLicenseService;
 using Uniceps.Entityframework.Services.ExerciseServices;
 using Uniceps.Entityframework.Services.MeasurementServices;
 using Uniceps.Entityframework.Services.MuscleGroupServices;
@@ -50,6 +51,10 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<ISiteSettingsService, SiteSettingsDataService>();
 
             services.AddScoped<INotificationDataService, NotificationDataService>();
+
+            services.AddScoped<IExerciseV2DataService, ExerciseV2DataService>();
+
+            services.AddScoped<IBellingLicenseService, BellingLicenseService>();
             return services;
         }
     }
