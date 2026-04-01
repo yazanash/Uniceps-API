@@ -50,7 +50,9 @@ builder.Services.AddCors(options =>
                     "https://uniceps.trio-verse.com")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowCredentials(); 
+                  .AllowCredentials()
+                  .WithExposedHeaders("Content-Disposition"); 
+          
         });
 });
 
