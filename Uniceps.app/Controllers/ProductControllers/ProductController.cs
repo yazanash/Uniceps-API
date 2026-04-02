@@ -43,6 +43,20 @@ namespace Uniceps.app.Controllers.ProductControllers
             }
 
         }
+        [HttpGet("slug/{slug}")]
+        public async Task<IActionResult> GetProductBySlug(string slug)
+        {
+            try
+            {
+                var product = await _dataService.GetBySlug(slug);
+                return Ok(_mapperExtension.ToDto(product));
+            }
+            catch
+            {
+                return NotFound("Product not found");
+            }
+
+        }
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> CreateProduct([FromForm] ProductCreationDto productCreationDto)

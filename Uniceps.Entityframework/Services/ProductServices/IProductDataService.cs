@@ -12,6 +12,7 @@ namespace Uniceps.Entityframework.Services.ProductServices
         Task<Product> Create(Product entity);
         Task<bool> Delete(int id);
         Task<Product> Get(int id);
+        Task<Product> GetBySlug(string slug);
         Task<Product> GetByAppId(int appId);
         Task<IEnumerable<Product>> GetAll();
         Task<Product> Update(Product entity);

@@ -15,7 +15,7 @@ namespace Uniceps.app.Extensions.ProductMappers
                 Name = data.Name,
                 DescriptionAr = data.DescriptionAr,
                 NameAr = data.NameAr,
-                Platform = data.Platform
+                Platform = data.Platform,
             };
             return product;
         }
@@ -31,7 +31,8 @@ namespace Uniceps.app.Extensions.ProductMappers
                 Platform = data.Platform,
                  AppId = data.AppId,
                 DescriptionAr = data.DescriptionAr,
-                NameAr = data.NameAr
+                NameAr = data.NameAr,
+                Slug = data.Slug,
             };
             return productDto;
         }

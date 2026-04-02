@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Uniceps.Entityframework.DBContext;
 
@@ -11,9 +12,11 @@ using Uniceps.Entityframework.DBContext;
 namespace Uniceps.Entityframework.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260325120251_AddProductSlug")]
+    partial class AddProductSlug
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -941,9 +944,6 @@ namespace Uniceps.Entityframework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Implementation")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
@@ -975,9 +975,6 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("NameEn")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Version")
-                        .HasColumnType("int");
 
                     b.HasKey("ExerciseId");
 
