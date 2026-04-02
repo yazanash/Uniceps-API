@@ -10,7 +10,7 @@ namespace Uniceps.Entityframework.Models.Measurements
     {
         public int Id { get; set; }
         public int SessionId { get; set; }
-        public int ExerciseId { get; set; }
+        public string ExerciseId { get; set; } = string.Empty;
         public int ExerciseIndex { get; set; }
         public double WeightKg { get; set; }
         public int Reps { get; set; }
