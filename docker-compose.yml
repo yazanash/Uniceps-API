@@ -33,6 +33,7 @@ services:
       - ./wwwroot/temp:/app/wwwroot/temp
       - ./wwwroot/downloads:/app/wwwroot/downloads
       - ./wwwroot/ExerciseImages:/app/wwwroot/ExerciseImages
+      - ./wwwroot/ExercisesV2:/app/wwwroot/ExercisesV2
 
 volumes:
   sql_data:
