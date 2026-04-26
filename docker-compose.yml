@@ -10,6 +10,8 @@ services:
       - "1433:1433"
     volumes:
       - sql_data:/var/opt/mssql
+    networks:
+      - trioverse-network
 
   api:
     build: 
@@ -23,8 +25,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - DB_PASSWORD=${DB_PASSWORD}
-    ports:
-      - "8090:8080"
+    expose:
+      - "8080"
     volumes:
       - ./appsettings.Production.json:/app/appsettings.Production.json:ro
 
@@ -34,6 +36,7 @@ services:
       - ./wwwroot/downloads:/app/wwwroot/downloads
       - ./wwwroot/ExerciseImages:/app/wwwroot/ExerciseImages
       - ./wwwroot/ExercisesV2:/app/wwwroot/ExercisesV2
-
+    networks:
+      - trioverse-network
 volumes:
   sql_data:
