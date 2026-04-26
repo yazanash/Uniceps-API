@@ -41,3 +41,7 @@ services:
       - trioverse-network
 volumes:
   sql_data:
+
+networks:
+  trioverse-network:
+    external: true
