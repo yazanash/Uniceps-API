@@ -36,6 +36,12 @@ namespace Uniceps.Entityframework.Services.ExerciseServices
             if (!string.IsNullOrEmpty(filter.SearchTerm))
                 query = query.Where(e => e.NameEn.Contains(filter.SearchTerm) || e.NameAr.Contains(filter.SearchTerm));
 
+            if (filter.LastSync.HasValue)
+            {
+                var safeSyncTime = filter.LastSync.Value.AddMinutes(5);
+                query = query.Where(e => e.LastUpdated > safeSyncTime);
+            }
+
             return await query.ToListAsync();
         }
 

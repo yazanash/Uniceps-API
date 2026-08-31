@@ -4,7 +4,7 @@ namespace Uniceps.app.DTOs.MeasurementDtos
 {
     public class WorkoutSessionDto
     {
-        public int Id { get; set; }
+        public int ApiId { get; set; }
         public string Day { get; set; } = "";
         public List<WorkoutLogDto> Logs { get; set; } = new();
         public DateTime CreatedAt { get; set; }

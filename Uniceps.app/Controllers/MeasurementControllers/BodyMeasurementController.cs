@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Telegram.Bot.Types;
 using Uniceps.app.DTOs.MeasurementDtos;
 using Uniceps.app.Helpers;
 using Uniceps.app.HostBuilder;
@@ -13,10 +14,10 @@ namespace Uniceps.app.Controllers.MeasurementControllers
     [ApiController]
     public class BodyMeasurementController : ControllerBase
     {
-        private readonly IDataService<BodyMeasurement> _dataService;
+        private readonly IIntDataService<BodyMeasurement> _dataService;
         private readonly IUserQueryDataService<BodyMeasurement> _userQueryDataService;
         private readonly IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> _mapperExtension;
-        public BodyMeasurementController(IDataService<BodyMeasurement> dataService, IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> mapperExtension, IUserQueryDataService<BodyMeasurement> userQueryDataService)
+        public BodyMeasurementController(IIntDataService<BodyMeasurement> dataService, IMapperExtension<BodyMeasurement, BodyMeasurementDto, BodyMeasurementCreationDto> mapperExtension, IUserQueryDataService<BodyMeasurement> userQueryDataService)
         {
             _dataService = dataService;
             _mapperExtension = mapperExtension;
@@ -44,15 +45,14 @@ namespace Uniceps.app.Controllers.MeasurementControllers
            
             if (bodyMeasurementCreationDto == null)
                 return BadRequest("Body Measurment data is missing.");
-
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             BodyMeasurement bodyMeasurement = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
-
-            bodyMeasurement.BusinessId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            bodyMeasurement.UserId = userId;
             var result = await _dataService.Create(bodyMeasurement);
             return Ok(_mapperExtension.ToDto(bodyMeasurement));
         }
         [HttpPut("Id")]
-        public async Task<IActionResult> Update(Guid Id, [FromBody] BodyMeasurementCreationDto bodyMeasurementCreationDto)
+        public async Task<IActionResult> Update(int Id, [FromBody] BodyMeasurementCreationDto bodyMeasurementCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
             {
@@ -65,13 +65,13 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             BodyMeasurement bodyMeasurement = await _dataService.Get(Id);
             BodyMeasurement newBodyMeasurement  = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
-            newBodyMeasurement.Id = bodyMeasurement.Id;
-            //newPlayerModel.UserId = userId;
+            newBodyMeasurement.MId = bodyMeasurement.MId;
+            newBodyMeasurement.UserId = userId;
             await _dataService.Update(newBodyMeasurement);
             return Ok("Updated successfully");
         }
         [HttpDelete("id")]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             await _dataService.Delete(id);
             return Ok("Deleted successfully");

@@ -314,12 +314,11 @@ namespace Uniceps.Entityframework.Migrations
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.BodyMeasurement", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("MId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<string>("BusinessId")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MId"));
 
                     b.Property<double>("ChestCm")
                         .HasColumnType("float");
@@ -329,6 +328,9 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.Property<double>("HipsCm")
                         .HasColumnType("float");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("LeftArmCm")
                         .HasColumnType("float");
@@ -366,7 +368,7 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<double>("WeightKg")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("MId");
 
                     b.HasIndex("UserId");
 
@@ -386,15 +388,15 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.Property<string>("ExerciseId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ExerciseIndex")
                         .HasColumnType("int");
 
-                    b.Property<int>("Reps")
+                    b.Property<int>("FinishedReps")
                         .HasColumnType("int");
 
-                    b.Property<int>("SessionId")
+                    b.Property<int>("Reps")
                         .HasColumnType("int");
 
                     b.Property<int>("SetIndex")
@@ -403,12 +405,13 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<double>("WeightKg")
                         .HasColumnType("float");
 
-                    b.Property<int?>("WorkoutSessionId")
+                    b.Property<int>("WorkoutSessionId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkoutSessionId");
+                    b.HasIndex("WorkoutSessionId", "ExerciseId", "ExerciseIndex", "SetIndex")
+                        .IsUnique();
 
                     b.ToTable("WorkoutLogs");
                 });
@@ -523,6 +526,119 @@ namespace Uniceps.Entityframework.Migrations
                     b.HasKey("NID");
 
                     b.ToTable("UserDevices");
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.NutritionSystem.DietLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<float>("Calories")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Carbs")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Fats")
+                        .HasColumnType("real");
+
+                    b.Property<string>("IngredientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Protein")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("TotalGrams")
+                        .HasColumnType("real");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DietLogs");
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.NutritionSystem.Ingredient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Calories")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Carbs")
+                        .HasColumnType("real");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("DefaultServingInGrams")
+                        .HasColumnType("real");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Fats")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("IsUserGenerated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<float>("Protein")
+                        .HasColumnType("real");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.NutritionSystem.IngredientCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IngredientCategories");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.PaymentGateway", b =>
@@ -713,6 +829,9 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("DownloadUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUrgent")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -1035,6 +1154,53 @@ namespace Uniceps.Entityframework.Migrations
                     b.ToTable("Heads");
                 });
 
+            modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModelsV2.RoutineTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DaysCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TargetGender")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TargetLanguage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive", "Level", "TargetGender");
+
+                    b.ToTable("RoutineTemplates", (string)null);
+                });
+
             modelBuilder.Entity("Uniceps.Entityframework.Models.SiteSettings", b =>
                 {
                     b.Property<int>("Id")
@@ -1334,7 +1500,20 @@ namespace Uniceps.Entityframework.Migrations
                 {
                     b.HasOne("Uniceps.Entityframework.Models.Measurements.WorkoutSession", null)
                         .WithMany("Logs")
-                        .HasForeignKey("WorkoutSessionId");
+                        .HasForeignKey("WorkoutSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Uniceps.Entityframework.Models.NutritionSystem.Ingredient", b =>
+                {
+                    b.HasOne("Uniceps.Entityframework.Models.NutritionSystem.IngredientCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.Profile.NormalProfile", b =>

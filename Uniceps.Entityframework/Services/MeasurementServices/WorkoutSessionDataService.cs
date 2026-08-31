@@ -11,52 +11,98 @@ using Uniceps.Entityframework.Models.Measurements;
 
 namespace Uniceps.Entityframework.Services.MeasurementServices
 {
-    public class WorkoutSessionDataService(AppDbContext dbContext) : IIntDataService<WorkoutSession>, IUserQueryDataService<WorkoutSession>
+    public class WorkoutSessionDataService(AppDbContext dbContext) : IWorkoutSessionService
     {
         private readonly AppDbContext _dbContext = dbContext;
-        public async Task<WorkoutSession> Create(WorkoutSession entity)
+        public async Task<WorkoutSession> UpsertAsync(WorkoutSession entity)
         {
-            EntityEntry<WorkoutSession> CreatedResult = await _dbContext.Set<WorkoutSession>().AddAsync(entity);
+            var existingSession = await _dbContext.WorkoutSessions
+         .FirstOrDefaultAsync(s => s.Id == entity.Id && s.UserId == entity.UserId);
 
+            if (existingSession == null)
+            {
+                entity.Id = 0;
+                var createdResult = await _dbContext.WorkoutSessions.AddAsync(entity);
+                await _dbContext.SaveChangesAsync();
+                return createdResult.Entity;
+            }
+
+            _dbContext.Entry(existingSession).CurrentValues.SetValues(entity);
             await _dbContext.SaveChangesAsync();
-            return CreatedResult.Entity;
-        }
 
-        public async Task<bool> Delete(int id)
-        {
-            WorkoutSession? entity = await _dbContext.Set<WorkoutSession>().FirstOrDefaultAsync((e) => e.Id == id);
-            if (entity == null)
-                throw new Exception();
-            _dbContext.Set<WorkoutSession>().Remove(entity!);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
+            await SyncLogsAsync(existingSession.Id, entity.Logs);
 
-        public async Task<WorkoutSession> Get(int id)
-        {
-            WorkoutSession? entity = await _dbContext.Set<WorkoutSession>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
-            if (entity == null)
-                throw new Exception();
-            return entity!;
+            return existingSession;
         }
-
-        public async Task<IEnumerable<WorkoutSession>> GetAll()
-        {
-            IEnumerable<WorkoutSession>? entities = await _dbContext.Set<WorkoutSession>().ToListAsync();
-            return entities;
-        }
-
         public async Task<IEnumerable<WorkoutSession>> GetAllByUser(string? userid)
         {
-            IEnumerable<WorkoutSession>? entities = await _dbContext.Set<WorkoutSession>().Where(x => x.UserId == userid).Include(x=>x.Logs).ToListAsync();
-            return entities;
-        }
+            if (string.IsNullOrEmpty(userid))
+                return Enumerable.Empty<WorkoutSession>();
 
-        public async Task<WorkoutSession> Update(WorkoutSession entity)
+            return await _dbContext.WorkoutSessions
+                .AsNoTracking()
+                .Where(x => x.UserId == userid)
+                .Include(x => x.Logs)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+        }
+        private async Task SyncLogsAsync(int sessionId, ICollection<WorkoutLog> incomingLogs)
         {
-            _dbContext.Set<WorkoutSession>().Update(entity);
+            var safeIncomingLogs = incomingLogs ?? new List<WorkoutLog>();
+
+            var dbLogs = await _dbContext.WorkoutLogs
+                .Where(l => l.WorkoutSessionId == sessionId)
+                .ToListAsync();
+
+            var incomingKeys = safeIncomingLogs
+                .Select(l => (
+                    ExerciseId: l.ExerciseId?.Trim().ToLowerInvariant() ?? string.Empty,
+                    l.ExerciseIndex,
+                    l.SetIndex
+                ))
+                .ToHashSet();
+
+            var logsToRemove = dbLogs
+                .Where(dbLog => !incomingKeys.Contains((
+                    dbLog.ExerciseId?.Trim().ToLowerInvariant() ?? string.Empty,
+                    dbLog.ExerciseIndex,
+                    dbLog.SetIndex
+                )))
+                .ToList();
+
+            if (logsToRemove.Any())
+            {
+                _dbContext.WorkoutLogs.RemoveRange(logsToRemove);
+            }
+
+            foreach (var incomingLog in safeIncomingLogs)
+            {
+                var incomingKeyStr = incomingLog.ExerciseId?.Trim().ToLowerInvariant() ?? string.Empty;
+
+                var existingLog = dbLogs.FirstOrDefault(l =>
+                    (l.ExerciseId?.Trim().ToLowerInvariant() ?? string.Empty) == incomingKeyStr &&
+                    l.ExerciseIndex == incomingLog.ExerciseIndex &&
+                    l.SetIndex == incomingLog.SetIndex);
+
+                if (existingLog != null)
+                {
+                    _dbContext.Entry(existingLog).CurrentValues.SetValues(new
+                    {
+                        incomingLog.WeightKg,
+                        incomingLog.Reps,
+                        incomingLog.FinishedReps,
+                        incomingLog.CompletedAt
+                    });
+                }
+                else
+                {
+                    incomingLog.Id = 0; 
+                    incomingLog.WorkoutSessionId = sessionId;
+                    await _dbContext.WorkoutLogs.AddAsync(incomingLog);
+                }
+            }
+
             await _dbContext.SaveChangesAsync();
-            return entity;
         }
     }
 }

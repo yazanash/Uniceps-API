@@ -13,7 +13,8 @@ namespace Uniceps.app.Extensions.MeasurementMappers
                 Day = data.Day,
                 CreatedAt = data.CreatedAt,
                 FinishedAt = data.FinishedAt,
-                Progress = data.Progress
+                Progress = data.Progress,
+                 Id = data.ApiId??0,
             };
             foreach (WorkoutLogCreationDto workoutLogCreationDto in data.Logs)
             {
@@ -21,10 +22,11 @@ namespace Uniceps.app.Extensions.MeasurementMappers
                 {
                     ExerciseId = workoutLogCreationDto.ExerciseId,
                     ExerciseIndex = workoutLogCreationDto.ExerciseIndex,
-                    WeightKg = workoutLogCreationDto.WeightKg,
+                    WeightKg = workoutLogCreationDto.Weight,
                     Reps = workoutLogCreationDto.Reps,
                     SetIndex = workoutLogCreationDto.SetIndex,
                     CompletedAt = workoutLogCreationDto.CompletedAt,
+                    FinishedReps = workoutLogCreationDto.FinishedReps,
                 };
                 workoutSession.Logs.Add(workoutLog);
             }
@@ -37,7 +39,7 @@ namespace Uniceps.app.Extensions.MeasurementMappers
         {
             WorkoutSessionDto workoutSessionDto = new WorkoutSessionDto()
             {
-                Id = data.Id,
+                ApiId = data.Id,
                 Day = data.Day,
                 CreatedAt = data.CreatedAt,
                 FinishedAt = data.FinishedAt,
@@ -47,12 +49,13 @@ namespace Uniceps.app.Extensions.MeasurementMappers
             {
                 WorkoutLogDto workoutLogDto = new WorkoutLogDto()
                 {
-                    Id = workoutLog.Id,
-                    SessionId = workoutLog.SessionId,
+                    ApiId = workoutLog.Id,
+                    SessionId = workoutLog.WorkoutSessionId,
                     ExerciseId = workoutLog.ExerciseId,
                     ExerciseIndex = workoutLog.ExerciseIndex,
-                    WeightKg = workoutLog.WeightKg,
+                    Weight = workoutLog.WeightKg,
                     Reps = workoutLog.Reps,
+                    FinishedReps = workoutLog.FinishedReps,
                     SetIndex = workoutLog.SetIndex,
                     CompletedAt = workoutLog.CompletedAt,
                 };

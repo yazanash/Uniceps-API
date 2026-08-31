@@ -16,6 +16,7 @@ namespace Uniceps.Entityframework.Models.Products
         public string ChangeLog { get; set; } = "";
         public string ChangeLogAr { get; set; } = "";
         public int ProductId { get; set; }
+        public bool IsUrgent { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 

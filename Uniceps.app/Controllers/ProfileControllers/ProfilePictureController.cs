@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Telegram.Bot.Types;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Profile;
@@ -50,7 +51,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             AppUser? user = await _userManager.FindByIdAsync(userId);
-            if(user!=null)
+            if (user != null)
             {
                 NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(user.Id);
                 normalProfile.PictureUrl = imageUrl;
@@ -59,16 +60,49 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             return Ok(new { imageUrl });
         }
-        [HttpGet("{fileName}")]
-        public IActionResult GetProfilePicture(string fileName)
+        [HttpGet]
+        public async Task<IActionResult> GetProfilePicture()
         {
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures", fileName);
-            if (!System.IO.File.Exists(filePath))
-                return NotFound();
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(userId);
+            if (normalProfile.PictureUrl != null)
+            {
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
+                var filePath = Path.Combine(uploadsFolder, normalProfile.PictureUrl);
+                if (!System.IO.File.Exists(filePath))
+                    return NotFound();
 
-            var contentType = "image/" + Path.GetExtension(filePath).TrimStart('.');
-            var imageBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(imageBytes, contentType);
+                var contentType = "image/" + Path.GetExtension(filePath).TrimStart('.');
+                var imageBytes = System.IO.File.ReadAllBytes(filePath);
+                return File(imageBytes, contentType);
+            }
+            return NotFound();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProfilePicture()
+        {
+            if (!User.Identity!.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(userId);
+            string? picUrl = normalProfile.PictureUrl;
+
+            normalProfile.PictureUrl = null;
+            await _normalProfileDataService.Update(normalProfile);
+            if (picUrl != null)
+            {
+                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
+                var filePath = Path.Combine(uploadsFolder, picUrl);
+                if (System.IO.File.Exists(filePath))
+                    System.IO.File.Delete(filePath);
+            }
+            return Ok();
         }
     }
 }

@@ -10,6 +10,7 @@ using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.StatsModels;
 using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.ExerciseServices;
+using Uniceps.Entityframework.Services.RoutineServices;
 
 namespace Uniceps.app.HostBuilder
 {
@@ -30,7 +31,7 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IBypassService, BypassService>();
             services.AddScoped<ExerciseImageService>();
             services.AddScoped<ILicenseGenerationService<LicenseActivation>,LicenseGenerationService>();
-
+            services.AddScoped<IUniFileParserService, UniFileParserService>();
             return services;
         }
     }

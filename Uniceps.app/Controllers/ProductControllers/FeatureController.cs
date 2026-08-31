@@ -22,7 +22,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             _mapper = mapper;
         }
         [HttpGet("product/{productId}")]
-        [AllowAnonymous] // مسموح للكل يشوف الميزات
+        [AllowAnonymous] 
         public async Task<IActionResult> GetByProduct(int productId)
         {
             var features = await _featureService.GetAllByProductId(productId);

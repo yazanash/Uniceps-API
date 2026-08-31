@@ -13,5 +13,6 @@ namespace Uniceps.Entityframework.Models.RoutineModelsV2
         public string? EquipmentCode { get; set; }
         public ExerciseMechanism? Mechanism { get; set; }
         public string? SearchTerm { get; set; }
+        public DateTime? LastSync { get; set; }
     }
 }

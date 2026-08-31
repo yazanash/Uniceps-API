@@ -83,6 +83,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 await DbInitializer.SeedRolesAndAdminAsync(app.Services);
+await DbInitializer.SeedInitialNutritionDataAsync(app.Services);
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();

@@ -9,6 +9,7 @@ namespace Uniceps.app.DTOs.ExerciseDtos
         public string? EquipmentCode { get; set; }
         public ExerciseMechanism? Mechanism { get; set; }
         public string? SearchTerm { get; set; }
+        public DateTime? LastSync { get; set; }
         public ExerciseFilter ToModel()
         {
             return new ExerciseFilter
@@ -17,7 +18,8 @@ namespace Uniceps.app.DTOs.ExerciseDtos
                 MuscleGroupCode = !string.IsNullOrEmpty(MuscleGroupCode?.Trim()) ? MuscleGroupCode : null,
                 MuscleHeadCode = !string.IsNullOrEmpty(MuscleHeadCode?.Trim()) ? MuscleHeadCode : null,
                 SearchTerm = !string.IsNullOrEmpty(SearchTerm?.Trim()) ? SearchTerm : null,
-                Mechanism = Mechanism
+                Mechanism = Mechanism,
+                 LastSync= LastSync
             };
         }
     }
