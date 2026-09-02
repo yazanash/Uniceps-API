@@ -30,7 +30,7 @@ namespace Uniceps.app.Extensions.MeasurementMappers
         public BodyMeasurementDto ToDto(BodyMeasurement data)
         {
             BodyMeasurementDto bodyMeasurementDto = new BodyMeasurementDto();
-            bodyMeasurementDto.Id = data.Id;
+            bodyMeasurementDto.ApiId = data.MId;
             bodyMeasurementDto.HeightCm = data.HeightCm;
             bodyMeasurementDto.WeightKg = data.WeightKg;
             // Core

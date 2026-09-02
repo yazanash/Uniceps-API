@@ -1,0 +1,524 @@
+[
+  {
+    "EnglishName": "Proteins & Meats",
+    "ArabicName": "البروتينات واللحوم",
+    "Ingredients": [
+      {
+        "ArabicName": "صدر دجاج مطبوخ (مشوي)",
+        "EnglishName": "Grilled Chicken Breast",
+        "DefaultServingInGrams": 100,
+        "Calories": 165,
+        "Protein": 31.0,
+        "Carbs": 0.0,
+        "Fats": 3.6
+      },
+      {
+        "ArabicName": "فخذ دجاج مطبوخ (بدون جلد)",
+        "EnglishName": "Cooked Chicken Thigh",
+        "DefaultServingInGrams": 100,
+        "Calories": 209,
+        "Protein": 26.0,
+        "Carbs": 0.0,
+        "Fats": 10.9
+      },
+      {
+        "ArabicName": "لحم بقر هبرة (مفروم/مشوي)",
+        "EnglishName": "Lean Ground Beef",
+        "DefaultServingInGrams": 100,
+        "Calories": 250,
+        "Protein": 26.0,
+        "Carbs": 0.0,
+        "Fats": 15.0
+      },
+      {
+        "ArabicName": "لحم غنم هبرة",
+        "EnglishName": "Lean Lamb Meat",
+        "DefaultServingInGrams": 100,
+        "Calories": 280,
+        "Protein": 25.0,
+        "Carbs": 0.0,
+        "Fats": 20.0
+      },
+      {
+        "ArabicName": "شاورما دجاج (لحم صافي)",
+        "EnglishName": "Chicken Shawarma Meat",
+        "DefaultServingInGrams": 100,
+        "Calories": 218,
+        "Protein": 28.2,
+        "Carbs": 1.5,
+        "Fats": 11.0
+      },
+      {
+        "ArabicName": "تونة بالماء (علبة)",
+        "EnglishName": "Canned Tuna in Water",
+        "DefaultServingInGrams": 160,
+        "Calories": 113,
+        "Protein": 26.0,
+        "Carbs": 0.0,
+        "Fats": 1.0
+      },
+      {
+        "ArabicName": "سمك مشوي (مشكل)",
+        "EnglishName": "Grilled Fish",
+        "DefaultServingInGrams": 150,
+        "Calories": 192,
+        "Protein": 33.0,
+        "Carbs": 0.0,
+        "Fats": 6.8
+      },
+      {
+        "ArabicName": "حمص مسلوق",
+        "EnglishName": "Boiled Chickpeas",
+        "DefaultServingInGrams": 100,
+        "Calories": 169,
+        "Protein": 8.9,
+        "Carbs": 27.4,
+        "Fats": 2.6
+      },
+      {
+        "ArabicName": "مسبحة / حمص بالطحينة",
+        "EnglishName": "Hummus with Tahini",
+        "DefaultServingInGrams": 100,
+        "Calories": 175,
+        "Protein": 7.9,
+        "Carbs": 14.3,
+        "Fats": 9.6
+      },
+      {
+        "ArabicName": "فول مدمس (بدون زيت)",
+        "EnglishName": "Cooked Fava Beans",
+        "DefaultServingInGrams": 150,
+        "Calories": 168,
+        "Protein": 11.4,
+        "Carbs": 29.3,
+        "Fats": 0.6
+      },
+      {
+        "ArabicName": "عدس بني مسلوق",
+        "EnglishName": "Boiled Brown Lentils",
+        "DefaultServingInGrams": 150,
+        "Calories": 179,
+        "Protein": 13.5,
+        "Carbs": 30.0,
+        "Fats": 0.6
+      },
+      {
+        "ArabicName": "شوربة عدس",
+        "EnglishName": "Lentil Soup",
+        "DefaultServingInGrams": 250,
+        "Calories": 214,
+        "Protein": 12.5,
+        "Carbs": 32.5,
+        "Fats": 3.8
+      },
+      {
+        "ArabicName": "فلافل (قرص)",
+        "EnglishName": "Falafel Piece",
+        "DefaultServingInGrams": 20,
+        "Calories": 68,
+        "Protein": 2.7,
+        "Carbs": 6.4,
+        "Fats": 3.6
+      }
+    ]
+  },
+  {
+    "EnglishName": "Dairy & Eggs",
+    "ArabicName": "الألبان والبيض",
+    "Ingredients": [
+      {
+        "ArabicName": "لبن رائب (زبادي كامل الدسم)",
+        "EnglishName": "Whole Milk Yogurt",
+        "DefaultServingInGrams": 200,
+        "Calories": 125,
+        "Protein": 7.0,
+        "Carbs": 9.4,
+        "Fats": 6.6
+      },
+      {
+        "ArabicName": "لبنة بلدية مصفاة",
+        "EnglishName": "Syrian Labneh",
+        "DefaultServingInGrams": 50,
+        "Calories": 76,
+        "Protein": 4.5,
+        "Carbs": 2.0,
+        "Fats": 5.5
+      },
+      {
+        "ArabicName": "جبنة بيضاء بلدية (غنم)",
+        "EnglishName": "Syrian Sheep Cheese",
+        "DefaultServingInGrams": 50,
+        "Calories": 140,
+        "Protein": 9.0,
+        "Carbs": 0.8,
+        "Fats": 11.3
+      },
+      {
+        "ArabicName": "جبنة حلوم / مشلشلة",
+        "EnglishName": "Halloumi / Braided Cheese",
+        "DefaultServingInGrams": 60,
+        "Calories": 191,
+        "Protein": 12.9,
+        "Carbs": 1.2,
+        "Fats": 15.0
+      },
+      {
+        "ArabicName": "جبنة قشقوان",
+        "EnglishName": "Kashkaval Cheese",
+        "DefaultServingInGrams": 30,
+        "Calories": 99,
+        "Protein": 6.9,
+        "Carbs": 0.3,
+        "Fats": 7.8
+      },
+      {
+        "ArabicName": "حليب بقر كامل الدسم",
+        "EnglishName": "Whole Cow Milk",
+        "DefaultServingInGrams": 250,
+        "Calories": 154,
+        "Protein": 8.0,
+        "Carbs": 12.0,
+        "Fats": 8.3
+      },
+      {
+        "ArabicName": "بيض كامل (كبير)",
+        "EnglishName": "Whole Egg",
+        "DefaultServingInGrams": 50,
+        "Calories": 72,
+        "Protein": 6.3,
+        "Carbs": 0.4,
+        "Fats": 4.8
+      },
+      {
+        "ArabicName": "بياض البيض",
+        "EnglishName": "Egg White",
+        "DefaultServingInGrams": 33,
+        "Calories": 17,
+        "Protein": 3.6,
+        "Carbs": 0.2,
+        "Fats": 0.1
+      }
+    ]
+  },
+  {
+    "EnglishName": "Grains & Carbs",
+    "ArabicName": "النشويات والحبوب",
+    "Ingredients": [
+      {
+        "ArabicName": "خبز عربي سياحي",
+        "EnglishName": "Syrian Pita Bread",
+        "DefaultServingInGrams": 80,
+        "Calories": 220,
+        "Protein": 7.3,
+        "Carbs": 44.6,
+        "Fats": 1.0
+      },
+      {
+        "ArabicName": "خبز نخالة / أسمر",
+        "EnglishName": "Whole Wheat Pita",
+        "DefaultServingInGrams": 80,
+        "Calories": 192,
+        "Protein": 7.6,
+        "Carbs": 38.4,
+        "Fats": 1.4
+      },
+      {
+        "ArabicName": "أرز أبيض مطبوخ",
+        "EnglishName": "Cooked White Rice",
+        "DefaultServingInGrams": 150,
+        "Calories": 195,
+        "Protein": 4.1,
+        "Carbs": 42.0,
+        "Fats": 0.5
+      },
+      {
+        "ArabicName": "برغل مطبوخ",
+        "EnglishName": "Cooked Bulgur",
+        "DefaultServingInGrams": 150,
+        "Calories": 180,
+        "Protein": 4.7,
+        "Carbs": 38.4,
+        "Fats": 0.3
+      },
+      {
+        "ArabicName": "فريكة مطبوخة",
+        "EnglishName": "Cooked Freekeh",
+        "DefaultServingInGrams": 150,
+        "Calories": 218,
+        "Protein": 8.3,
+        "Carbs": 42.8,
+        "Fats": 1.2
+      },
+      {
+        "ArabicName": "بطاطا مسلوقة",
+        "EnglishName": "Boiled Potato",
+        "DefaultServingInGrams": 150,
+        "Calories": 130,
+        "Protein": 2.9,
+        "Carbs": 30.2,
+        "Fats": 0.2
+      },
+      {
+        "ArabicName": "شوفان خام",
+        "EnglishName": "Raw Oats",
+        "DefaultServingInGrams": 40,
+        "Calories": 156,
+        "Protein": 6.8,
+        "Carbs": 26.5,
+        "Fats": 2.8
+      },
+      {
+        "ArabicName": "معكرونة مسلوقة",
+        "EnglishName": "Boiled Pasta",
+        "DefaultServingInGrams": 150,
+        "Calories": 237,
+        "Protein": 8.7,
+        "Carbs": 46.5,
+        "Fats": 1.4
+      },
+      {
+        "ArabicName": "ذرة حلوة مسلوقة",
+        "EnglishName": "Boiled Sweet Corn",
+        "DefaultServingInGrams": 100,
+        "Calories": 96,
+        "Protein": 3.4,
+        "Carbs": 21.0,
+        "Fats": 1.5
+      }
+    ]
+  },
+  {
+    "EnglishName": "Vegetables",
+    "ArabicName": "الخضروات",
+    "Ingredients": [
+      {
+        "ArabicName": "خيار",
+        "EnglishName": "Cucumber",
+        "DefaultServingInGrams": 100,
+        "Calories": 15,
+        "Protein": 0.7,
+        "Carbs": 3.6,
+        "Fats": 0.1
+      },
+      {
+        "ArabicName": "بندورة (طماطم)",
+        "EnglishName": "Tomato",
+        "DefaultServingInGrams": 100,
+        "Calories": 18,
+        "Protein": 0.9,
+        "Carbs": 3.9,
+        "Fats": 0.2
+      },
+      {
+        "ArabicName": "خس",
+        "EnglishName": "Lettuce",
+        "DefaultServingInGrams": 100,
+        "Calories": 15,
+        "Protein": 1.4,
+        "Carbs": 2.9,
+        "Fats": 0.2
+      },
+      {
+        "ArabicName": "باذنجان مشوي (بابا غنوج)",
+        "EnglishName": "Grilled Eggplant",
+        "DefaultServingInGrams": 100,
+        "Calories": 35,
+        "Protein": 0.8,
+        "Carbs": 8.7,
+        "Fats": 0.2
+      },
+      {
+        "ArabicName": "كوسا مسلوقة",
+        "EnglishName": "Boiled Zucchini",
+        "DefaultServingInGrams": 100,
+        "Calories": 15,
+        "Protein": 1.1,
+        "Carbs": 2.7,
+        "Fats": 0.4
+      },
+      {
+        "ArabicName": "زهرة (قرنابيط) مسلوقة",
+        "EnglishName": "Boiled Cauliflower",
+        "DefaultServingInGrams": 100,
+        "Calories": 23,
+        "Protein": 1.8,
+        "Carbs": 4.1,
+        "Fats": 0.5
+      },
+      {
+        "ArabicName": "بروكلي مسلوق",
+        "EnglishName": "Boiled Broccoli",
+        "DefaultServingInGrams": 100,
+        "Calories": 35,
+        "Protein": 2.4,
+        "Carbs": 7.2,
+        "Fats": 0.4
+      },
+      {
+        "ArabicName": "سبانخ طازجة",
+        "EnglishName": "Fresh Spinach",
+        "DefaultServingInGrams": 100,
+        "Calories": 23,
+        "Protein": 2.9,
+        "Carbs": 3.6,
+        "Fats": 0.4
+      },
+      {
+        "ArabicName": "بصل",
+        "EnglishName": "Onion",
+        "DefaultServingInGrams": 100,
+        "Calories": 40,
+        "Protein": 1.1,
+        "Carbs": 9.3,
+        "Fats": 0.1
+      },
+      {
+        "ArabicName": "فلفل أخضر حلو",
+        "EnglishName": "Green Bell Pepper",
+        "DefaultServingInGrams": 100,
+        "Calories": 20,
+        "Protein": 0.9,
+        "Carbs": 4.6,
+        "Fats": 0.2
+      }
+    ]
+  },
+  {
+    "EnglishName": "Fruits",
+    "ArabicName": "الفواكه",
+    "Ingredients": [
+      {
+        "ArabicName": "تفاح",
+        "EnglishName": "Apple",
+        "DefaultServingInGrams": 150,
+        "Calories": 78,
+        "Protein": 0.5,
+        "Carbs": 20.7,
+        "Fats": 0.3
+      },
+      {
+        "ArabicName": "موز",
+        "EnglishName": "Banana",
+        "DefaultServingInGrams": 118,
+        "Calories": 105,
+        "Protein": 1.3,
+        "Carbs": 26.9,
+        "Fats": 0.4
+      },
+      {
+        "ArabicName": "برتقال",
+        "EnglishName": "Orange",
+        "DefaultServingInGrams": 130,
+        "Calories": 61,
+        "Protein": 1.2,
+        "Carbs": 15.3,
+        "Fats": 0.1
+      },
+      {
+        "ArabicName": "تمر",
+        "EnglishName": "Dates",
+        "DefaultServingInGrams": 30,
+        "Calories": 83,
+        "Protein": 0.5,
+        "Carbs": 22.5,
+        "Fats": 0.1
+      },
+      {
+        "ArabicName": "عنب",
+        "EnglishName": "Grapes",
+        "DefaultServingInGrams": 100,
+        "Calories": 69,
+        "Protein": 0.7,
+        "Carbs": 18.1,
+        "Fats": 0.2
+      },
+      {
+        "ArabicName": "بطيخ أحمر",
+        "EnglishName": "Watermelon",
+        "DefaultServingInGrams": 200,
+        "Calories": 60,
+        "Protein": 1.2,
+        "Carbs": 15.2,
+        "Fats": 0.4
+      },
+      {
+        "ArabicName": "تين طازج",
+        "EnglishName": "Fresh Figs",
+        "DefaultServingInGrams": 100,
+        "Calories": 74,
+        "Protein": 0.8,
+        "Carbs": 19.2,
+        "Fats": 0.3
+      }
+    ]
+  },
+  {
+    "EnglishName": "Fats & Nuts",
+    "ArabicName": "الدهون والمكسرات",
+    "Ingredients": [
+      {
+        "ArabicName": "زيت زيتون بلدي",
+        "EnglishName": "Olive Oil",
+        "DefaultServingInGrams": 14,
+        "Calories": 124,
+        "Protein": 0.0,
+        "Carbs": 0.0,
+        "Fats": 14.0
+      },
+      {
+        "ArabicName": "طحينة (سمسم)",
+        "EnglishName": "Tahini",
+        "DefaultServingInGrams": 15,
+        "Calories": 94,
+        "Protein": 2.6,
+        "Carbs": 3.2,
+        "Fats": 8.0
+      },
+      {
+        "ArabicName": "سمنة بلدية",
+        "EnglishName": "Clarified Butter (Ghee)",
+        "DefaultServingInGrams": 14,
+        "Calories": 123,
+        "Protein": 0.0,
+        "Carbs": 0.0,
+        "Fats": 13.9
+      },
+      {
+        "ArabicName": "زيتون أخضر / أسود",
+        "EnglishName": "Olives",
+        "DefaultServingInGrams": 30,
+        "Calories": 35,
+        "Protein": 0.2,
+        "Carbs": 1.9,
+        "Fats": 3.2
+      },
+      {
+        "ArabicName": "لوز نيء",
+        "EnglishName": "Raw Almonds",
+        "DefaultServingInGrams": 30,
+        "Calories": 174,
+        "Protein": 6.3,
+        "Carbs": 6.5,
+        "Fats": 15.0
+      },
+      {
+        "ArabicName": "جوز (عين جمل)",
+        "EnglishName": "Walnuts",
+        "DefaultServingInGrams": 30,
+        "Calories": 196,
+        "Protein": 4.6,
+        "Carbs": 4.1,
+        "Fats": 19.6
+      },
+      {
+        "ArabicName": "زبدة الفول السوداني",
+        "EnglishName": "Peanut Butter",
+        "DefaultServingInGrams": 32,
+        "Calories": 188,
+        "Protein": 8.0,
+        "Carbs": 6.4,
+        "Fats": 16.0
+      }
+    ]
+  }
+]

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using Uniceps.app.Services.NutrationSeeder;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
+using Uniceps.Entityframework.Models.NutritionSystem;
 using Uniceps.Entityframework.Models.Products;
 
 namespace Uniceps.app.HostBuilder
@@ -79,6 +82,59 @@ namespace Uniceps.app.HostBuilder
             catch
             {
             }
+        }
+        public static async Task SeedInitialNutritionDataAsync(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            if (await context.IngredientCategories.AnyAsync())
+                return;
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "ingredients.json");
+            if (!File.Exists(filePath))
+                return;
+
+            var jsonContent = await File.ReadAllTextAsync(filePath);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            var categoryDtos = JsonSerializer.Deserialize<List<CategorySeedDto>>(jsonContent, options);
+
+            if (categoryDtos == null || !categoryDtos.Any())
+                return;
+
+            foreach (var categoryDto in categoryDtos)
+            {
+                var category = new IngredientCategory
+                {
+                    EnglishName = categoryDto.EnglishName,
+                    ArabicName = categoryDto.ArabicName
+                };
+
+                await context.IngredientCategories.AddAsync(category);
+                await context.SaveChangesAsync();
+
+                var ingredients = categoryDto.Ingredients.Select(iDto => new Ingredient
+                {
+                    Id = Guid.NewGuid(),
+                    EnglishName = iDto.EnglishName,
+                    ArabicName = iDto.ArabicName,
+                    CategoryId = category.Id, 
+                    DefaultServingInGrams = iDto.DefaultServingInGrams,
+                    Calories = iDto.Calories,
+                    Protein = iDto.Protein,
+                    Carbs = iDto.Carbs,
+                    Fats = iDto.Fats,
+                    IsVerified = true,
+                    IsUserGenerated = false,
+                    UserId = null,
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
+
+                await context.Ingredients.AddRangeAsync(ingredients);
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 }

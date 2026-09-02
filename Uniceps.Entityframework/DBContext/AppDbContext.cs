@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uniceps.Entityframework.Configurations;
 using Uniceps.Entityframework.Models;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Billing;
 using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.NotificationModels;
+using Uniceps.Entityframework.Models.NutritionSystem;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.Profile;
 using Uniceps.Entityframework.Models.RoutineModels;
@@ -52,6 +54,11 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<LicenseActivation> LicenseActivations{ get; set; }
         public DbSet<BillingLicense> BillingLicenses{ get; set; }
 
+        public DbSet<DietLog> DietLogs{ get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<IngredientCategory> IngredientCategories { get; set; }
+
+        public DbSet<RoutineTemplate> RoutineTemplates { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
        
@@ -67,7 +74,7 @@ namespace Uniceps.Entityframework.DBContext
                 }
             }
 
-          
+            modelBuilder.ApplyConfiguration(new RoutineTemplateConfiguration());
             modelBuilder.Entity<MuscleGroup>().HasData
                 (
                 new MuscleGroup { Id = 1, Name = "صدر", EngName = "Chest" },
@@ -124,6 +131,10 @@ namespace Uniceps.Entityframework.DBContext
                 .WithMany()
                 .HasForeignKey(e => e.EquipmentCode)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<WorkoutLog>()
+        .HasIndex(l => new { l.WorkoutSessionId, l.ExerciseId, l.ExerciseIndex, l.SetIndex })
+        .IsUnique();
             base.OnModelCreating(modelBuilder);
 
         }

@@ -57,29 +57,24 @@ namespace Uniceps.app.Controllers.ProfileControllers
             if (profileCreationDto == null)
                 return BadRequest("Exercise data is missing.");
 
-            NormalProfile profile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
-            profile.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            var result = await _profileDataService.Create(profile);
-            _logger.LogInformation("Created Successfully");
-            return Ok(_normalProfileMapperExtension.ToDto(profile));
-        }
-        [HttpPut()]
-        public async Task<IActionResult> Update([FromBody] NormalProfileCreationDto profileCreationDto)
-        {
-            if (!User.Identity!.IsAuthenticated)
-            {
-                return Unauthorized();
-            }
-            if (profileCreationDto == null)
-                return BadRequest("Exercise data is missing.");
-
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            NormalProfile normalProfile = await _profileDataService.GetByUserId(userId);
+            NormalProfile existedProfile = await _profileDataService.GetByUserId(userId);
             NormalProfile newProfile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
-            newProfile.NID = normalProfile.NID;
             newProfile.UserId = userId;
-            await _profileDataService.Update(newProfile);
-            return Ok(_normalProfileMapperExtension.ToDto(newProfile));
+            if (existedProfile != null)
+            {
+                newProfile.NID = existedProfile.NID;
+                await _profileDataService.Update(newProfile);
+                _logger.LogInformation("Updated Successfully");
+                return Ok(_normalProfileMapperExtension.ToDto(newProfile));
+            }
+            else
+            {
+                var result = await _profileDataService.Create(newProfile);
+                _logger.LogInformation("Created Successfully");
+                return Ok(_normalProfileMapperExtension.ToDto(newProfile));
+            }
+         
         }
     }
 }

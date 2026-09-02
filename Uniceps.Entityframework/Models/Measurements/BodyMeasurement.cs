@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,11 @@ namespace Uniceps.Entityframework.Models.Measurements
     public class BodyMeasurement
     {
         public Guid Id { get; set; }
+        [Key]
+        public int MId { get; set; }
         public string? UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual AppUser? AppUser { get; set; }
-        public string? BusinessId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }
         // Core

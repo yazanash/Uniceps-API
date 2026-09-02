@@ -2,7 +2,6 @@
 {
     public class BodyMeasurementCreationDto
     {
-        public Guid PlayerId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }
         // Core

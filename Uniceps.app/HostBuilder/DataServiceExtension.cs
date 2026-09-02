@@ -13,8 +13,10 @@ using Uniceps.Entityframework.Services.ExerciseServices;
 using Uniceps.Entityframework.Services.MeasurementServices;
 using Uniceps.Entityframework.Services.MuscleGroupServices;
 using Uniceps.Entityframework.Services.NotificationSystemServices;
+using Uniceps.Entityframework.Services.NutritionServices;
 using Uniceps.Entityframework.Services.ProductServices;
 using Uniceps.Entityframework.Services.ProfileServices;
+using Uniceps.Entityframework.Services.RoutineServices;
 using Uniceps.Entityframework.Services.SystemSubscriptionServices;
 namespace Uniceps.app.HostBuilder
 {
@@ -26,9 +28,8 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IIntDataService<MuscleGroup>, MuscleGroupDataService>();
             
             services.AddScoped<IProfileDataService, NormalProfileDataService>();
-            services.AddScoped<IIntDataService<WorkoutSession>, WorkoutSessionDataService>();
+            services.AddScoped<IWorkoutSessionService, WorkoutSessionDataService>();
 
-            services.AddScoped<IUserQueryDataService<WorkoutSession>, WorkoutSessionDataService>();
 
             services.AddScoped<IPlanDataService, PlanDataService>();
             services.AddScoped<IIntDataService<PlanItem>, PlanItemDataService>();
@@ -36,7 +37,7 @@ namespace Uniceps.app.HostBuilder
 
             services.AddScoped<IUserDeviceDataService, UserDeviceDataService>();
 
-            services.AddScoped<IDataService<BodyMeasurement>, BodyMeasurementDataService>();
+            services.AddScoped<IIntDataService<BodyMeasurement>, BodyMeasurementDataService>();
             services.AddScoped<IUserQueryDataService<BodyMeasurement>, BodyMeasurementDataService>();
 
             services.AddScoped<ITelegramUserStateDataService<TelegramUserState>, TelegramUserStateDataService>();
@@ -55,6 +56,9 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IExerciseV2DataService, ExerciseV2DataService>();
 
             services.AddScoped<IBellingLicenseService, BellingLicenseService>();
+            services.AddScoped<IIngredientDataService, IngredientDataService>();
+            services.AddScoped<IDietLogDataService, DietLogDataService>();
+            services.AddScoped<IRoutineTemplateDataService, RoutineTemplateDataService>();
             return services;
         }
     }

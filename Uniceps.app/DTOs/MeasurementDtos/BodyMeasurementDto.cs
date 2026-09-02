@@ -2,8 +2,7 @@
 {
     public class BodyMeasurementDto
     {
-        public Guid Id { get; set; }
-        public Guid PlayerId { get; set; }
+        public int ApiId { get; set; }
         public string? BusinessId { get; set; }
         public double HeightCm { get; set; }
         public double WeightKg { get; set; }
