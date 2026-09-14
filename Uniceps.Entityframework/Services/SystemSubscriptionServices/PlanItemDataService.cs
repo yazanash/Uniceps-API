@@ -21,7 +21,7 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, string? userId)
         {
             PlanItem? entity = await _dbContext.Set<PlanItem>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)

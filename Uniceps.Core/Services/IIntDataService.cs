@@ -10,7 +10,7 @@ namespace Uniceps.Core.Services
     {
         public Task<T> Create(T entity);
         public Task<T> Update(T entity);
-        public Task<bool> Delete(int id);
+        public Task<bool> Delete(int id,string? userId =null);
         public Task<IEnumerable<T>> GetAll();
         public Task<T> Get(int id);
     }

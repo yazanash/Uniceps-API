@@ -51,7 +51,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             var result = await _dataService.Create(bodyMeasurement);
             return Ok(_mapperExtension.ToDto(bodyMeasurement));
         }
-        [HttpPut("Id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int Id, [FromBody] BodyMeasurementCreationDto bodyMeasurementCreationDto)
         {
             if (!User.Identity!.IsAuthenticated)
@@ -70,11 +70,17 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             await _dataService.Update(newBodyMeasurement);
             return Ok("Updated successfully");
         }
-        [HttpDelete("id")]
+       
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _dataService.Delete(id);
-            return Ok("Deleted successfully");
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            bool result = await _dataService.Delete(id, userId);
+            if (result)
+                return Ok();
+            return BadRequest();
+
         }
     }
 }

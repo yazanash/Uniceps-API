@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.NutritionSystem
 {
-    public class DietLog
+    public class DietLog : IOwnable
     {
         public int Id { get; set; }
         public string? UserId {  get; set; }

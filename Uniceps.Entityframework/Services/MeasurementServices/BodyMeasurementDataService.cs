@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
+using Uniceps.Entityframework.Extensions;
 using Uniceps.Entityframework.Models.Measurements;
 
 namespace Uniceps.Entityframework.Services.MeasurementServices
@@ -22,14 +23,18 @@ namespace Uniceps.Entityframework.Services.MeasurementServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id,string? userId)
         {
-            BodyMeasurement? entity = await _dbContext.Set<BodyMeasurement>().FirstOrDefaultAsync((e) => e.MId == id);
-            if (entity == null)
-                throw new Exception();
-            _dbContext.Set<BodyMeasurement>().Remove(entity!);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                BodyMeasurement? entity = await _dbContext.Set<BodyMeasurement>().OwnedBy(userId).FirstOrDefaultAsync((e) => e.MId == id);
+                if (entity == null)
+                    return false;
+                _dbContext.Set<BodyMeasurement>().Remove(entity!);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            else { return false; }
         }
 
         public async Task<BodyMeasurement> Get(int id)
@@ -58,4 +63,5 @@ namespace Uniceps.Entityframework.Services.MeasurementServices
             return entity;
         }
     }
+
 }

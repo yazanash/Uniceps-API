@@ -8,7 +8,7 @@ using Uniceps.Entityframework.Models.AuthenticationModels;
 
 namespace Uniceps.Entityframework.Models.Profile
 {
-    public class NormalProfile:EntityBase
+    public class NormalProfile:EntityBase, IOwnable
     {
         public string? Name { get; set; }
         public string? Phone { get; set; }

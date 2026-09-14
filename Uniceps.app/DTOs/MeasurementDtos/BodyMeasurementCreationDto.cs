@@ -17,5 +17,6 @@
         public double RightThighCm { get; set; }
         public double LeftLegCm { get; set; }
         public double RightLegCm { get; set; }
+        public DateTime MeasuredAt { get; set; } = DateTime.UtcNow;
     }
 }

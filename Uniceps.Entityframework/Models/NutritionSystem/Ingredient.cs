@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.NutritionSystem
 {
-    public class Ingredient
+    public class Ingredient : IOwnable
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string EnglishName { get; set; } = string.Empty;
@@ -25,5 +25,20 @@ namespace Uniceps.Entityframework.Models.NutritionSystem
         public bool IsVerified { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public void MergeWith( Ingredient ingredient) 
+        {
+            EnglishName = ingredient.EnglishName;
+            ArabicName = ingredient.ArabicName;
+            CategoryId = ingredient.CategoryId;
+            DefaultServingInGrams = ingredient.DefaultServingInGrams;
+            Calories = ingredient.Calories;
+            Protein = ingredient.Protein;
+            Carbs= ingredient.Carbs;
+            Fats = ingredient.Fats;
+            UserId = ingredient.UserId;
+            IsUserGenerated= ingredient.IsUserGenerated;
+            IsVerified = ingredient.IsVerified;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Uniceps.Entityframework.Services
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, string? userId)
         {
             PaymentGateway? entity = await _dbContext.Set<PaymentGateway>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)

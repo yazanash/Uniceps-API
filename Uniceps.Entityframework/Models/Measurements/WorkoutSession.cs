@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.Measurements
 {
-    public class WorkoutSession
+    public class WorkoutSession : IOwnable
     {
         public int Id { get; set; }
         public string Day { get; set; } = "";

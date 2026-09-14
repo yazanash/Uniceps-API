@@ -24,6 +24,7 @@ namespace Uniceps.app.Extensions.MeasurementMappers
             bodyMeasurement.RightThighCm = data.RightThighCm;
             bodyMeasurement.LeftLegCm = data.LeftLegCm;
             bodyMeasurement.RightLegCm = data.RightLegCm;
+            bodyMeasurement.MeasuredAt = data.MeasuredAt;
             return bodyMeasurement;
         }
 
