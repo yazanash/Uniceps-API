@@ -22,7 +22,7 @@ namespace Uniceps.Entityframework.Services.MuscleGroupServices
             return CreatedResult.Entity;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id,string?userId)
         {
             MuscleGroup? entity = await _dbContext.Set<MuscleGroup>().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)

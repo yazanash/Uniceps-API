@@ -4,7 +4,7 @@ namespace Uniceps.app.DTOs.NutritionDtos
 {
     public class IngredientRequest
     {
-        public Guid? ApiId { get; set; }
+        public string? ApiId { get; set; }
         public string EnglishName { get; set; } = string.Empty;
         public string ArabicName { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
@@ -17,7 +17,7 @@ namespace Uniceps.app.DTOs.NutritionDtos
 
         internal Ingredient ToModel()
         {
-            return new Ingredient
+            var ingridient = new Ingredient
             {
                 ArabicName = !string.IsNullOrEmpty(ArabicName)?ArabicName:Name,
                 Calories = Calories,
@@ -28,7 +28,12 @@ namespace Uniceps.app.DTOs.NutritionDtos
                 Fats = Fats,
                 DefaultServingInGrams = DefaultServingInGrams,
                 Protein = Protein,
+             
             };
+            if(ApiId!=null)
+                ingridient.Id = Guid.Parse( ApiId);
+
+            return ingridient;
         }
     }
 }

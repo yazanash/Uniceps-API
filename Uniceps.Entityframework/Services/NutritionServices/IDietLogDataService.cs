@@ -12,5 +12,6 @@ namespace Uniceps.Entityframework.Services.NutritionServices
     {
         public Task<DietLog> UpsertAsync(DietLog dietLog);
         public Task<IEnumerable<DietLog>> GetAllByUserAsync(string? userId);
+        public Task<bool> DeleteAsync(int id,string? userId=null);
     }
 }

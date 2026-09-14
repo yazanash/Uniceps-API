@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uniceps.Entityframework.Models.SystemSubscriptionModels
 {
-    public class SystemSubscription: EntityBase
+    public class SystemSubscription: EntityBase, IOwnable
     {
         public string? UserId { get; set; }
         public Guid PlanNID { get; set; }

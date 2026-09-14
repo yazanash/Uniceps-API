@@ -48,5 +48,16 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             var result = await _service.UpsertAsync(dietLog);
             return Ok(new { ApiId= result.Id });
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            bool result = await _service.DeleteAsync(id, userId);
+            if (result)
+                return Ok();
+            return BadRequest();
+
+        }
     }
 }

@@ -9,7 +9,7 @@ using Uniceps.Entityframework.Models.AuthenticationModels;
 
 namespace Uniceps.Entityframework.Models.Measurements
 {
-    public class BodyMeasurement
+    public class BodyMeasurement: IOwnable
     {
         public Guid Id { get; set; }
         [Key]

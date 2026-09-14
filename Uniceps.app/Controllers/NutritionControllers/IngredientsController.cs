@@ -26,10 +26,10 @@ namespace Uniceps.app.Controllers.NutritionControllers
         {
             //try
             //{
-                bool isArabic = Request.GetLanguage() == "ar";
-                string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                IEnumerable<Ingredient> ingredients = await _ingredientDataService.GetAll(userId, lastSync);
-                return Ok(ingredients.Select(x => new IngredientResponse(x, isArabic)).ToList());
+            bool isArabic = Request.GetLanguage() == "ar";
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            IEnumerable<Ingredient> ingredients = await _ingredientDataService.GetAll(userId, lastSync);
+            return Ok(ingredients.Select(x => new IngredientResponse(x, isArabic)).ToList());
             //}
             //catch (Exception ex)
             //{
@@ -39,13 +39,20 @@ namespace Uniceps.app.Controllers.NutritionControllers
         [HttpPost("custom")]
         public async Task<IActionResult> CreateIngredient(IngredientRequest ingredientRequest)
         {
-            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            bool isArabic = Request.GetLanguage() == "ar";
-            Ingredient ingredient = ingredientRequest.ToModel();
-            ingredient.UserId = userId;
-            ingredient.IsUserGenerated = true;
-            Ingredient createdIngredients = await _ingredientDataService.UpsertAsync(ingredient);
-            return Ok(new IngredientResponse(createdIngredients, isArabic));
+            try
+            {
+                string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                bool isArabic = Request.GetLanguage() == "ar";
+                Ingredient ingredient = ingredientRequest.ToModel();
+                ingredient.UserId = userId;
+                ingredient.IsUserGenerated = true;
+                Ingredient createdIngredients = await _ingredientDataService.UpsertAsync(ingredient);
+                return Ok(new IngredientResponse(createdIngredients, isArabic));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -79,6 +86,17 @@ namespace Uniceps.app.Controllers.NutritionControllers
             ingredient.Id = id;
             IngredientCategory createdIngredientCategory = await _ingredientDataService.CreateCategory(ingredient);
             return Ok(new IngredientCategoryResponse(createdIngredientCategory));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteIngredient(string id)
+        {
+            string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            bool result = await _ingredientDataService.Delete(Guid.Parse(id), userId);
+            if (result)
+                return Ok();
+            return BadRequest();
+
         }
     }
 }

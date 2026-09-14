@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
+using Uniceps.Entityframework.Extensions;
+using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.NutritionSystem;
 using Uniceps.Entityframework.Models.Products;
 
@@ -25,14 +28,14 @@ namespace Uniceps.Entityframework.Services.NutritionServices
         {
             var existingIngredient = await _dbContext.Set<Ingredient>()
         .FirstOrDefaultAsync(s => s.Id == entity.Id);
-            if (existingIngredient != null)
+            if (existingIngredient == null)
             {
                 EntityEntry<Ingredient> CreatedResult = await _dbContext.Set<Ingredient>().AddAsync(entity);
                 await _dbContext.SaveChangesAsync();
                 return CreatedResult.Entity;
             }
-            entity.UpdatedAt = DateTime.UtcNow;
-            _dbContext.Set<Ingredient>().Update(entity);
+            existingIngredient.MergeWith(entity);
+            _dbContext.Set<Ingredient>().Update(existingIngredient);
             await _dbContext.SaveChangesAsync();
             return entity;
 
@@ -44,9 +47,18 @@ namespace Uniceps.Entityframework.Services.NutritionServices
             return CreatedResult.Entity;
         }
 
-        public Task<bool> Delete(Guid id)
+        public async Task<bool> Delete(Guid id,string? userId)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                Ingredient? entity = await _dbContext.Set<Ingredient>().OwnedBy(userId).FirstOrDefaultAsync((e) => e.Id == id);
+                if (entity == null)
+                    return false;
+                _dbContext.Set<Ingredient>().Remove(entity);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            else { return false; }
         }
 
         public Task<bool> DeleteCategoryAsync(int id)
