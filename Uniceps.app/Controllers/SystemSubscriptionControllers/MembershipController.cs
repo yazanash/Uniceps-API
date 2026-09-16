@@ -42,6 +42,69 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             _bypassService = bypassService;
             _notificationDataService = notificationDataService;
         }
+        [HttpPost("buy")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> RequestSubscriptionByEmail(SystemSubscriptionCreationDto request)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(request.Email);
+                var plan = await _dataService.Get(request.PlanItemId);
+
+                if (user == null || plan == null)
+                    return BadRequest("Invalid user or plan");
+
+                MembershipPayDto membershipPayDto = new MembershipPayDto();
+                membershipPayDto.RequirePayment = false;
+                membershipPayDto.Message = "Membership Created Successfully";
+                var sub = new SystemSubscription
+                {
+                    UserId = user.Id,
+                    PlanNID = plan.PlanNID,
+                    PlanItemId = plan.Id,
+                    ProductId = plan.PlanModel?.ProductId ?? 0,
+                    PlanName = plan.PlanModel?.Name ?? "",
+                    PlanDaysCount = plan.DaysCount,
+                    PlanDuration = plan.DurationString ?? "",
+                    StartDate = DateTime.UtcNow,
+                    EndDate = DateTime.UtcNow.AddDays(plan.DaysCount),
+                    Price = plan.Price,
+                    IsGift = false,
+                    ISPaid = true,
+                    IsActive = true
+                };
+
+
+                await _subscriptionDataService.Create(sub);
+                if (plan.IsFree)
+                {
+                    return Ok(membershipPayDto);
+                }
+                else
+                {
+                    membershipPayDto.RequirePayment = true;
+                    membershipPayDto.Message = "Membership Created Successfully, but require payment";
+                    return Ok(membershipPayDto);
+                }
+                //var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
+
+                //if (!string.IsNullOrEmpty(sessionUrl))
+                //{
+                //    sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
+                //    await _subscriptionDataService.Update(sub);
+                //    membershipPayDto.RequirePayment = true;
+                //    membershipPayDto.PaymentUrl = sessionUrl;
+                //    membershipPayDto.Message = "Membership Created Successfully, but require payment";
+                //    return Ok(membershipPayDto);
+                //}
+                //else
+                //    return BadRequest("Error in payment gate");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> RequestSubscription(SystemSubscriptionCreationDto request)
