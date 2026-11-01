@@ -37,6 +37,7 @@ services:
       - ./wwwroot/downloads:/app/wwwroot/downloads
       - ./wwwroot/ExerciseImages:/app/wwwroot/ExerciseImages
       - ./wwwroot/ExercisesV2:/app/wwwroot/ExercisesV2
+      - ./wwwroot/features:/app/wwwroot/features
     networks:
       - trioverse-network
 volumes:

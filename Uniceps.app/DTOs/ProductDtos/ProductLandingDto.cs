@@ -9,12 +9,12 @@ namespace Uniceps.app.DTOs.ProductDtos
 {
     public class ProductLandingDto
     {
-        public ProductDto Product { get; set; } = new();
+        public ProductDto? Product { get; set; } 
         public SiteSettings SiteSettings { get; set; } = new();
         public List<ProductFeatureDto> Features { get; set; } = new();
         public List<FrequentlyAskedQuestionDto> FAQs { get; set; } = new();
         public List<UserStepDto> Steps { get; set; } = new();
-        public List<PlanDto> PricingPlans { get; set; } = new();
+        public List<PlanItemDto> PricingPlans { get; set; } = new();
         public List<ReleaseDto> LatestReleases { get; set; } = new();
     }
 }

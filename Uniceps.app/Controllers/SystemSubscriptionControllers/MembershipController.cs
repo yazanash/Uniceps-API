@@ -25,14 +25,14 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
 
     public class MembershipController : ControllerBase
     {
-        private readonly IIntDataService<PlanItem> _dataService;
+        private readonly IPlanDataService _dataService;
         private readonly IMembershipDataService _subscriptionDataService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly UserManager<AppUser> _userManager;
         private readonly IProductDataService _productDataService;
         private readonly IBypassService _bypassService;
         private readonly INotificationDataService _notificationDataService;
-        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IIntDataService<PlanItem> dataService, IProductDataService productDataService, IBypassService bypassService, INotificationDataService notificationDataService)
+        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IPlanDataService dataService, IProductDataService productDataService, IBypassService bypassService, INotificationDataService notificationDataService)
         {
             _subscriptionDataService = subscriptionDataService;
             _paymentGateway = paymentGateway;
@@ -60,23 +60,22 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 var sub = new SystemSubscription
                 {
                     UserId = user.Id,
-                    PlanNID = plan.PlanNID,
                     PlanItemId = plan.Id,
-                    ProductId = plan.PlanModel?.ProductId ?? 0,
-                    PlanName = plan.PlanModel?.Name ?? "",
+                    ProductId = plan.ProductId,
+                    PlanName = plan.Name ?? "",
                     PlanDaysCount = plan.DaysCount,
                     PlanDuration = plan.DurationString ?? "",
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow.AddDays(plan.DaysCount),
                     Price = plan.Price,
-                    IsGift = false,
+                    IsGift = true,
                     ISPaid = true,
                     IsActive = true
                 };
 
 
                 await _subscriptionDataService.Create(sub);
-                if (plan.IsFree)
+                if (sub.IsGift)
                 {
                     return Ok(membershipPayDto);
                 }
@@ -86,19 +85,6 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     membershipPayDto.Message = "Membership Created Successfully, but require payment";
                     return Ok(membershipPayDto);
                 }
-                //var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
-
-                //if (!string.IsNullOrEmpty(sessionUrl))
-                //{
-                //    sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
-                //    await _subscriptionDataService.Update(sub);
-                //    membershipPayDto.RequirePayment = true;
-                //    membershipPayDto.PaymentUrl = sessionUrl;
-                //    membershipPayDto.Message = "Membership Created Successfully, but require payment";
-                //    return Ok(membershipPayDto);
-                //}
-                //else
-                //    return BadRequest("Error in payment gate");
             }
             catch (Exception ex)
             {
@@ -128,10 +114,9 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 var sub = new SystemSubscription
                 {
                     UserId = user.Id,
-                    PlanNID = plan.PlanNID,
                     PlanItemId = plan.Id,
-                    ProductId = plan.PlanModel?.ProductId ?? 0,
-                    PlanName = plan.PlanModel?.Name ?? "",
+                    ProductId = plan.ProductId,
+                    PlanName = plan.Name ?? "",
                     PlanDaysCount = plan.DaysCount,
                     PlanDuration = plan.DurationString ?? "",
                     StartDate = DateTime.UtcNow,

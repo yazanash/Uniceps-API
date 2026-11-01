@@ -9,11 +9,10 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
     public interface IPlanDataService
     {
-        Task<PlanModel> Create(PlanModel entity);
-        Task<bool> Delete(Guid id);
-        Task<PlanModel> Get(Guid id);
-        Task<IEnumerable<PlanModel>> GetPlansForApp(int productId);
-        Task<PlanItem> GetItemById(int id);
-        Task<PlanModel> Update(PlanModel entity);
+        Task<PlanItem> Create(PlanItem entity);
+        Task<bool> Delete(int id);
+        Task<PlanItem> Get(int id);
+        Task<IEnumerable<PlanItem>> GetPlansForApp(int productId);
+        Task<PlanItem> Update(PlanItem entity);
     }
 }

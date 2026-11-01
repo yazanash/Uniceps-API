@@ -10,6 +10,8 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
     public interface IMembershipDataService
     {
         Task<SystemSubscription> Create(SystemSubscription entity);
+
+        Task<SystemSubscription> CreateSubscriptionAsync(int planId,int? couponId,string userId);
         Task<bool> Delete(Guid id);
         Task<SystemSubscription> Get(Guid id);
         Task<SystemSubscription> GetActiveSubscriptionByAppId(string userid, int productId);

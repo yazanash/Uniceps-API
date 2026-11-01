@@ -7,6 +7,7 @@ using Uniceps.app.DTOs.ProductDtos.ProductFeatureDtos;
 using Uniceps.app.DTOs.ProductDtos.UserStepDtos;
 using Uniceps.app.DTOs.ReleaseDtos;
 using Uniceps.app.DTOs.SystemSubscriptionDtos;
+using Uniceps.app.DTOs.UserDeviceDto;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
@@ -27,12 +28,7 @@ namespace Uniceps.app.Controllers.ProductControllers
         private readonly IReleaseDataService _releaseService;
         private readonly IPlanDataService _planDataService;
         private readonly IMembershipDataService _membershipDataService;
-        private readonly IMapperExtension<FrequentlyAskedQuestion, FrequentlyAskedQuestionDto, FrequentlyAskedQuestionCreationDto> _faqMapperExtension;
-        private readonly IMapperExtension<ProductFeature, ProductFeatureDto, ProductFeatureCreationDto> _featureMapperExtension;
-        private readonly IMapperExtension<UserStep, UserStepDto, UserStepCreationDro> _userStepMapperExtension;
-        private readonly IMapperExtension<Release, ReleaseDto, ReleaseCreationDto> _releaseMapperExtension;
-        private readonly IMapperExtension<PlanModel, PlanDto, PlanCreationDto> _planMapperExtension;
-        private readonly IMapperExtension<Product, ProductDto, ProductCreationDto> _productMapper;
+     
 
         public ProductLandingController(IProductDataService productDataService,
             ISiteSettingsService settingsService,
@@ -40,14 +36,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             IProductRelatedDataService<FrequentlyAskedQuestion> faqService,
             IProductRelatedDataService<UserStep> stepService,
             IReleaseDataService releaseService, IPlanDataService planDataService,
-            IMembershipDataService membershipDataService,
-            IMapperExtension<FrequentlyAskedQuestion,
-                FrequentlyAskedQuestionDto,
-                FrequentlyAskedQuestionCreationDto> faqMapperExtension,
-            IMapperExtension<ProductFeature, ProductFeatureDto, ProductFeatureCreationDto> featureMapperExtension,
-            IMapperExtension<UserStep, UserStepDto, UserStepCreationDro> userStepMapperExtension,
-            IMapperExtension<Release, ReleaseDto, ReleaseCreationDto> releaseMapperExtension,
-            IMapperExtension<PlanModel, PlanDto, PlanCreationDto> planMapperExtension, IMapperExtension<Product, ProductDto, ProductCreationDto> productMapper)
+            IMembershipDataService membershipDataService)
         {
             _productDataService = productDataService;
             _settingsService = settingsService;
@@ -57,12 +46,6 @@ namespace Uniceps.app.Controllers.ProductControllers
             _releaseService = releaseService;
             _planDataService = planDataService;
             _membershipDataService = membershipDataService;
-            _faqMapperExtension = faqMapperExtension;
-            _featureMapperExtension = featureMapperExtension;
-            _userStepMapperExtension = userStepMapperExtension;
-            _releaseMapperExtension = releaseMapperExtension;
-            _planMapperExtension = planMapperExtension;
-            _productMapper = productMapper;
         }
 
         [HttpGet("{productId}")]
@@ -81,28 +64,28 @@ namespace Uniceps.app.Controllers.ProductControllers
 
 
                 response.SiteSettings = settings;
-                response.Features = features.Select(x=> _featureMapperExtension.ToDto(x)).ToList();
-                response.FAQs = faqs.Select(x => _faqMapperExtension.ToDto(x)).ToList(); 
-                response.Steps = steps.Select(x => _userStepMapperExtension.ToDto(x)).ToList(); 
-                response.LatestReleases = releases.Select(x => _releaseMapperExtension.ToDto(x)).ToList();
-                response.PricingPlans = plans.Select(x => _planMapperExtension.ToDto(x)).ToList();
-                response.Product = _productMapper.ToDto(product);
+                response.Features = features.Select(x=> new ProductFeatureDto(x)).ToList();
+                response.FAQs = faqs.Select(x => new FrequentlyAskedQuestionDto(x)).ToList(); 
+                response.Steps = steps.Select(x =>new UserStepDto(x)).ToList(); 
+                response.LatestReleases = releases.Select(x => new ReleaseDto(x)).ToList();
+                response.PricingPlans = plans.Select(x => new PlanItemDto(x)).ToList();
+                response.Product = new ProductDto(product);
 
-                if (User.Identity?.IsAuthenticated == true)
-                {
-                    string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
+                //if (User.Identity?.IsAuthenticated == true)
+                //{
+                //    string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value;
 
-                    bool hasHistory = await _membershipDataService.HasUsedTrialForProduct(userId, product.Id);
+                //    bool hasHistory = await _membershipDataService.HasUsedTrialForProduct(userId, product.Id);
                         
-                    if (hasHistory)
-                    {
-                        foreach (var plan in response.PricingPlans)
-                        {
-                            plan.PlanItems = plan.PlanItems.Where(i => !i.IsFree).ToList();
-                        }
-                        response.PricingPlans = response.PricingPlans.Where(p => p.PlanItems.Any()).ToList();
-                    }
-                }
+                //    if (hasHistory)
+                //    {
+                //        foreach (var plan in response.PricingPlans)
+                //        {
+                //            plan.PlanItems = plan.PlanItems.Where(i => !i.IsFree).ToList();
+                //        }
+                //        response.PricingPlans = response.PricingPlans.Where(p => p.PlanItems.Any()).ToList();
+                //    }
+                //}
 
                 return Ok(response);
             }

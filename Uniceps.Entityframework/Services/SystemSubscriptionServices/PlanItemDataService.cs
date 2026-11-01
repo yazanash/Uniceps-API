@@ -11,7 +11,7 @@ using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
 namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
 {
-    public class PlanItemDataService(AppDbContext dbContext) : IIntDataService<PlanItem>
+    public class PlanItemDataService(AppDbContext dbContext) : IPlanDataService
     {
         private readonly AppDbContext _dbContext = dbContext;
         public async Task<PlanItem> Create(PlanItem entity)
@@ -31,9 +31,14 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return true;
         }
 
+        public Task<bool> Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<PlanItem> Get(int id)
         {
-            PlanItem? entity = await _dbContext.Set<PlanItem>().AsNoTracking().Include(x=>x.PlanModel).FirstOrDefaultAsync((e) => e.Id == id);
+            PlanItem? entity = await _dbContext.Set<PlanItem>().AsNoTracking().FirstOrDefaultAsync((e) => e.Id == id);
             if (entity == null)
                 throw new Exception();
             return entity!;
@@ -42,6 +47,11 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         public async Task<IEnumerable<PlanItem>> GetAll()
         {
             IEnumerable<PlanItem>? entities = await _dbContext.Set<PlanItem>().ToListAsync();
+            return entities;
+        }
+        public async Task<IEnumerable<PlanItem>> GetPlansForApp(int productId)
+        {
+            IEnumerable<PlanItem>? entities = await _dbContext.Set<PlanItem>().Where(x=>x.ProductId == productId).ToListAsync();
             return entities;
         }
 

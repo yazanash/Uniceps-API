@@ -15,11 +15,9 @@ namespace Uniceps.app.Controllers.NotificationSystemControllers
     public class UserDeviceController : ControllerBase
     {
         private readonly IUserDeviceDataService _dataService;
-        private readonly IMapperExtension<UserDevice, UserDeviceDto, UserDeviceCreationDto> _mapperExtension;
-        public UserDeviceController(IUserDeviceDataService dataService, IMapperExtension<UserDevice, UserDeviceDto, UserDeviceCreationDto> mapperExtension)
+        public UserDeviceController(IUserDeviceDataService dataService)
         {
             _dataService = dataService;
-            _mapperExtension = mapperExtension;
         }
 
         [HttpPost]
@@ -31,7 +29,7 @@ namespace Uniceps.app.Controllers.NotificationSystemControllers
             }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            UserDevice device = _mapperExtension.FromCreationDto(dto);
+            UserDevice device =dto.ToModel();
             device.UserId = userId;
             await _dataService.UpsertUserDeviceAsync(device);
             return Ok();
@@ -46,7 +44,7 @@ namespace Uniceps.app.Controllers.NotificationSystemControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             IEnumerable<UserDevice> userDevices =  await _dataService.GetAllByUser(userId);
-            return Ok(userDevices.Select(x=>_mapperExtension.ToDto(x)));
+            return Ok(userDevices.Select(x=>new UserDeviceDto(x)));
         }
     }
 }

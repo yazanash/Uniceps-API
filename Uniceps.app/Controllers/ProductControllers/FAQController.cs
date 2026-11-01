@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Uniceps.app.DTOs.PayGatewayDtos;
 using Uniceps.app.DTOs.ProductDtos.FAQDtos;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Products;
@@ -14,32 +15,30 @@ namespace Uniceps.app.Controllers.ProductControllers
     public class FAQController : ControllerBase
     {
         private readonly IProductRelatedDataService<FrequentlyAskedQuestion> _faqService;
-        private readonly IMapperExtension<FrequentlyAskedQuestion, FrequentlyAskedQuestionDto, FrequentlyAskedQuestionCreationDto> _mapper;
-
-        public FAQController(IProductRelatedDataService<FrequentlyAskedQuestion> faqService, IMapperExtension<FrequentlyAskedQuestion, FrequentlyAskedQuestionDto, FrequentlyAskedQuestionCreationDto> mapper)
+      
+        public FAQController(IProductRelatedDataService<FrequentlyAskedQuestion> faqService)
         {
             _faqService = faqService;
-            _mapper = mapper;
         }
         [HttpGet("product/{productId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetByProduct(int productId)
         {
             var faqs = await _faqService.GetAllByProductId(productId);
-            return Ok(faqs.Select(x=> _mapper.ToDto(x)).ToList());
+            return Ok(faqs.Select(x => new FrequentlyAskedQuestionDto(x)).ToList());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] FrequentlyAskedQuestionCreationDto dto)
         {
-            var faq = _mapper.FromCreationDto(dto);
+            var faq = dto.ToModel();
             var result = await _faqService.Create(faq);
-            return Ok(_mapper.ToDto(result));
+            return Ok(new FrequentlyAskedQuestionDto(result));
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> update(int id,[FromBody] FrequentlyAskedQuestionCreationDto dto)
         {
-            var faq = _mapper.FromCreationDto(dto);
+            var faq = dto.ToModel();
             faq.Id = id;
             await _faqService.Update(faq);
             return Ok("Updated Successfully");

@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Telegram.Bot.Types;
 using Uniceps.app.DTOs.ProductDtos;
+using Uniceps.app.Extensions;
+using Uniceps.app.Services;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Services.ProductServices;
@@ -14,20 +17,18 @@ namespace Uniceps.app.Controllers.ProductControllers
     public class ProductController : ControllerBase
     {
         public IProductDataService _dataService;
-        private readonly IMapperExtension<Product, ProductDto, ProductCreationDto> _mapperExtension;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductController(IProductDataService dataService, IMapperExtension<Product, ProductDto, ProductCreationDto> mapperExtension, IWebHostEnvironment webHostEnvironment)
+        private readonly ExerciseImageService _imageService;
+        public ProductController(IProductDataService dataService, ExerciseImageService imageService)
         {
             _dataService = dataService;
-            _mapperExtension = mapperExtension;
-            _webHostEnvironment = webHostEnvironment;
+            _imageService = imageService;
         }
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _dataService.GetAll();
-            return Ok(products.Select(x => _mapperExtension.ToDto(x)));
+            return Ok(products.Select(x =>new ProductDto(x)));
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
@@ -35,7 +36,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             try
             {
                 var product = await _dataService.Get(id);
-                return Ok(_mapperExtension.ToDto(product));
+                return Ok(new ProductDto(product));
             }
             catch
             {
@@ -49,7 +50,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             try
             {
                 var product = await _dataService.GetBySlug(slug);
-                return Ok(_mapperExtension.ToDto(product));
+                return Ok(new ProductDto(product));
             }
             catch
             {
@@ -66,58 +67,57 @@ namespace Uniceps.app.Controllers.ProductControllers
             string imageUrl = "";
             if (productCreationDto.HeroImage != null)
             {
-                // تحديد مسار المجلد (wwwroot/uploads)
-                var uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                var seoFileName = $"{productCreationDto.Name.ToUrlSlug()}-{Guid.NewGuid().ToString().Substring(0, 6)}";
 
-                // إنشاء اسم فريد للملف
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(productCreationDto.HeroImage.FileName);
-                var filePath = Path.Combine(uploads, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await productCreationDto.HeroImage.CopyToAsync(stream);
-                }
-
-                imageUrl = $"/uploads/{fileName}"; // الرابط الذي سيخزن في الداتابيز
+                imageUrl = await _imageService.SaveImageAsWebP(
+                    productCreationDto.HeroImage,
+                    fileNameWithoutExtension: seoFileName,
+                    folderName: "uploads",
+                    maxWidth: 1200
+                );
             }
-            Product createdProduct = _mapperExtension.FromCreationDto(productCreationDto);
+            Product createdProduct = productCreationDto.ToModel();
             createdProduct.HeroImage = imageUrl;
             var product = await _dataService.Create(createdProduct);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, _mapperExtension.ToDto(product));
+            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, new ProductDto(product));
         }
 
-        // تعديل منتج
         [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductCreationDto productCreationDto)
         {
             try
             {
-                string imageUrl = "";
-                if (productCreationDto.HeroImage != null)
+                var existingProduct = await _dataService.Get(id); // أو الطريقة المعتمدة عندك لجلب المنتج
+                if (existingProduct == null)
+                    return NotFound("Product not found");
+
+                string? imageUrl = existingProduct.HeroImage;
+
+                if (productCreationDto.HeroImage != null && productCreationDto.HeroImage.Length > 0)
                 {
-                    // تحديد مسار المجلد (wwwroot/uploads)
-                    var uploads = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                    if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                    var seoFileName = $"{productCreationDto.Name.ToUrlSlug()}-{Guid.NewGuid().ToString().Substring(0, 6)}";
 
-                    // إنشاء اسم فريد للملف
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(productCreationDto.HeroImage.FileName);
-                    var filePath = Path.Combine(uploads, fileName);
+                    imageUrl = await _imageService.SaveImageAsWebP(
+                        productCreationDto.HeroImage,
+                        fileNameWithoutExtension: seoFileName,
+                        folderName: "uploads",
+                        maxWidth: 1200
+                    );
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    if (!string.IsNullOrEmpty(existingProduct.HeroImage))
                     {
-                        await productCreationDto.HeroImage.CopyToAsync(stream);
+                        _imageService.DeleteImage(existingProduct.HeroImage);
                     }
-
-                    imageUrl = $"/uploads/{fileName}"; // الرابط الذي سيخزن في الداتابيز
                 }
-                Product product = _mapperExtension.FromCreationDto(productCreationDto);
-                if(!string.IsNullOrEmpty(imageUrl))
-                product.HeroImage = imageUrl;
+
+                Product product =productCreationDto.ToModel();
                 product.Id = id;
+                product.HeroImage = imageUrl; 
+
                 var updated = await _dataService.Update(product);
-                return Ok(_mapperExtension.ToDto(product));
+
+                return Ok(new ProductDto(updated));
             }
             catch
             {

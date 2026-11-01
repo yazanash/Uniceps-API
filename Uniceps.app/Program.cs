@@ -14,7 +14,6 @@ using Uniceps.Core.Services;
 using Uniceps.Entityframework;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models.AuthenticationModels;
-using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.ExerciseServices;
 
@@ -28,7 +27,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddIdentity<AppUser,IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddDataServices();
-builder.Services.AddMappers();
 builder.Services.AddSystemServices();
 builder.Services.AddCustomJwtAuth(builder.Configuration);
 builder.Services.AddFirebaseAdmin(builder.Configuration);

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.DBContext;
 using Uniceps.Entityframework.Models;
-using Uniceps.Entityframework.Models.RoutineModels;
 
 namespace Uniceps.Entityframework.Services
 {

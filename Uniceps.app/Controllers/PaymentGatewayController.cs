@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Uniceps.app.DTOs.PayGatewayDtos;
 using Uniceps.app.DTOs.ProfileDtos;
+using Uniceps.app.DTOs.SystemSubscriptionDtos;
 using Uniceps.app.HostBuilder;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models;
@@ -18,12 +19,10 @@ namespace Uniceps.app.Controllers
     public class PaymentGatewayController : ControllerBase
     {
         private readonly IIntDataService<PaymentGateway> _paymentGatewayService;
-        private readonly IMapperExtension<PaymentGateway, PaymentGatewayDto, PaymentGatewayCreationDto> _mapperExtension;
         private readonly IWebHostEnvironment _env;
-        public PaymentGatewayController(IIntDataService<PaymentGateway> paymentGatewayService, IMapperExtension<PaymentGateway, PaymentGatewayDto, PaymentGatewayCreationDto> mapperExtension, IWebHostEnvironment env)
+        public PaymentGatewayController(IIntDataService<PaymentGateway> paymentGatewayService,  IWebHostEnvironment env)
         {
             _paymentGatewayService = paymentGatewayService;
-            _mapperExtension = mapperExtension;
             _env = env;
         }
 
@@ -31,7 +30,7 @@ namespace Uniceps.app.Controllers
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<PaymentGateway> gateways = await _paymentGatewayService.GetAll();
-            return Ok(gateways.Select(x => _mapperExtension.ToDto(x)).ToList());
+            return Ok(gateways.Select(x => new PaymentGatewayDto(x)).ToList());
         }
 
         [HttpGet("id")]
@@ -39,7 +38,7 @@ namespace Uniceps.app.Controllers
         {
             PaymentGateway paymentGateway = await _paymentGatewayService.Get(id);
 
-            return Ok(_mapperExtension.ToDto(paymentGateway));
+            return Ok(new PaymentGatewayDto(paymentGateway));
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
@@ -49,7 +48,7 @@ namespace Uniceps.app.Controllers
             {
                 if (paymentGatewayCreationDto == null) return BadRequest("Data is missing.");
 
-                PaymentGateway paymentGateway = _mapperExtension.FromCreationDto(paymentGatewayCreationDto);
+                PaymentGateway paymentGateway = paymentGatewayCreationDto.ToModel();
 
                 if (paymentGatewayCreationDto.QrCodeFile != null && paymentGatewayCreationDto.QrCodeFile.Length > 0)
                 {
@@ -70,7 +69,7 @@ namespace Uniceps.app.Controllers
                     paymentGateway.QrCodeUrl = "/uploads/qrcodes/" + fileName;
                 }
                 var result = await _paymentGatewayService.Create(paymentGateway);
-                return Ok(_mapperExtension.ToDto(paymentGateway));
+                return Ok(new PaymentGatewayDto(paymentGateway));
             }
             catch (Exception ex)
             {
@@ -121,7 +120,7 @@ namespace Uniceps.app.Controllers
             existingGateway.IsActive = paymentGatewayCreationDto.IsActive;
 
             await _paymentGatewayService.Update(existingGateway);
-            return Ok(_mapperExtension.ToDto(existingGateway));
+            return Ok(new PaymentGatewayDto(existingGateway));
         }
     }
 }

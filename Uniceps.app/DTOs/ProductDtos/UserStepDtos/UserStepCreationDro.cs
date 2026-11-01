@@ -1,4 +1,6 @@
-﻿namespace Uniceps.app.DTOs.ProductDtos.UserStepDtos
+﻿using Uniceps.Entityframework.Models.Products;
+
+namespace Uniceps.app.DTOs.ProductDtos.UserStepDtos
 {
     public class UserStepCreationDro
     {
@@ -9,5 +11,20 @@
         public string DescriptionAr { get; set; } = string.Empty;
         public string? ImageUrl { get; set; } // صورة توضيحية للخطوة
         public int ProductId { get; set; }
+        public UserStep ToModel()
+        {
+            return new UserStep
+            {
+                ProductId = ProductId,
+                StepNumber = StepNumber,
+                Description = Description,
+                Title = Title,
+                DescriptionAr = DescriptionAr,
+                TitleAr = TitleAr,
+
+                ImageUrl = ImageUrl,
+            };
+        }
+
     }
 }

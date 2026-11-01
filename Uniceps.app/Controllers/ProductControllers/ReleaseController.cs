@@ -25,31 +25,10 @@ namespace Uniceps.app.Controllers.ProductControllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadRelease(ReleaseCreationDto dto)
         {
-            var release = new Release
-            {
-                Version = dto.Version,
-                TargetOS = dto.TargetOS,
-                DownloadSource = dto.DownloadSource,
-                DownloadUrl = dto.DownloadUrl??"",
-                ChangeLog = dto.ChangeLog,
-                ProductId = dto.ProductId,
-                CreatedAt = DateTime.UtcNow
-            };
+            var release = dto.ToModel();
 
             await _releaseDataService.AddReleaseAsync(release);
-            ReleaseDto releaseDto = new ReleaseDto()
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                DownloadSource = release.DownloadSource,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = DateTime.UtcNow
-            };
+            ReleaseDto releaseDto = new ReleaseDto(release) ;
             return Ok(releaseDto);
         }
         [HttpPost("upload-chunk")]
@@ -132,19 +111,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             var release = await _releaseDataService.GetLatestReleasesAsync(productId);
             if (release == null) return NotFound("No release found");
             
-            return Ok(release.Select(release =>  new ReleaseDto()
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                DownloadSource = release.DownloadSource,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = DateTime.UtcNow
-            }));
+            return Ok(release.Select(release =>  new ReleaseDto(release)));
         }
         [HttpGet("GetRelease/{id}")]
         public async Task<IActionResult> GetRelease(int id)
@@ -152,19 +119,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             var release = await _releaseDataService.GetReleaseByIdAsync(id);
             if (release == null) return NotFound("No release found");
 
-            return Ok( new ReleaseDto()
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                DownloadSource = release.DownloadSource,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = DateTime.UtcNow
-            });
+            return Ok( new ReleaseDto(release)  );
         }
         [HttpGet("app/{appId}/latest/{os}")]
         [AllowAnonymous]
@@ -177,19 +132,7 @@ namespace Uniceps.app.Controllers.ProductControllers
                 return NotFound($"No release found for product {product.Id} on {os}");
 
             // تحويل الـ Model إلى Dto لإرجاعه للـ Frontend
-            var releaseDto = new ReleaseDto
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSource =release.DownloadSource,
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = release.CreatedAt
-            };
+            var releaseDto = new ReleaseDto(release);
 
             return Ok(releaseDto);
         }
@@ -200,19 +143,7 @@ namespace Uniceps.app.Controllers.ProductControllers
             var release = await _releaseDataService.GetReleasesByProductAsync(productId);
             if (release == null) return NotFound("No release found");
 
-            return Ok(release.Select(release => new ReleaseDto()
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                DownloadSource = release.DownloadSource,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = DateTime.UtcNow
-            }));
+            return Ok(release.Select(release => new ReleaseDto(release)));
         }
         [HttpGet("download/{id}")]
         [AllowAnonymous]
@@ -299,33 +230,9 @@ namespace Uniceps.app.Controllers.ProductControllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRelease(int id,ReleaseCreationDto dto)
         {
-           var release = new Release
-           {
-               Version = dto.Version,
-               TargetOS = dto.TargetOS,
-               DownloadSource = dto.DownloadSource,
-               DownloadUrl = dto.DownloadUrl ?? "",
-               ChangeLog = dto.ChangeLog,
-               ProductId = dto.ProductId,
-               CreatedAt = DateTime.UtcNow,
-               Id = id
-           };
-
-           
+            var release = dto.ToModel();
             await _releaseDataService.UpdateReleaseAsync(release);
-            ReleaseDto releaseDto = new ReleaseDto()
-            {
-                Id = release.Id,
-                Version = release.Version,
-                TargetOS = release.TargetOS,
-                DownloadSource = release.DownloadSource,
-                TargetOSText = release.TargetOS.ToString(),
-                DownloadSourceText = release.DownloadSource.ToString(),
-                DownloadUrl = release.DownloadUrl ?? "",
-                ChangeLog = release.ChangeLog,
-                ProductId = release.ProductId,
-                CreatedAt = DateTime.UtcNow
-            };
+            ReleaseDto releaseDto = new ReleaseDto(release)  ;
             return Ok(releaseDto);
         }
     }

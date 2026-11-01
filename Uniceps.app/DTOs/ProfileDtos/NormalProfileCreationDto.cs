@@ -12,5 +12,16 @@ namespace Uniceps.app.DTOs.ProfileDtos
         public DateTime DateOfBirth { get; set; }
         public int Gender { get; set; }
         public string? PictureUrl { get; set; }
+        public NormalProfile ToModel()
+        {
+            NormalProfile normalProfile = new NormalProfile();
+            normalProfile.Name = Name;
+            normalProfile.Phone = Phone;
+            normalProfile.Address = Address;
+            normalProfile.OwnerName = OwnerName;
+            normalProfile.DateOfBirth = DateOfBirth;
+            normalProfile.Gender = (GenderType)Gender;
+            return normalProfile;
+        }
     }
 }

@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Uniceps.Entityframework.DBContext;
-using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.RoutineModelsV2;
 
 namespace Uniceps.Entityframework.Services.ExerciseServices

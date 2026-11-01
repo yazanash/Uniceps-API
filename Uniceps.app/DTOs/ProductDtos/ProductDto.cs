@@ -4,6 +4,20 @@ namespace Uniceps.app.DTOs.ProductDtos
 {
     public class ProductDto
     {
+        public ProductDto(Product data)
+        {
+
+            Name = data.Name;
+            Id = data.Id;
+            Description = data.Description;
+            HeroImage = data.HeroImage;
+            Platform = data.Platform;
+            AppId = data.AppId;
+            DescriptionAr = data.DescriptionAr;
+            NameAr = data.NameAr;
+            Slug = data.Slug;
+
+        }
         public int Id { get; set; }
         public string Name { get; set; } = "";
         public string NameAr { get; set; } = "";

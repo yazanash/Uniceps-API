@@ -12,13 +12,12 @@ namespace Uniceps.Entityframework.Models.SystemSubscriptionModels
         public long ChatId { get; set; }
         public string Email { get; set; } = null!;
         public int PaymentGatewayId { get; set; }
-        public string? SubscriptionId { get; set; }
+        public int PlanItemId { get; set; }
         public string TransferCode { get; set; } = null!;
-        public decimal? Amount { get; set; }
-        public string? ImageUrl { get; set; }
         public CashRequestStatus Status { get; set; } = CashRequestStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string? ReceiptFileId { get; set; }
+        public string? UserId { get; set; }
+        public int? CouponId { get; set; }
     }
     public enum CashRequestStatus
     {

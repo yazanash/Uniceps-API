@@ -5,13 +5,11 @@ using Uniceps.Entityframework.Models.Measurements;
 using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.Profile;
-using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 using Uniceps.Entityframework.Services;
 using Uniceps.Entityframework.Services.BillingLicenseService;
 using Uniceps.Entityframework.Services.ExerciseServices;
 using Uniceps.Entityframework.Services.MeasurementServices;
-using Uniceps.Entityframework.Services.MuscleGroupServices;
 using Uniceps.Entityframework.Services.NotificationSystemServices;
 using Uniceps.Entityframework.Services.NutritionServices;
 using Uniceps.Entityframework.Services.ProductServices;
@@ -24,15 +22,11 @@ namespace Uniceps.app.HostBuilder
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services)
         {
-            services.AddScoped<IExerciseDataService, ExerciseDataService>();
-            services.AddScoped<IIntDataService<MuscleGroup>, MuscleGroupDataService>();
-            
-            services.AddScoped<IProfileDataService, NormalProfileDataService>();
+          services.AddScoped<IProfileDataService, NormalProfileDataService>();
             services.AddScoped<IWorkoutSessionService, WorkoutSessionDataService>();
 
 
-            services.AddScoped<IPlanDataService, PlanDataService>();
-            services.AddScoped<IIntDataService<PlanItem>, PlanItemDataService>();
+            services.AddScoped<IPlanDataService, PlanItemDataService>();
             services.AddScoped<IMembershipDataService, SystemSubscriptionDataService>();
 
             services.AddScoped<IUserDeviceDataService, UserDeviceDataService>();
