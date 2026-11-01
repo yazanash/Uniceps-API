@@ -1,4 +1,6 @@
-﻿namespace Uniceps.app.DTOs.MeasurementDtos
+﻿using Uniceps.Entityframework.Models.Measurements;
+
+namespace Uniceps.app.DTOs.MeasurementDtos
 {
     public class BodyMeasurementCreationDto
     {
@@ -18,5 +20,24 @@
         public double LeftLegCm { get; set; }
         public double RightLegCm { get; set; }
         public DateTime MeasuredAt { get; set; } = DateTime.UtcNow;
+        public BodyMeasurement ToModel()
+        {
+            BodyMeasurement bodyMeasurement = new BodyMeasurement();
+            bodyMeasurement.HeightCm = HeightCm;
+            bodyMeasurement.WeightKg = WeightKg;
+            bodyMeasurement.WaistCm = WaistCm;
+            bodyMeasurement.ChestCm = ChestCm;
+            bodyMeasurement.HipsCm = HipsCm;
+            bodyMeasurement.NeckCm = NeckCm;
+            bodyMeasurement.ShouldersCm = ShouldersCm;
+            bodyMeasurement.LeftArmCm = LeftArmCm;
+            bodyMeasurement.RightArmCm = RightArmCm;
+            bodyMeasurement.LeftThighCm = LeftThighCm;
+            bodyMeasurement.RightThighCm = RightThighCm;
+            bodyMeasurement.LeftLegCm = LeftLegCm;
+            bodyMeasurement.RightLegCm = RightLegCm;
+            bodyMeasurement.MeasuredAt = MeasuredAt;
+            return bodyMeasurement;
+        }
     }
 }

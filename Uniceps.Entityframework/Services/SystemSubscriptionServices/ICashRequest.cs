@@ -14,5 +14,8 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         Task<CashPaymentRequest> Get(int id);
         Task<IEnumerable<CashPaymentRequest>> GetAll(CashRequestStatus status);
         Task<CashPaymentRequest> Update(CashPaymentRequest entity);
+
+        Task<bool> TransfercodeExist(string code);
+        Task<bool> UserHasPendingRequests(string id);
     }
 }

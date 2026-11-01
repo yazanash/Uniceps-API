@@ -14,7 +14,6 @@ using Uniceps.Entityframework.Models.NotificationModels;
 using Uniceps.Entityframework.Models.NutritionSystem;
 using Uniceps.Entityframework.Models.Products;
 using Uniceps.Entityframework.Models.Profile;
-using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Models.RoutineModelsV2;
 using Uniceps.Entityframework.Models.SystemSubscriptionModels;
 
@@ -23,11 +22,8 @@ namespace Uniceps.Entityframework.DBContext
     public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        public DbSet<MuscleGroup> MuscleGroups { get; set; }
-        public DbSet<Exercise> Exercises { get; set; }
         public DbSet<OTPModel> OTPModels { get; set; }
         public DbSet<NormalProfile> NormalProfiles { get; set; }
-        public DbSet<PlanModel> Plans { get; set; }
         public DbSet<PlanItem> PlanItems { get; set; }
         public DbSet<SystemSubscription> SystemSubscriptions { get; set; }
         public DbSet<UserDevice> UserDevices { get; set; }
@@ -59,6 +55,8 @@ namespace Uniceps.Entityframework.DBContext
         public DbSet<IngredientCategory> IngredientCategories { get; set; }
 
         public DbSet<RoutineTemplate> RoutineTemplates { get; set; }
+
+        public DbSet<SubscriptionCoupon> subscriptionCoupons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
        
@@ -68,31 +66,13 @@ namespace Uniceps.Entityframework.DBContext
                 if (idProperty?.ClrType == typeof(Guid))
                 {
                     idProperty.IsNullable = false;
-
-                    // Use database-generated GUIDs (SQL Server only)
                     idProperty.SetDefaultValueSql("NEWSEQUENTIALID()");
                 }
             }
 
             modelBuilder.ApplyConfiguration(new RoutineTemplateConfiguration());
-            modelBuilder.Entity<MuscleGroup>().HasData
-                (
-                new MuscleGroup { Id = 1, Name = "صدر", EngName = "Chest" },
-                new MuscleGroup { Id = 2, Name = "اكتاف", EngName = "Shoulders" },
-                new MuscleGroup { Id = 3, Name = "ظهر", EngName = "Back" },
-                new MuscleGroup { Id = 4, Name = "ارجل", EngName = "Legs" },
-                new MuscleGroup { Id = 5, Name = "بايسيبس", EngName = "Biceps" },
-                new MuscleGroup { Id = 6, Name = "ترايسيبس", EngName = "Triceps" },
-                new MuscleGroup { Id = 7, Name = "بطات الارجل", EngName = "Calves" },
-                new MuscleGroup { Id = 8, Name = "معدة", EngName = "ABS" },
-                new MuscleGroup { Id = 9, Name = "سواعد", EngName = "ForeArms" },
-                new MuscleGroup { Id = 10, Name = "تربيز", EngName = "Shrug" }
-                );
+          
 
-            modelBuilder.Entity<PlanModel>()
-             .HasMany(plan => plan.PlanItems)
-             .WithOne(planItem => planItem.PlanModel) 
-             .HasForeignKey(ri => ri.PlanNID);
             modelBuilder.Entity<ExerciseV2>()
         .HasKey(e => e.ExerciseId);
 
@@ -136,6 +116,10 @@ namespace Uniceps.Entityframework.DBContext
         .HasIndex(l => new { l.WorkoutSessionId, l.ExerciseId, l.ExerciseIndex, l.SetIndex })
         .IsUnique();
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<SubscriptionCoupon>()
+              .HasIndex(e => e.Code)
+              .HasDatabaseName("Index_CouponCode");
 
         }
     }

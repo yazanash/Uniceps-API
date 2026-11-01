@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Uniceps.app.Controllers.RoutineControllers;
 using Uniceps.app.DTOs.ProfileDtos;
-using Uniceps.app.Services;
-using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.Profile;
-using Uniceps.Entityframework.Models.RoutineModels;
 using Uniceps.Entityframework.Services.ProfileServices;
 
 namespace Uniceps.app.Controllers.ProfileControllers
@@ -16,15 +11,11 @@ namespace Uniceps.app.Controllers.ProfileControllers
     public class ProfileController : ControllerBase
     {
         private readonly IProfileDataService _profileDataService;
-        IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> _normalProfileMapperExtension;
         private ILogger<ProfileController> _logger;
-        private readonly DataMigrationService _dataMigrationService;
-        public ProfileController(IProfileDataService profileDataService, ILogger<ProfileController> logger, IMapperExtension<NormalProfile, NormalProfileDto, NormalProfileCreationDto> normalProfileMapperExtension, DataMigrationService dataMigrationService)
+        public ProfileController(IProfileDataService profileDataService, ILogger<ProfileController> logger)
         {
             _profileDataService = profileDataService;
             _logger = logger;
-            _normalProfileMapperExtension = normalProfileMapperExtension;
-            _dataMigrationService = dataMigrationService;
         }
 
         [HttpGet]
@@ -37,7 +28,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             NormalProfile normalProfile = await _profileDataService.GetByUserId(userId);
 
-            return Ok(_normalProfileMapperExtension.ToDto(normalProfile));
+            return Ok(new NormalProfileDto(normalProfile));
         }
       
         [HttpGet("id")]
@@ -45,7 +36,7 @@ namespace Uniceps.app.Controllers.ProfileControllers
         {
             NormalProfile normalProfile = await _profileDataService.Get(id);
 
-            return Ok(_normalProfileMapperExtension.ToDto(normalProfile));
+            return Ok(new NormalProfileDto(normalProfile));
         }
         [HttpPost]
         public async Task<IActionResult> CreateNormalProfile(NormalProfileCreationDto profileCreationDto)
@@ -59,20 +50,20 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             NormalProfile existedProfile = await _profileDataService.GetByUserId(userId);
-            NormalProfile newProfile = _normalProfileMapperExtension.FromCreationDto(profileCreationDto);
+            NormalProfile newProfile =profileCreationDto.ToModel();
             newProfile.UserId = userId;
             if (existedProfile != null)
             {
                 newProfile.NID = existedProfile.NID;
                 await _profileDataService.Update(newProfile);
                 _logger.LogInformation("Updated Successfully");
-                return Ok(_normalProfileMapperExtension.ToDto(newProfile));
+                return Ok(new NormalProfileDto(newProfile));
             }
             else
             {
                 var result = await _profileDataService.Create(newProfile);
                 _logger.LogInformation("Created Successfully");
-                return Ok(_normalProfileMapperExtension.ToDto(newProfile));
+                return Ok(new NormalProfileDto(newProfile));
             }
          
         }

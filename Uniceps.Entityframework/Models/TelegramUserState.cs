@@ -13,24 +13,41 @@ namespace Uniceps.Entityframework.Models
         public BotStep Step { get; set; } = BotStep.Start;
         public string? Email { get; set; }
         public string? TransferCode { get; set; }
-        public string? TransferImageUrl { get; set; }
         public string? PaymentMethod { get; set; }
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
         public int PaymentGatewayId { get; set; }
-        public string? SubscriptionId { get; set; }
-        public decimal? Amount { get; set; }
-        public string? ReceiptFileId { get; set; }
+        public int PlanId { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public string? Coupon { get; set; }
+        public int? CouponId { get; set; }
+        public double Discount { get; set; }
     }
     public enum BotStep
     {
         Start,
         WaitingEmail,
-        WaitingConfirmation,
-        ShowingInvoice,
+        WaitingPlan,
+        ChoosingPlan,
+        WaitingCoupon,
         ChoosingGateway,
-        ChoosingSubscription,
         WaitingGateway,
-        WaitingReceiptImage,
-        Done
+        WaitingTransferCode,
+        Done,
+        WaitingConfirmation,
+        WaitingCheckoutConfirmation,
+    }
+    public enum BotTrigger
+    {
+        Start,
+        EmailSubmitted,
+        PlanSelected,
+        CouponSubmitted,
+        CouponSkipped,
+        ConfirmCheckout,
+        GatewaySelected,
+        TransferCodeSubmitted,
+        ConfirmPayment,
+        Cancel,
+        CheckoutCanceled
     }
 }

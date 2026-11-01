@@ -44,6 +44,49 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return CreatedResult.Entity;
         }
 
+        public async Task<SystemSubscription> CreateSubscriptionAsync(int planId, int? couponId, string userId)
+        {
+            PlanItem? planItem = await _dbContext.Set<PlanItem>().FirstOrDefaultAsync(x => x.Id == planId);
+            if (planItem == null) throw new Exception();
+
+            SubscriptionCoupon? coupon = couponId.HasValue? await _dbContext.Set<SubscriptionCoupon>().FirstOrDefaultAsync(x => x.Id == couponId) :null;
+
+            var sub = new SystemSubscription
+            {
+                UserId = userId,
+                PlanItemId = planItem.Id,
+                ProductId = planItem.ProductId,
+                PlanName = planItem.Name ?? "",
+                PlanDaysCount = planItem.DaysCount,
+                PlanDuration = planItem.DurationString ?? "",
+                StartDate = DateTime.UtcNow,
+                EndDate = DateTime.UtcNow.AddDays(planItem.DaysCount),
+                Price = planItem.Price,
+                IsGift = false,
+                ISPaid = true,
+                IsActive = true,
+                CouponCode = coupon?.Code,
+                CouponValue = coupon?.CouponValue ?? 0
+            };
+
+            var lastEndDate = await _dbContext.Set<SystemSubscription>()
+        .Where(s => s.UserId == userId && s.ISPaid && s.ProductId == planItem.ProductId)
+        .MaxAsync(s => (DateTime?)s.EndDate);
+
+            DateTime calculatedStart = (lastEndDate != null && lastEndDate > DateTime.UtcNow)
+                                ? lastEndDate.Value
+                                : DateTime.UtcNow;
+
+            var duration = sub.EndDate.Subtract(sub.StartDate);
+
+            sub.StartDate = calculatedStart;
+            sub.EndDate = calculatedStart.Add(duration);
+
+            EntityEntry<SystemSubscription> CreatedResult = await _dbContext.Set<SystemSubscription>().AddAsync(sub);
+            await _dbContext.SaveChangesAsync();
+            return CreatedResult.Entity;
+        }
+
         public async Task<bool> Delete(Guid id)
         {
             SystemSubscription? entity = await _dbContext.Set<SystemSubscription>().FirstOrDefaultAsync((e) => e.NID == id);

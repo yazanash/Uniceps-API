@@ -1,9 +1,4 @@
-﻿using Google.Api.Gax.ResourceNames;
-using Microsoft.AspNetCore.Hosting;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Webp;
-using SixLabors.ImageSharp.Processing;
-using Telegram.Bot.Types;
+﻿using ImageMagick;
 
 namespace Uniceps.app.Services
 {
@@ -16,8 +11,10 @@ namespace Uniceps.app.Services
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<string> SaveImageAsWebP(IFormFile file, string fileNameWithoutExtension, string folderName = "ExerciseImages")
+        public async Task<string> SaveImageAsWebP(IFormFile file, string fileNameWithoutExtension, string folderName = "ExerciseImages",int maxWidth = 1080)
         {
+            if (file == null || file.Length == 0) return string.Empty;
+
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
             var uploadsFolder = Path.Combine(rootPath, folderName);
             if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
@@ -27,30 +24,40 @@ namespace Uniceps.app.Services
 
             if (File.Exists(filePath)) File.Delete(filePath);
 
-            using (var image = await Image.LoadAsync(file.OpenReadStream()))
-            {
-                if (image.Width > 1080)
-                {
-                    image.Mutate(x => x.Resize(new ResizeOptions
-                    {
-                        Size = new Size(1080, 0),
-                        Mode = ResizeMode.Max
-                    }));
-                }
+            using var inputStream = file.OpenReadStream();
 
-                await image.SaveAsWebpAsync(filePath, new WebpEncoder
-                {
-                    Quality = 80,
-                    Method = WebpEncodingMethod.BestQuality
-                });
+            using var image = new MagickImage(inputStream);
+
+            if (image.Width > maxWidth)
+            {
+                image.Resize((uint)maxWidth, 0);
             }
-            return $"{folderName}/{fileName}";
+
+            image.Format = MagickFormat.WebP;
+            image.Quality = 80;
+
+            await image.WriteAsync(filePath);
+
+            return $"/{folderName}/{fileName}";
         }
         public string GetImagePath(string imagePath)
         {
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
             var filePath = Path.Combine(rootPath, imagePath);
             return filePath;
+        }
+        public void DeleteImage(string imagePath)
+        {
+            if (string.IsNullOrEmpty(imagePath)) return;
+
+            var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
+            imagePath = imagePath.TrimStart('/', '\\');
+            var fullPath = Path.Combine(rootPath, imagePath);
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
         }
     }
 }

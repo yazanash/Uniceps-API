@@ -6,5 +6,7 @@ namespace Uniceps.app.DTOs.SystemSubscriptionDtos
     {
         public int Id {  get; set; }
         public CashRequestStatus CashRequestStatus { get; set; }
+
+        public string? Message { get; set; }
     }
 }

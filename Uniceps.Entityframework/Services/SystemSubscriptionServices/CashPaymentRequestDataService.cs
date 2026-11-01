@@ -46,11 +46,26 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
             return entities;
         }
 
+        public async Task<bool> TransfercodeExist(string code)
+        {
+            CashPaymentRequest? entity = await _dbContext.Set<CashPaymentRequest>().AsNoTracking().FirstOrDefaultAsync((e) =>
+            e.TransferCode == code.Trim()
+            );
+            if (entity == null)
+                return false;
+            return true;
+        }
+
         public async Task<CashPaymentRequest> Update(CashPaymentRequest entity)
         {
             _dbContext.Set<CashPaymentRequest>().Update(entity);
             await _dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<bool> UserHasPendingRequests(string id)
+        {
+            return await _dbContext.Set<CashPaymentRequest>().AnyAsync(x => x.UserId == id && x.Status == CashRequestStatus.Pending);
         }
     }
 }

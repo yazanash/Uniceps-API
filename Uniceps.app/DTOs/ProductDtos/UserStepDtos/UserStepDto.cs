@@ -1,7 +1,21 @@
-﻿namespace Uniceps.app.DTOs.ProductDtos.UserStepDtos
+﻿using Uniceps.Entityframework.Models.Products;
+
+namespace Uniceps.app.DTOs.ProductDtos.UserStepDtos
 {
     public class UserStepDto
     {
+        public UserStepDto(UserStep data)
+        {
+
+            Id = data.Id;
+            ProductId = data.ProductId;
+            StepNumber = data.StepNumber;
+            Description = data.Description;
+            ImageUrl = data.ImageUrl;
+            Title = data.Title;
+            DescriptionAr = data.DescriptionAr;
+            TitleAr = data.TitleAr;
+        }
         public int Id { get; set; }
         public int StepNumber { get; set; } // ترتيب الخطوة
         public string Title { get; set; } = string.Empty;

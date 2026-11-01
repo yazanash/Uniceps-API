@@ -788,6 +788,10 @@ namespace Uniceps.Entityframework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -922,112 +926,6 @@ namespace Uniceps.Entityframework.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("NormalProfiles");
-                });
-
-            modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Exercise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MuscleGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MuscleGroupId");
-
-                    b.ToTable("Exercises");
-                });
-
-            modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.MuscleGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("EngName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MuscleGroups");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EngName = "Chest",
-                            Name = "صدر"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EngName = "Shoulders",
-                            Name = "اكتاف"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EngName = "Back",
-                            Name = "ظهر"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            EngName = "Legs",
-                            Name = "ارجل"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            EngName = "Biceps",
-                            Name = "بايسيبس"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            EngName = "Triceps",
-                            Name = "ترايسيبس"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            EngName = "Calves",
-                            Name = "بطات الارجل"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            EngName = "ABS",
-                            Name = "معدة"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            EngName = "ForeArms",
-                            Name = "سواعد"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            EngName = "Shrug",
-                            Name = "تربيز"
-                        });
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModelsV2.Equipment", b =>
@@ -1246,11 +1144,11 @@ namespace Uniceps.Entityframework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<long>("ChatId")
                         .HasColumnType("bigint");
+
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -1259,23 +1157,20 @@ namespace Uniceps.Entityframework.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("PaymentGatewayId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ReceiptFileId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PlanItemId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubscriptionId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TransferCode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1300,38 +1195,50 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<bool>("IsFree")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PlanNID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("PlanNID");
+                    b.HasKey("Id");
 
                     b.ToTable("PlanItems");
                 });
 
-            modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", b =>
+            modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.SubscriptionCoupon", b =>
                 {
-                    b.Property<Guid>("NID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("CouponValue")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DescriptionMessage")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ExpirationAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("TargetUserType")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.HasKey("NID");
+                    b.HasIndex("Code")
+                        .HasDatabaseName("Index_CouponCode");
 
-                    b.ToTable("Plans");
+                    b.ToTable("subscriptionCoupons");
                 });
 
             modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.SystemSubscription", b =>
@@ -1340,6 +1247,12 @@ namespace Uniceps.Entityframework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                    b.Property<string>("CouponCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("CouponValue")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -1362,9 +1275,6 @@ namespace Uniceps.Entityframework.Migrations
 
                     b.Property<int>("PlanItemId")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("PlanNID")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
@@ -1398,11 +1308,17 @@ namespace Uniceps.Entityframework.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<long>("ChatId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Coupon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -1416,19 +1332,17 @@ namespace Uniceps.Entityframework.Migrations
                     b.Property<string>("PaymentMethod")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReceiptFileId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PlanId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Step")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubscriptionId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TransferCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TransferImageUrl")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -1525,17 +1439,6 @@ namespace Uniceps.Entityframework.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModels.Exercise", b =>
-                {
-                    b.HasOne("Uniceps.Entityframework.Models.RoutineModels.MuscleGroup", "MuscleGroup")
-                        .WithMany()
-                        .HasForeignKey("MuscleGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MuscleGroup");
-                });
-
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModelsV2.ExerciseV2", b =>
                 {
                     b.HasOne("Uniceps.Entityframework.Models.RoutineModelsV2.Equipment", "Equipment")
@@ -1574,17 +1477,6 @@ namespace Uniceps.Entityframework.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanItem", b =>
-                {
-                    b.HasOne("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", "PlanModel")
-                        .WithMany("PlanItems")
-                        .HasForeignKey("PlanNID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PlanModel");
-                });
-
             modelBuilder.Entity("Uniceps.Entityframework.Models.Measurements.WorkoutSession", b =>
                 {
                     b.Navigation("Logs");
@@ -1593,11 +1485,6 @@ namespace Uniceps.Entityframework.Migrations
             modelBuilder.Entity("Uniceps.Entityframework.Models.RoutineModelsV2.MuscleGroupV2", b =>
                 {
                     b.Navigation("Heads");
-                });
-
-            modelBuilder.Entity("Uniceps.Entityframework.Models.SystemSubscriptionModels.PlanModel", b =>
-                {
-                    b.Navigation("PlanItems");
                 });
 #pragma warning restore 612, 618
         }

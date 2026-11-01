@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System.Security.Claims;
 using Telegram.Bot.Types;
 using Uniceps.app.DTOs.SystemSubscriptionDtos;
@@ -23,13 +24,17 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
         private readonly IMembershipDataService _subscriptionDataService;
         private readonly TelegramBotService _telegramBotService;
         private readonly INotificationDataService _notificationDataService;
-        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService, INotificationDataService notificationDataService)
+        private readonly IPlanDataService _planDataService;
+        private readonly ICouponDataService _couponDataService;
+        public CashRequestController(IIntDataService<PaymentGateway> gatewayService, ICashRequest paymentRequestService, IMembershipDataService subscriptionDataService, TelegramBotService telegramBotService, INotificationDataService notificationDataService, IPlanDataService planDataService, ICouponDataService couponDataService)
         {
             _gatewayService = gatewayService;
             _paymentRequestService = paymentRequestService;
             _subscriptionDataService = subscriptionDataService;
             _telegramBotService = telegramBotService;
             _notificationDataService = notificationDataService;
+            _planDataService = planDataService;
+            _couponDataService = couponDataService;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] CashRequestStatus cashRequestStatus = CashRequestStatus.Pending)
@@ -40,19 +45,20 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 List<CashRequestDto> requests = new List<CashRequestDto>();
                 foreach (CashPaymentRequest cashPaymentRequest in cashPaymentRequests)
                 {
-                    SystemSubscription systemSubscription = await _subscriptionDataService.Get(Guid.Parse(cashPaymentRequest.SubscriptionId!));
+                    PlanItem selectedPlan = await _planDataService.Get(cashPaymentRequest.PlanItemId);
                     PaymentGateway paymentGateway = await _gatewayService.Get(cashPaymentRequest.PaymentGatewayId);
+                    SubscriptionCoupon? coupon = cashPaymentRequest.CouponId.HasValue? await _couponDataService.Get((int)cashPaymentRequest.CouponId):null;
                     CashRequestDto cashRequestDto = new CashRequestDto();
                     cashRequestDto.Id = cashPaymentRequest.Id;
                     cashRequestDto.Email = cashPaymentRequest.Email;
                     cashRequestDto.TransferCode = cashPaymentRequest.TransferCode;
-                    cashRequestDto.Amount = cashPaymentRequest.Amount;
                     cashRequestDto.Status = cashPaymentRequest.Status.ToString();
-                    cashRequestDto.Subscription = systemSubscription.PlanName.ToString();
-                    cashRequestDto.SubscriptionPrice = systemSubscription.Price.ToString();
+                    cashRequestDto.Subscription = selectedPlan.Name;
+                    cashRequestDto.SubscriptionPrice = selectedPlan.Price;
                     cashRequestDto.PaymentGateway = paymentGateway.Name;
                     cashRequestDto.CreatedAt = cashPaymentRequest.CreatedAt.ToString();
-                    cashRequestDto.ImageUrl = cashPaymentRequest.ReceiptFileId;
+                    cashRequestDto.CouponCode = coupon?.Code;
+                    cashRequestDto.CouponValue = coupon?.CouponValue??0;
                     requests.Add(cashRequestDto);
                 }
                 return Ok(requests);
@@ -72,27 +78,27 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                 cashPaymentRequest.Status = changeCashRequestStatusDto.CashRequestStatus;
                 if (cashPaymentRequest.Status == CashRequestStatus.Accepted)
                 {
-                    bool systemSubscription = await _subscriptionDataService.SetSubscriptionAsPaid(Guid.Parse(cashPaymentRequest.SubscriptionId!));
-                    if (systemSubscription)
+                    PlanItem selectedPlan = await _planDataService.Get(cashPaymentRequest.PlanItemId);
+                 
+                    var created = await _subscriptionDataService.CreateSubscriptionAsync(cashPaymentRequest.PlanItemId,cashPaymentRequest.CouponId,cashPaymentRequest.UserId!);
+                    if (created!=null&& created.UserId!=null)
                     {
-                        await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId);
-                        var subs = await _subscriptionDataService.Get(Guid.Parse(cashPaymentRequest.SubscriptionId!));
-                        if (subs != null && subs.UserId != null)
-                        {
+                        await _telegramBotService.HandelRequestAccepted(cashPaymentRequest.ChatId, changeCashRequestStatusDto.Message);
+                     
                             await _notificationDataService.CreateAsync(new Notification
                             {
-                                UserId = subs.UserId,
+                                UserId = created.UserId,
                                 Title = $"اهلا وسهلا فيك بعالم uniceps",
                                 Body = "تم تفعيل الاشتراك الخاص بك بنجاح . خلينا نشوف النتائج الحلوة يابطل ",
                                 ScheduledTime = DateTime.UtcNow.AddHours(22)
                             });
-                        }
+                        
                     }
 
                 }
                 else
                 {
-                    await _telegramBotService.HandelRequestDenied(cashPaymentRequest.ChatId);
+                    await _telegramBotService.HandelRequestDenied(cashPaymentRequest.ChatId, changeCashRequestStatusDto.Message);
                 }
                 await _paymentRequestService.Update(cashPaymentRequest);
                 return Ok();

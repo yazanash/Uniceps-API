@@ -17,12 +17,10 @@ namespace Uniceps.app.Controllers.MeasurementControllers
     public class WorkoutController : ControllerBase
     {
         private readonly IWorkoutSessionService _dataService;
-        private readonly IMapperExtension<WorkoutSession, WorkoutSessionDto, WorkoutSessionCreationDto> _mapperExtension;
         private readonly INotificationDataService _notificationDataService;
-        public WorkoutController(IWorkoutSessionService dataService, IMapperExtension<WorkoutSession, WorkoutSessionDto, WorkoutSessionCreationDto> mapperExtension, INotificationDataService notificationDataService)
+        public WorkoutController(IWorkoutSessionService dataService,INotificationDataService notificationDataService)
         {
             _dataService = dataService;
-            _mapperExtension = mapperExtension;
             _notificationDataService = notificationDataService;
         }
         [HttpGet]
@@ -35,7 +33,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
            
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             IEnumerable<WorkoutSession> players = await _dataService.GetAllByUser(userId);
-            return Ok(players.Select(x => _mapperExtension.ToDto(x)).ToList());
+            return Ok(players.Select(x => new WorkoutSessionDto(x)).ToList());
         }
         [HttpPost]
         public async Task<IActionResult> Create(WorkoutSessionCreationDto bodyMeasurementCreationDto)
@@ -48,7 +46,7 @@ namespace Uniceps.app.Controllers.MeasurementControllers
             if (bodyMeasurementCreationDto == null)
                 return BadRequest("Workout session data is missing.");
 
-            WorkoutSession bodyMeasurement = _mapperExtension.FromCreationDto(bodyMeasurementCreationDto);
+            WorkoutSession bodyMeasurement =bodyMeasurementCreationDto.ToModel();
             bodyMeasurement.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             var totalMinutes = bodyMeasurement.FinishedAt?.Subtract(bodyMeasurement.CreatedAt).TotalMinutes ?? 0;
              string Length = Math.Ceiling(totalMinutes).ToString("0");

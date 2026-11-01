@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Telegram.Bot.Types;
+using Uniceps.app.Services;
 using Uniceps.Core.Services;
 using Uniceps.Entityframework.Models.AuthenticationModels;
 using Uniceps.Entityframework.Models.Profile;
@@ -18,12 +19,12 @@ namespace Uniceps.app.Controllers.ProfileControllers
     {
         private readonly IProfileDataService _normalProfileDataService;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProfilePictureController(IProfileDataService normalProfileDataService, UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment)
+        private readonly ExerciseImageService _imageService;
+        public ProfilePictureController(IProfileDataService normalProfileDataService, UserManager<AppUser> userManager, ExerciseImageService imageService)
         {
             _normalProfileDataService = normalProfileDataService;
             _userManager = userManager;
-            _webHostEnvironment = webHostEnvironment;
+            _imageService = imageService;
         }
 
         [HttpPost]
@@ -36,29 +37,31 @@ namespace Uniceps.app.Controllers.ProfileControllers
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
-
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            var imageUrl = fileName;
-
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             AppUser? user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
+            if (user == null) return NotFound("User not found.");
+
+            NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(user.Id);
+
+            if (!string.IsNullOrEmpty(normalProfile.PictureUrl))
             {
-                NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(user.Id);
-                normalProfile.PictureUrl = imageUrl;
-                await _normalProfileDataService.Update(normalProfile);
+                _imageService.DeleteImage(normalProfile.PictureUrl);
             }
 
+            string fileNameWithoutExt = $"profile-{userId.Substring(0, Math.Min(userId.Length, 8))}-{Guid.NewGuid().ToString().Substring(0, 6)}";
+
+            string imageUrl = await _imageService.SaveImageAsWebP(
+                file,
+                fileNameWithoutExtension: fileNameWithoutExt,
+                folderName: "profile-pictures",
+                maxWidth: 500
+            );
+
+            normalProfile.PictureUrl = imageUrl;
+            await _normalProfileDataService.Update(normalProfile);
+
             return Ok(new { imageUrl });
+
         }
         [HttpGet]
         public async Task<IActionResult> GetProfilePicture()
@@ -69,16 +72,16 @@ namespace Uniceps.app.Controllers.ProfileControllers
             }
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             NormalProfile normalProfile = await _normalProfileDataService.GetByUserId(userId);
-            if (normalProfile.PictureUrl != null)
+
+            if (!string.IsNullOrEmpty(normalProfile.PictureUrl))
             {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
-                var filePath = Path.Combine(uploadsFolder, normalProfile.PictureUrl);
+                var filePath = _imageService.GetImagePath(normalProfile.PictureUrl);
+
                 if (!System.IO.File.Exists(filePath))
                     return NotFound();
 
-                var contentType = "image/" + Path.GetExtension(filePath).TrimStart('.');
-                var imageBytes = System.IO.File.ReadAllBytes(filePath);
-                return File(imageBytes, contentType);
+                var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                return File(imageBytes, "image/webp");
             }
             return NotFound();
         }
@@ -95,13 +98,12 @@ namespace Uniceps.app.Controllers.ProfileControllers
 
             normalProfile.PictureUrl = null;
             await _normalProfileDataService.Update(normalProfile);
-            if (picUrl != null)
+
+            if (!string.IsNullOrEmpty(picUrl))
             {
-                var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "profile-pictures");
-                var filePath = Path.Combine(uploadsFolder, picUrl);
-                if (System.IO.File.Exists(filePath))
-                    System.IO.File.Delete(filePath);
+                _imageService.DeleteImage(picUrl);
             }
+
             return Ok();
         }
     }

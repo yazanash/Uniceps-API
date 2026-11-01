@@ -14,12 +14,10 @@ namespace Uniceps.app.Controllers.ProductControllers
     public class UserStepController : ControllerBase
     {
         private readonly IProductRelatedDataService<UserStep> _stepService;
-        private readonly IMapperExtension<UserStep, UserStepDto, UserStepCreationDro> _mapper;
 
-        public UserStepController(IProductRelatedDataService<UserStep> stepService, IMapperExtension<UserStep, UserStepDto, UserStepCreationDro> mapper)
+        public UserStepController(IProductRelatedDataService<UserStep> stepService)
         {
             _stepService = stepService;
-            _mapper = mapper;
         }
         [HttpGet("product/{productId}")]
         [AllowAnonymous]
@@ -27,21 +25,21 @@ namespace Uniceps.app.Controllers.ProductControllers
         {
             // ترتيب الخطوات حسب الـ StepNumber قبل الإرسال
             var steps = (await _stepService.GetAllByProductId(productId)).OrderBy(s => s.StepNumber);
-            return Ok(steps.Select(x=>_mapper.ToDto(x)).ToList());
+            return Ok(steps.Select(x=>new UserStepDto(x)).ToList());
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserStepCreationDro dto)
         {
-            var step = _mapper.FromCreationDto(dto);
+            var step = dto.ToModel();
             await _stepService.Create(step);
-            return Ok(_mapper.ToDto(step));
+            return Ok(new UserStepDto(step));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UserStepCreationDro dto)
         {
-            var step = _mapper.FromCreationDto(dto);
+            var step =dto.ToModel();
             step.Id = id;
             await _stepService.Update(step);
             return Ok("Updated");

@@ -40,7 +40,7 @@ namespace Uniceps.app.Services.PaymentServices
                         UnitAmount = (long)(sub.Price * 100),
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = product.Name +" - " + planItem.PlanModel?.Name+" - "+planItem.DurationString
+                            Name = product.Name +" - " + planItem.Name+" - "+planItem.DurationString
                         }
                     },
                     Quantity = 1
