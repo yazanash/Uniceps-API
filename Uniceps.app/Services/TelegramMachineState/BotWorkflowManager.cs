@@ -14,13 +14,17 @@ namespace Uniceps.app.Services.TelegramMachineState
             { (BotStep.Start, BotTrigger.Start), BotStep.WaitingEmail },
             { (BotStep.WaitingEmail, BotTrigger.EmailSubmitted), BotStep.ChoosingPlan },
             { (BotStep.ChoosingPlan, BotTrigger.PlanSelected), BotStep.WaitingCoupon },
+           
             { (BotStep.WaitingCoupon, BotTrigger.CouponSubmitted), BotStep.WaitingCheckoutConfirmation },
             { (BotStep.WaitingCoupon, BotTrigger.CouponSkipped), BotStep.WaitingCheckoutConfirmation },
 
             { (BotStep.WaitingCheckoutConfirmation, BotTrigger.ConfirmCheckout), BotStep.ChoosingGateway },
             { (BotStep.ChoosingGateway, BotTrigger.GatewaySelected), BotStep.WaitingTransferCode },
             { (BotStep.WaitingTransferCode, BotTrigger.TransferCodeSubmitted), BotStep.WaitingConfirmation },
-            { (BotStep.WaitingConfirmation, BotTrigger.ConfirmPayment), BotStep.Start }
+            { (BotStep.WaitingConfirmation, BotTrigger.ConfirmPayment), BotStep.Start },
+
+             { (BotStep.WaitingFreeConfirmation, BotTrigger.ConfirmPayment), BotStep.Start },
+              { (BotStep.ChoosingPlan, BotTrigger.PlanFreeSelected), BotStep.WaitingFreeConfirmation },
         };
         public bool CanFire(BotTrigger trigger)
         {

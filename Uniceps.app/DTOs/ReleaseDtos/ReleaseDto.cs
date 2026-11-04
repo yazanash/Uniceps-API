@@ -17,7 +17,7 @@ namespace Uniceps.app.DTOs.ReleaseDtos
             TargetOSText = data.TargetOS.ToString();
             Id = data.Id;
             DownloadSourceText = data.DownloadSource.ToString();
-
+            IsUrgent = data.IsUrgent;
         }
         public int Id { get; set; }
         public string Version { get; set; } = "";
@@ -29,6 +29,7 @@ namespace Uniceps.app.DTOs.ReleaseDtos
         public string ChangeLog { get; set; } = "";
         public string ChangeLogAr { get; set; } = "";
         public int ProductId { get; set; }
+        public bool IsUrgent { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

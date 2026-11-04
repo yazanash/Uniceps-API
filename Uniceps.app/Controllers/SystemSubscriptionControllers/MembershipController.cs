@@ -25,19 +25,17 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
 
     public class MembershipController : ControllerBase
     {
-        private readonly IPlanDataService _dataService;
         private readonly IMembershipDataService _subscriptionDataService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly UserManager<AppUser> _userManager;
         private readonly IProductDataService _productDataService;
         private readonly IBypassService _bypassService;
         private readonly INotificationDataService _notificationDataService;
-        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IPlanDataService dataService, IProductDataService productDataService, IBypassService bypassService, INotificationDataService notificationDataService)
+        public MembershipController(IMembershipDataService subscriptionDataService, IPaymentGateway paymentGateway, UserManager<AppUser> userManager, IProductDataService productDataService, IBypassService bypassService, INotificationDataService notificationDataService)
         {
             _subscriptionDataService = subscriptionDataService;
             _paymentGateway = paymentGateway;
             _userManager = userManager;
-            _dataService = dataService;
             _productDataService = productDataService;
             _bypassService = bypassService;
             _notificationDataService = notificationDataService;
@@ -49,32 +47,14 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
-                var plan = await _dataService.Get(request.PlanItemId);
 
-                if (user == null || plan == null)
+                if (user == null)
                     return BadRequest("Invalid user or plan");
 
                 MembershipPayDto membershipPayDto = new MembershipPayDto();
                 membershipPayDto.RequirePayment = false;
                 membershipPayDto.Message = "Membership Created Successfully";
-                var sub = new SystemSubscription
-                {
-                    UserId = user.Id,
-                    PlanItemId = plan.Id,
-                    ProductId = plan.ProductId,
-                    PlanName = plan.Name ?? "",
-                    PlanDaysCount = plan.DaysCount,
-                    PlanDuration = plan.DurationString ?? "",
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddDays(plan.DaysCount),
-                    Price = plan.Price,
-                    IsGift = true,
-                    ISPaid = true,
-                    IsActive = true
-                };
-
-
-                await _subscriptionDataService.Create(sub);
+                var sub = await _subscriptionDataService.CreateSubscriptionAsync(request.PlanItemId,null, user.Id);
                 if (sub.IsGift)
                 {
                     return Ok(membershipPayDto);
@@ -102,35 +82,12 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     return Unauthorized();
                 }
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-                var user = await _userManager.FindByIdAsync(userId);
-                var plan = await _dataService.Get(request.PlanItemId);
-
-                if (user == null || plan == null)
-                    return BadRequest("Invalid user or plan");
-
                 MembershipPayDto membershipPayDto = new MembershipPayDto();
                 membershipPayDto.RequirePayment = false;
                 membershipPayDto.Message = "Membership Created Successfully";
-                var sub = new SystemSubscription
-                {
-                    UserId = user.Id,
-                    PlanItemId = plan.Id,
-                    ProductId = plan.ProductId,
-                    PlanName = plan.Name ?? "",
-                    PlanDaysCount = plan.DaysCount,
-                    PlanDuration = plan.DurationString ?? "",
-                    StartDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddDays(plan.DaysCount),
-                    Price = plan.Price,
-                    IsGift = false,
-                    ISPaid = plan.IsFree,
-                    IsActive = plan.IsFree
+                var sub = await _subscriptionDataService.CreateSubscriptionAsync(request.PlanItemId,null, userId);
 
-                };
-
-
-                await _subscriptionDataService.Create(sub);
-                if (plan.IsFree)
+                if (sub.IsGift)
                 {
                     return Ok(membershipPayDto);
                 }
@@ -140,19 +97,6 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                     membershipPayDto.Message = "Membership Created Successfully, but require payment";
                     return Ok(membershipPayDto);
                 }
-                //var sessionUrl = await _paymentGateway.CreateSessionAsync(sub, user, plan);
-
-                //if (!string.IsNullOrEmpty(sessionUrl))
-                //{
-                //    sub.StripeCheckoutSessionId = sessionUrl.Contains("stripe") ? sessionUrl : null;
-                //    await _subscriptionDataService.Update(sub);
-                //    membershipPayDto.RequirePayment = true;
-                //    membershipPayDto.PaymentUrl = sessionUrl;
-                //    membershipPayDto.Message = "Membership Created Successfully, but require payment";
-                //    return Ok(membershipPayDto);
-                //}
-                //else
-                //    return BadRequest("Error in payment gate");
             }
             catch (Exception ex)
             {
@@ -215,7 +159,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
 
         }
         [HttpGet("pending-subscriptions")]
-        [Authorize(Roles = "Admin")] // حماية الرابط للمسؤولين فقط
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetPendingSubscriptions([FromQuery] string? email)
         {
             List<MembershipDto> membershipDtos = new List<MembershipDto>();

@@ -46,6 +46,8 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<ProcessTransactionCodeHandler>();
             services.AddScoped<HandleConfirmCheckout>();
 
+            services.AddScoped<PaymentFreeConfirmedHandler>();
+
             services.AddScoped<IStepProcessor, ChoosingGatewayStepProcessor>();
             services.AddScoped<IStepProcessor, ChoosingPlanStepProcessor>();
             services.AddScoped<IStepProcessor, EmailStepProcessor>();
@@ -54,6 +56,10 @@ namespace Uniceps.app.HostBuilder
             services.AddScoped<IStepProcessor, WaitingCouponStepProcessor>();
             services.AddScoped<IStepProcessor, WaitingTransactionCodeStepProcessor>();
             services.AddScoped<IStepProcessor, SummeryCheckoutConfirmation>();
+
+            services.AddScoped<IStepProcessor, WaitingFreeConfirmationProcess>();
+
+            services.AddScoped<IStateViewRenderer, WaitingFreeConfirmationRendrer>();
 
             services.AddScoped<IStateViewRenderer, ChoosingGatewayViewRenderer>();
             services.AddScoped<IStateViewRenderer, ChoosingPlanViewRenderer>();
