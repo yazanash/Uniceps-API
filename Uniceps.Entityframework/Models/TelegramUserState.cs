@@ -35,6 +35,7 @@ namespace Uniceps.Entityframework.Models
         Done,
         WaitingConfirmation,
         WaitingCheckoutConfirmation,
+        WaitingFreeConfirmation,
     }
     public enum BotTrigger
     {
@@ -48,6 +49,7 @@ namespace Uniceps.Entityframework.Models
         TransferCodeSubmitted,
         ConfirmPayment,
         Cancel,
-        CheckoutCanceled
+        CheckoutCanceled,
+        PlanFreeSelected
     }
 }

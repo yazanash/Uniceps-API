@@ -11,6 +11,7 @@ namespace Uniceps.app.DTOs.ReleaseDtos
         public int ProductId { get; set; }
         public string? DownloadUrl { get; set; }
         public string ChangeLogAr { get; set; } = "";
+        public bool IsUrgent { get; set; } 
         public Release ToModel()
         {
             return new Release
@@ -22,6 +23,7 @@ namespace Uniceps.app.DTOs.ReleaseDtos
                 ProductId = ProductId,
                 TargetOS = TargetOS,
                 Version = Version,
+                IsUrgent = IsUrgent,
             };
         }
     }

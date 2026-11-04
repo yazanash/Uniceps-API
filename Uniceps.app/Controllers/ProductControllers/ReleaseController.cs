@@ -175,8 +175,7 @@ namespace Uniceps.app.Controllers.ProductControllers
                 var fileName = Path.GetFileName(filePath);
                 var mimeType = GetMimeType(filePath);
 
-                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                return File(fileStream, mimeType, fileName);
+                return PhysicalFile(filePath, mimeType, fileDownloadName: fileName, enableRangeProcessing: true);
             }
         }
         private string GetMimeType(string filePath)

@@ -58,13 +58,11 @@ namespace Uniceps.app.Services
                         return;
                     }
                     var previousStep = user.Step;
-
                     if (_processors.TryGetValue(user.Step, out var processor))
                     {
                         await processor.ProcessMessageAsync(user, msg);
                     }
 
-                    // الاستجابة التلقائية الذكية لتغيير الحالة
                     if (user.Step != previousStep)
                     {
                         if (_renderers.TryGetValue(user.Step, out var renderer))

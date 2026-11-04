@@ -19,31 +19,6 @@ namespace Uniceps.Entityframework.Services.SystemSubscriptionServices
         {
             _dbContext = dbContext;
         }
-        public async Task<SystemSubscription> Create(SystemSubscription entity)
-        {
-
-            var pendingSubs = _dbContext.Set<SystemSubscription>()
-        .Where(s => s.UserId == entity.UserId && !s.ISPaid && s.ProductId == entity.ProductId);
-
-            _dbContext.Set<SystemSubscription>().RemoveRange(pendingSubs);
-
-            var lastEndDate = await _dbContext.Set<SystemSubscription>()
-        .Where(s => s.UserId == entity.UserId && s.ISPaid && s.ProductId == entity.ProductId)
-        .MaxAsync(s => (DateTime?)s.EndDate);
-            DateTime calculatedStart = (lastEndDate != null && lastEndDate > DateTime.UtcNow)
-                                ? lastEndDate.Value
-                                : DateTime.UtcNow;
-
-            var duration = entity.EndDate.Subtract(entity.StartDate);
-
-            entity.StartDate = calculatedStart;
-            entity.EndDate = calculatedStart.Add(duration);
-
-            EntityEntry<SystemSubscription> CreatedResult = await _dbContext.Set<SystemSubscription>().AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-            return CreatedResult.Entity;
-        }
-
         public async Task<SystemSubscription> CreateSubscriptionAsync(int planId, int? couponId, string userId)
         {
             PlanItem? planItem = await _dbContext.Set<PlanItem>().FirstOrDefaultAsync(x => x.Id == planId);
