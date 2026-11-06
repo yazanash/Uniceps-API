@@ -43,6 +43,7 @@ namespace Uniceps.app.Services
         public string GetImagePath(string imagePath)
         {
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot");
+            imagePath = imagePath.TrimStart('/', '\\');
             var filePath = Path.Combine(rootPath, imagePath);
             return filePath;
         }
