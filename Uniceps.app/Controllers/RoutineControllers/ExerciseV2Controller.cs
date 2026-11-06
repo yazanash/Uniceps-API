@@ -129,7 +129,7 @@ namespace Uniceps.app.Controllers.RoutineControllers
             var filePath = _imageService.GetImagePath(relativePath);
             if (!System.IO.File.Exists(filePath))
             {
-                return NotFound("Image file not found on server.");
+                return NotFound($"Image file not found on server.");
             }
             var imageStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return File(imageStream, "image/webp");
