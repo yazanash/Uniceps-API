@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Uniceps.app.DTOs.ExerciseDtos;
 using Uniceps.app.DTOs.MuscleGroupDtos;
 using Uniceps.app.Extensions;
+using Uniceps.app.Helpers;
 using Uniceps.app.HostBuilder;
 using Uniceps.app.Middleware;
 using Uniceps.app.Services;
@@ -34,7 +35,11 @@ builder.Services.AddFirebaseAdmin(builder.Configuration);
 builder.Services.AddHostedService<NotificationWorker>();
 //builder.Services.AddMediatR(cfg =>
 //    cfg.RegisterServicesFromAssemblyContaining<Lib>());
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    // إضافة الكاونفيرتر عالمياً لكل الـ DateTimes بالمشروع
+    options.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
+}); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
