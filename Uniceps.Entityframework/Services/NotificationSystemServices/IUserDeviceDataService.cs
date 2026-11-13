@@ -14,5 +14,6 @@ namespace Uniceps.Entityframework.Services.NotificationSystemServices
         Task<UserDevice> Get(Guid id);
         Task<IEnumerable<UserDevice>> GetAllByUser(string? userid);
         Task<UserDevice> GetUserDevice(string? userid, string? Deviceid);
+        Task RemoveInvalidTokensAsync(List<string> failedTokensToCleanup);
     }
 }

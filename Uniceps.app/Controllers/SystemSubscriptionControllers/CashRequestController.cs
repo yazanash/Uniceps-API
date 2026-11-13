@@ -90,7 +90,7 @@ namespace Uniceps.app.Controllers.SystemSubscriptionControllers
                                 UserId = created.UserId,
                                 Title = $"اهلا وسهلا فيك بعالم uniceps",
                                 Body = "تم تفعيل الاشتراك الخاص بك بنجاح . خلينا نشوف النتائج الحلوة يابطل ",
-                                ScheduledTime = DateTime.UtcNow.AddHours(22)
+                                ScheduledTime = DateTime.UtcNow
                             });
                         
                     }

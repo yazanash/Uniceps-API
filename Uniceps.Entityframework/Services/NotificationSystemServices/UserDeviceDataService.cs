@@ -76,5 +76,26 @@ namespace Uniceps.Entityframework.Services.NotificationSystemServices
             return new();
         }
 
+        public async Task RemoveInvalidTokensAsync(List<string> invalidTokens)
+        {
+            if (invalidTokens == null || !invalidTokens.Any()) return;
+
+            // جلب الأجهزة التي تطابق التوكنات التالفة
+            var devicesToUpdate = await _dbContext.UserDevices
+                .Where(d => invalidTokens.Contains(d.NotifyToken))
+                .ToListAsync();
+
+            if (devicesToUpdate.Any())
+            {
+                foreach (var device in devicesToUpdate)
+                {
+                    device.NotifyToken = string.Empty;
+                    device.IsActive = false;
+                    _dbContext.Update(device);
+                }
+                
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }
